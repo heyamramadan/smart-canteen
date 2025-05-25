@@ -20,11 +20,11 @@
                 </div>
             </div>
         </li>
-           <!-- إدارةالطلاب -->
+           <!-- إدارة الطلاب  -->
         <li class="relative">
             <div class="p-3 hover:bg-primary-500 rounded-lg cursor-pointer flex items-center justify-between">
                 <div class="flex items-center">
-                    <span class="ml-2">👥</span>
+                    <span class="ml-2">🎒</span>
                     <span>إدارة الطلاب</span>
                 </div>
             </div>
