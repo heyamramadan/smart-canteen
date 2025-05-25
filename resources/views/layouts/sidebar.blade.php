@@ -20,14 +20,19 @@
                 </div>
             </div>
         </li>
-
+       <li class="p-3 hover:bg-primary-500 rounded-lg transition">
+            <a href="#" class="flex items-center">
+                <span class="ml-2">🎒</span>
+                إدارة الطلاب
+            </a>
+        </li>
         <li class="p-3 {{ request()->is('products*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
             <a href="{{ url('/products') }}" class="flex items-center">
                 <span class="ml-2">🛒</span>
                 إدارة المنتجات
             </a>
         </li>
-        
+
         <li class="p-3 {{ request()->is('categories*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
             <a href="{{ url('/Categories') }}" class="flex items-center">
                 <span class="ml-2">📂</span>

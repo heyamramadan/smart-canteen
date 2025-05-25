@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -31,18 +30,11 @@
       </div>
     </div>
 
-    <!-- الأزرار -->
+    <!-- زر تسجيل الدخول فقط -->
     <div class="mt-40 flex flex-col items-center gap-6 w-full max-w-sm mx-auto px-4">
-
       <a href="/login" class="block w-full text-center bg-[#FA9533] text-white py-3 rounded-full shadow-lg hover:bg-[#e17e20] transition transform hover:scale-105 text-lg">
         تسجيل الدخول
       </a>
-
-<a href="{{ route('createaccount.create') }}" class="block w-full text-center text-[#FA9533] border border-[#FA9533] py-3 rounded-full hover:bg-orange-50 transition transform hover:scale-105 text-lg">
-  إنشاء حساب
-</a>
-
-
     </div>
 
   </div>
