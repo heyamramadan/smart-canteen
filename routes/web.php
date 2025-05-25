@@ -30,5 +30,5 @@ Route::get('/Categories', function () {
     return view( 'Categories');
 });
 Route::get('/index', function () {
-    return view( 'user.index');
+    return view( 'index');
 });
