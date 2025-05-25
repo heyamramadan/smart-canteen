@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -20,6 +21,8 @@ Route::get('/login', function () {
     return view( 'user.login');
 });
 
+Route::post('/login',[AuthController::class,'login']);
+
 Route::get('/Dashborad', function () {
     return view( 'Dashboard');
 });
@@ -32,3 +35,4 @@ Route::get('/Categories', function () {
 Route::get('/index', function () {
     return view( 'index');
 });
+

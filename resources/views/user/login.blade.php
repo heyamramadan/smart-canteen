@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <form action="#" method="POST" class="space-y-4">
+            <form action="{{ url('/login') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block mb-1 text-sm font-medium text-gray-700">اسم المستخدم</label>
@@ -34,6 +34,7 @@
                     <label class="block mb-1 text-sm font-medium text-gray-700">كلمة المرور</label>
                     <input
                         type="password"
+                        name="password"
                         placeholder="كلمة المرور"
                         class="w-full px-4 py-2 bg-white  rounded-lg border border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-600"
                     />

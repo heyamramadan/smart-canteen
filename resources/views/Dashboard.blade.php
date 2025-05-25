@@ -67,7 +67,7 @@
                     إدارة المنتجات
                 </a>
             </li>
-
+            
             <!-- قسم إدارة التصنيفات -->
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
                 <a href="{{ url('/Categories') }}" class="flex items-center">
