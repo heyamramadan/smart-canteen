@@ -29,3 +29,6 @@ Route::get('/products', function () {
 Route::get('/Categories', function () {
     return view( 'Categories');
 });
+Route::get('/index', function () {
+    return view( 'user.index');
+});

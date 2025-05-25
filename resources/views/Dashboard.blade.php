@@ -46,7 +46,7 @@
 
             <!-- إدارة المستخدمين (بدون قائمة منسدلة) -->
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
-                <a href="#" class="flex items-center">
+                <a href="{{ url('/index') }}" class="flex items-center">
                     <span class="ml-2">👥</span>
                     إدارة المستخدمين
                 </a>
