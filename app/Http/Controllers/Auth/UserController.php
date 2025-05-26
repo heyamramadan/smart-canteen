@@ -42,7 +42,7 @@ class UserController extends Controller
         // إذا كان "ولي أمر"، أضف إلى جدول parents
         if ($user->role === 'ولي أمر') {
             ParentModel::create([
-                'user_id' => $user->user_id,
+                'user_id' => $user->id,
             ]);
         }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\StudentController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,6 +43,7 @@ Route::get('/index', function () {
 
 Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
 
-Route::get('/students', function () {
-    return view( 'user.students');
-});
+
+Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+Route::post('/students', [StudentController::class, 'store'])->name('students.store');

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
 {
     Schema::create('users', function (Blueprint $table) {
-        $table->bigIncrements('user_id');
+        $table->bigIncrements('id');
         $table->string(column: 'username')->unique();
         $table->string(column: 'password');
         // عادة لا نحفظ confirm_password في قاعدة البيانات لأنه فقط للتحقق في النموذج

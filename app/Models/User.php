@@ -28,7 +28,7 @@ class User extends Authenticatable
 ];
 public function parent()
     {
-        return $this->hasOne(ParentModel::class, 'user_id', 'user_id');
+        return $this->hasOne(ParentModel::class, 'user_id', 'id');
     }
 
     /**

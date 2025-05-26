@@ -108,40 +108,70 @@
             </div>
             <div class="p-6">
             <!-- فقط جزء الفورم بعد التعديل -->
-<form method="POST" action="#" class="space-y-4">
+<form method="POST" action="{{ route('students.store') }}" class="space-y-4">
+    @csrf
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
-            <input type="text" name="full_name" required
+            <input type="text" name="full_name" value="{{ old('full_name') }}" required
                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+            @error('full_name')
+                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <label class="block text-sm text-gray-600 mb-1">اسم الأب</label>
-            <input type="text" name="father_name" required
+            <input type="text" name="father_name" value="{{ old('father_name') }}" required
                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+            @error('father_name')
+                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <label class="block text-sm text-gray-600 mb-1">الصف الدراسي</label>
-            <select name="grade" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
+            <select name="class" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                 <option value="">اختر الصف</option>
-                <option value="الأول ابتدائي">الأول ابتدائي</option>
-                <option value="الثاني ابتدائي">الثاني ابتدائي</option>
-                <option value="الثالث ابتدائي">الثالث ابتدائي</option>
-                <option value="الرابع ابتدائي">الرابع ابتدائي</option>
-                <option value="الخامس ابتدائي">الخامس ابتدائي</option>
-                <option value="السادس ابتدائي">السادس ابتدائي</option>
-                <option value="الأول متوسط">الأول متوسط</option>
-                <option value="الثاني متوسط">الثاني متوسط</option>
-                <option value="الثالث متوسط">الثالث متوسط</option>
-                <option value="الأول ثانوي">الأول ثانوي</option>
-                <option value="الثاني ثانوي">الثاني ثانوي</option>
-                <option value="الثالث ثانوي">الثالث ثانوي</option>
+                <option value="الأول ابتدائي" {{ old('class') == 'الأول ابتدائي' ? 'selected' : '' }}>الأول ابتدائي</option>
+                <option value="الثاني ابتدائي" {{ old('class') == 'الثاني ابتدائي' ? 'selected' : '' }}>الثاني ابتدائي</option>
+                <option value="الثالث ابتدائي" {{ old('class') == 'الثالث ابتدائي' ? 'selected' : '' }}>الثالث ابتدائي</option>
+                <option value="الرابع ابتدائي" {{ old('class') == 'الرابع ابتدائي' ? 'selected' : '' }}>الرابع ابتدائي</option>
+                <option value="الخامس ابتدائي" {{ old('class') == 'الخامس ابتدائي' ? 'selected' : '' }}>الخامس ابتدائي</option>
+                <option value="السادس ابتدائي" {{ old('class') == 'السادس ابتدائي' ? 'selected' : '' }}>السادس ابتدائي</option>
+                <option value="الأول متوسط" {{ old('class') == 'الأول متوسط' ? 'selected' : '' }}>الأول متوسط</option>
+                <option value="الثاني متوسط" {{ old('class') == 'الثاني متوسط' ? 'selected' : '' }}>الثاني متوسط</option>
+                <option value="الثالث متوسط" {{ old('class') == 'الثالث متوسط' ? 'selected' : '' }}>الثالث متوسط</option>
+                <option value="الأول ثانوي" {{ old('class') == 'الأول ثانوي' ? 'selected' : '' }}>الأول ثانوي</option>
+                <option value="الثاني ثانوي" {{ old('class') == 'الثاني ثانوي' ? 'selected' : '' }}>الثاني ثانوي</option>
+                <option value="الثالث ثانوي" {{ old('class') == 'الثالث ثانوي' ? 'selected' : '' }}>الثالث ثانوي</option>
             </select>
+            @error('class')
+                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <label class="block text-sm text-gray-600 mb-1">تاريخ الميلاد</label>
-            <input type="date" name="birth_date"
+            <input type="date" name="birth_date" value="{{ old('birth_date') }}"
                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+            @error('birth_date')
+                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- حقل اختيار ولي الأمر -->
+        <div class="md:col-span-2">
+            <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
+            <select name="parent_id" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                <option value="">اختر ولي الأمر</option>
+                @foreach($parents as $parent)
+                    <option value="{{ $parent->parent_id }}" {{ old('parent_id') == $parent->parent_id ? 'selected' : '' }}>
+                        {{ $parent->user->name ?? 'ولي أمر #' . $parent->parent_id }}
+                    </option>
+                @endforeach
+            </select>
+            @error('parent_id')
+                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
     </div>
 
@@ -155,7 +185,7 @@
             حفظ الطالب
         </button>
     </div>
-                </form>
+</form>
             </div>
         </div>
     </div>
