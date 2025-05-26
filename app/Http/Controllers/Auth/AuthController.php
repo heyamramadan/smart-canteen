@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function login(Request $request){
@@ -22,7 +24,5 @@ class AuthController extends Controller
             'username'=>'اسم المستخدم خطا',
             'password'=>'كلمة السر غير صحيحة'
         ]);
-    }
-
-
+}
 }

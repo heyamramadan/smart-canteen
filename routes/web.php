@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\UserController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -11,7 +11,7 @@ Route::get('/', function () {
 
 
 // عرض صفحة إنشاء الحساب
-Route::get('/createaccount', [UserController::class, 'create'])->name('createaccount.create');
+Route::get('/createaccount', action: [UserController::class, 'create'])->name('createaccount.create');
 
 // تخزين بيانات الحساب الجديد
 Route::post('/createaccount', [UserController::class, 'store'])->name('register.store');
@@ -40,4 +40,8 @@ Route::get('/index', function () {
     return view( 'index');
 });
 
-Route::get('/index', [UserController::class, 'index'])->name('users.index');
+Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
+
+Route::get('/students', function () {
+    return view( 'user.students');
+});

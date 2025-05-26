@@ -12,22 +12,21 @@
         </li>
 
         <!-- إدارة المستخدمين -->
-   <li class="p-3 {{ request()->is('user*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
-    <a href="{{ url('/user') }}" class="flex items-center">
+   <li class="p-3 {{ request()->is('index*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/index') }}" class="flex items-center">
         <span class="ml-2">👥</span>
         إدارة المستخدمين
     </a>
 </li>
 
-           <!-- إدارة الطلاب  -->
-        <li class="relative">
-            <div class="p-3 hover:bg-primary-500 rounded-lg cursor-pointer flex items-center justify-between">
-                <div class="flex items-center">
-                    <span class="ml-2">🎒</span>
-                    <span>إدارة الطلاب</span>
-                </div>
-            </div>
-        </li>
+     <!-- إدارة الطلاب -->
+<li class="p-3 {{ request()->is('students*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/students') }}" class="flex items-center">
+        <span class="ml-2">🎒</span>
+        إدارة الطلاب
+    </a>
+</li>
+ <!-- إدارة منتجات -->
         <li class="p-3 {{ request()->is('products*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
             <a href="{{ url('/products') }}" class="flex items-center">
                 <span class="ml-2">🛒</span>

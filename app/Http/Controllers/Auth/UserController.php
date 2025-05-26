@@ -53,7 +53,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all(); // استرجاع جميع المستخدمين
-        return view('index', compact('users'));
+        return view('user.index', compact('users'));
     }
 
 }
