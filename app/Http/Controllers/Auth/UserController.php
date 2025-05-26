@@ -49,4 +49,12 @@ class UserController extends Controller
         // إعادة التوجيه مع رسالة نجاح
         return redirect()->route('createaccount.create')->with('success', 'تم إنشاء الحساب بنجاح');
     }
+
+    public function index()
+    {
+        $users = User::all(); // استرجاع جميع المستخدمين
+        return view('index', compact('users'));
+    }
+
 }
+

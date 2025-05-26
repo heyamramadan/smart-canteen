@@ -60,31 +60,34 @@
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="p-3 text-right text-sm text-gray-500">الاسم</th>
-                                <th class="p-3 text-right text-sm text-gray-500">البريد الإلكتروني</th>
-                                <th class="p-3 text-right text-sm text-gray-500">الدور</th>
-                                <th class="p-3 text-right text-sm text-gray-500">الحالة</th>
-                                <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
+                             <th class="p-3 text-right text-sm text-gray-500">اسم المستخدم</th>
+        <th class="p-3 text-right text-sm text-gray-500">الاسم الكامل</th>
+        <th class="p-3 text-right text-sm text-gray-500">البريد الإلكتروني</th>
+        <th class="p-3 text-right text-sm text-gray-500">رقم الهاتف</th>
+        <th class="p-3 text-right text-sm text-gray-500">الدور</th>
+        <th class="p-3 text-right text-sm text-gray-500">تاريخ التسجيل</th>
+        <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <!-- مستخدم 1 -->
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm font-medium">أحمد علي</td>
-                                <td class="p-3 text-sm">ahmed@example.com</td>
-                                <td class="p-3 text-sm">مدير النظام</td>
-                                <td class="p-3">
-                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">نشط</span>
-                                </td>
-                                <td class="p-3 flex items-center">
-                                    <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                        ✏️ تعديل
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                        🗑️ حذف
-                                    </button>
-                                </td>
-                            </tr>
+                            @foreach ($users as $user)
+                                <tr class="hover:bg-gray-50 transition">
+                                 <td class="p-3 text-sm">{{ $user->username }}</td>
+                                 <td class="p-3 text-sm">{{ $user->full_name }}</td>
+                                  <td class="p-3 text-sm">{{ $user->email }}</td>
+                                   <td class="p-3 text-sm">{{ $user->phone_number }}</td>
+                                    <td class="p-3 text-sm">{{ $user->role }}</td>
+                                     <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
+                                    <td class="p-3 flex items-center">
+                                        <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
+                                            ✏️ تعديل
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                                            🗑️ حذف
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -96,65 +99,34 @@
     <div id="userModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <!-- Modal header -->
             <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center z-10">
                 <h3 class="text-lg font-bold text-primary-700">إضافة مستخدم جديد</h3>
                 <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    ✖
                 </button>
             </div>
-
-            <!-- Modal body -->
             <div class="p-6">
                 <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
                     @csrf
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="email" name="email" value="{{ old('email') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                             @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
-                            <input
-                                type="text"
-                                name="username"
-                                value="{{ old('username') }}"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="text" name="username" value="{{ old('username') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                             @error('username') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
-                            <input
-                                type="text"
-                                name="full_name"
-                                value="{{ old('full_name') }}"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="text" name="full_name" value="{{ old('full_name') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                             @error('full_name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
-                            <select
-                                name="role"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <select name="role" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                                 <option value="">اختر الدور</option>
                                 <option value="مسؤول" {{ old('role') == 'مسؤول' ? 'selected' : '' }}>مسؤول</option>
                                 <option value="موظف" {{ old('role') == 'موظف' ? 'selected' : '' }}>موظف</option>
@@ -162,52 +134,27 @@
                             </select>
                             @error('role') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">كلمة المرور</label>
-                            <input
-                                type="password"
-                                name="password"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="password" name="password" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                             @error('password') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور</label>
-                            <input
-                                type="password"
-                                name="password_confirmation"
-                                required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="password" name="password_confirmation" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                         </div>
-
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
-                            <input
-                                type="text"
-                                name="phone_number"
-                                value="{{ old('phone_number') }}"
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            >
+                            <input type="text" name="phone_number" value="{{ old('phone_number') }}" class="w-full border border-orange-300 rounded-lg px-4 py-2">
                             @error('phone_number') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
                     <div class="pt-4 flex justify-end space-x-3 space-x-reverse">
-                        <button
-                            type="button"
-                            onclick="closeModal()"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
-                        >
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
                             إلغاء
                         </button>
-                        <button
-                            type="submit"
-                            class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition"
-                        >
+                        <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
                             حفظ المستخدم
                         </button>
                     </div>
@@ -217,7 +164,6 @@
     </div>
 
     <script>
-        // Modal functions
         function openModal() {
             document.getElementById('userModal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
@@ -228,7 +174,6 @@
             document.body.classList.remove('overflow-hidden');
         }
 
-        // Close modal when clicking outside
         document.getElementById('userModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();

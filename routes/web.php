@@ -17,22 +17,27 @@ Route::get('/createaccount', [UserController::class, 'create'])->name('createacc
 Route::post('/createaccount', [UserController::class, 'store'])->name('register.store');
 
 
+
 Route::get('/login', function () {
     return view( 'user.login');
 });
-
 Route::post('/login',[AuthController::class,'login']);
+
 
 Route::get('/Dashborad', function () {
     return view( 'Dashboard');
 });
+
 Route::get('/products', function () {
     return view( 'products');
 });
+
 Route::get('/Categories', function () {
     return view( 'Categories');
 });
+
 Route::get('/index', function () {
     return view( 'index');
 });
 
+Route::get('/index', [UserController::class, 'index'])->name('users.index');
