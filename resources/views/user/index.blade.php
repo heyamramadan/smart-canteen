@@ -24,6 +24,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
         body { font-family: 'Tajawal', sans-serif; }
+
+        @keyframes fade-in-out {
+  0%, 100% { opacity: 0; transform: translateY(-10px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 3s ease-in-out forwards;
+}
+
     </style>
 </head>
 <body class="bg-gray-50">
@@ -35,6 +45,7 @@
 
         <!-- محتوى إدارة المستخدمين -->
         <div class="flex-1 p-6 overflow-auto">
+
             <!-- شريط البحث وإضافة مستخدم -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-primary-700 flex items-center">
@@ -165,6 +176,13 @@
             </div>
         </div>
     </div>
+@if(session('success'))
+<div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-xl animate-fade-in-out transition-opacity duration-300">
+        {{ session('success') }}
+    </div>
+</div>
+@endif
 
     <script>
         function openModal() {
@@ -182,6 +200,12 @@
                 closeModal();
             }
         });
+        // إخفاء رسالة النجاح بعد 3 ثوانٍ
+setTimeout(() => {
+    const msg = document.getElementById('flashMessage');
+    if (msg) msg.remove();
+}, 3000);
+
     </script>
 </body>
 </html>
