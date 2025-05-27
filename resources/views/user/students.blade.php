@@ -24,11 +24,31 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
         body { font-family: 'Tajawal', sans-serif; }
+
+
+        @keyframes fade-in-out {
+  0%, 100% { opacity: 0; transform: translateY(-10px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 3s ease-in-out forwards;
+}
+
     </style>
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen">
         @include('layouts.sidebar')
+
+            <!-- رسالة النجاح عند إضافة طالب -->
+    @if(session('success'))
+        <div id="flashMessage"
+             class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg animate-fade-in-out z-50"
+             role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
 
         <!-- محتوى إدارة الطلاب -->
         <div class="flex-1 p-6 overflow-auto">
@@ -63,7 +83,6 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الاسم الكامل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">اسم الأب</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الصف الدراسي</th>
-                                <th class="p-3 text-right text-sm text-gray-500">رقم الهاتف</th>
                                 <th class="p-3 text-right text-sm text-gray-500">تاريخ التسجيل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
@@ -74,9 +93,6 @@
             <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
             <td class="p-3 text-sm">{{ $student->father_name }}</td>
             <td class="p-3 text-sm">{{ $student->class }}</td>
-            <td class="p-3 text-sm">
-                {{ $student->parent->user->phone_number ?? 'غير متوفر' }}
-            </td>
             <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center">
                 <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">✏️ تعديل</button>
@@ -87,7 +103,7 @@
 
     @if($students->isEmpty())
         <tr>
-            <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
+            <td colspan="5" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
         </tr>
     @endif
 </tbody>
@@ -198,6 +214,15 @@
                 closeModal();
             }
         });
+
+         window.addEventListener('DOMContentLoaded', () => {
+        const flash = document.getElementById('flashMessage');
+        if (flash) {
+            setTimeout(() => {
+                flash.style.display = 'none';
+            }, 3000);
+        }
+    });
     </script>
 </body>
 </html>

@@ -120,7 +120,7 @@
                 </button>
             </div>
             <div class="p-6">
-                <form method="POST" action=""{{ route('users.store') }}"" class="space-y-4">
+                <form method="POST" action="{{ route('users.store') }}" class="space-y-4">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -200,6 +200,10 @@
                 closeModal();
             }
         });
+            // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
+    @if ($errors->any())
+        openModal();
+    @endif
         // إخفاء رسالة النجاح بعد 3 ثوانٍ
 setTimeout(() => {
     const msg = document.getElementById('flashMessage');
