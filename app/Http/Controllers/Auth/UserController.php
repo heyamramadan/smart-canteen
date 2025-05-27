@@ -41,8 +41,6 @@ class UserController extends Controller
             ]);
         }
 
-        // إعادة التوجيه مع رسالة نجاح
-        return redirect()->route('createaccount.create')->with('success', 'تم إنشاء الحساب بنجاح');
     }
 
     public function index()
