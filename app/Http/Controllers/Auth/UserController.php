@@ -33,14 +33,13 @@ class UserController extends Controller
             'role' => $request->role,
             'phone_number' => $request->phone_number,
         ]);
-return redirect()->route('users.index')->with('success', 'تم إنشاء المستخدم بنجاح');
         // إذا كان "ولي أمر"، أضف إلى جدول parents
         if ($user->role === 'ولي أمر') {
             ParentModel::create([
                 'user_id' => $user->id,
             ]);
         }
-
+return redirect()->route('users.index')->with('success', 'تم إنشاء المستخدم بنجاح');
     }
 
     public function index()
