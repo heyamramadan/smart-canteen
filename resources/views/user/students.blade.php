@@ -165,7 +165,7 @@
                 <option value="">اختر ولي الأمر</option>
                 @foreach($parents as $parent)
                     <option value="{{ $parent->parent_id }}" {{ old('parent_id') == $parent->parent_id ? 'selected' : '' }}>
-                        {{ $parent->user->name ?? 'ولي أمر #' . $parent->parent_id }}
+                        {{ $parent->user->full_name ?? 'ولي أمر #' . $parent->parent_id }}
                     </option>
                 @endforeach
             </select>
