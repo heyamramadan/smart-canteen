@@ -30,6 +30,9 @@
     <div class="flex h-screen">
         @include('layouts.sidebar')
 
+
+
+
         <!-- محتوى إدارة المستخدمين -->
         <div class="flex-1 p-6 overflow-auto">
             <!-- شريط البحث وإضافة مستخدم -->

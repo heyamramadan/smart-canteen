@@ -54,7 +54,7 @@
 
             <!-- إدارة الطلاب (مضافة جديدة) -->
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
-                <a href="#" class="flex items-center">
+                <a href="{{ url('/students') }}" class="flex items-center">
                     <span class="ml-2">🎒</span>
                     إدارة الطلاب
                 </a>
@@ -67,7 +67,7 @@
                     إدارة المنتجات
                 </a>
             </li>
-            
+
             <!-- قسم إدارة التصنيفات -->
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
                 <a href="{{ url('/Categories') }}" class="flex items-center">
