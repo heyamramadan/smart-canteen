@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // عرض صفحة إنشاء حساب جديد
-    public function create()
-    {
-        return view('user.createaccount');
-    }
 
     // تخزين بيانات المستخدم الجديدة
     public function store(Request $request)
