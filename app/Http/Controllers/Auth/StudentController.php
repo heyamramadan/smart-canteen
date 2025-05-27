@@ -22,14 +22,24 @@ class StudentController extends Controller
         // تحقق من صحة البيانات (Validation)
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
            'parent_id' => 'required|exists:parents,parent_id'
            // 'birth_date' => 'nullable|date',
         ]);
 
-        // إنشاء الطالب في قاعدة البيانات
-        Studentmodel::create($validated);
+          //  جلب ولي الأمر المرتبط مع معلومات المستخدم
+        $parent = ParentModel::with('user')->find($validated['parent_id']);
+
+        //  اسم الأب من اسم المستخدم المرتبط جاستخراجديد
+        $fatherName = $parent->user->full_name ?? 'غير معروف';
+
+    // دمج البيانات مع اسم الأب
+        $studentData = array_merge($validated, [
+            'father_name' => $fatherName,
+        ]);
+           //  إنشاء الطالب في قاعدة البيانات جديدة
+        Studentmodel::create($studentData);
+
 
         // إعادة التوجيه مع رسالة نجاح إلى قائمة الطلاب
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح!');
