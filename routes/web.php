@@ -11,14 +11,6 @@ Route::get('/', function () {
 });
 
 
-// عرض صفحة إنشاء الحساب
-Route::get('/createaccount', action: [UserController::class, 'create'])->name('createaccount.create');
-
-// تخزين بيانات الحساب الجديد
-Route::post('/createaccount', [UserController::class, 'store'])->name('register.store');
-
-
-
 Route::get('/login', function () {
     return view( 'user.login');
 });
@@ -42,6 +34,7 @@ Route::get('/index', function () {
 });
 
 Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
+Route::post('/index', [UserController::class, 'store'])->name('users.store');
 
 
 Route::get('/students', [StudentController::class, 'index'])->name('students.index');

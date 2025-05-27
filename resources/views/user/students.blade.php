@@ -68,30 +68,30 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm font-medium">أحمد محمد</td>
-                                <td class="p-3 text-sm">محمد علي</td>
-                                <td class="p-3 text-sm">الصف الخامس</td>
-                                <td class="p-3 text-sm">0501234567</td>
-                                <td class="p-3 text-sm">2025-05-26</td>
-                                <td class="p-3 flex items-center">
-                                    <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">✏️ تعديل</button>
-                                    <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">🗑️ حذف</button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm font-medium">سارة خالد</td>
-                                <td class="p-3 text-sm">خالد حسين</td>
-                                <td class="p-3 text-sm">الصف السادس</td>
-                                <td class="p-3 text-sm">0507654321</td>
-                                <td class="p-3 text-sm">2025-05-20</td>
-                                <td class="p-3 flex items-center">
-                                    <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">✏️ تعديل</button>
-                                    <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">🗑️ حذف</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                      <tbody class="divide-y divide-gray-200">
+    @foreach($students as $student)
+        <tr class="hover:bg-gray-50 transition">
+            <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
+            <td class="p-3 text-sm">{{ $student->father_name }}</td>
+            <td class="p-3 text-sm">{{ $student->class }}</td>
+            <td class="p-3 text-sm">
+                {{ $student->parent->user->phone_number ?? 'غير متوفر' }}
+            </td>
+            <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
+            <td class="p-3 flex items-center">
+                <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">✏️ تعديل</button>
+                <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">🗑️ حذف</button>
+            </td>
+        </tr>
+    @endforeach
+
+    @if($students->isEmpty())
+        <tr>
+            <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
+        </tr>
+    @endif
+</tbody>
+
                     </table>
                 </div>
             </div>

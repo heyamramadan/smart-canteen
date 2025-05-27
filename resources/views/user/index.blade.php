@@ -106,7 +106,7 @@
                 </button>
             </div>
             <div class="p-6">
-                <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
+                <form method="POST" action=""{{ route('users.store') }}"" class="space-y-4">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
