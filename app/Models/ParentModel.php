@@ -17,7 +17,7 @@ class ParentModel extends Model
     // علاقة: ولي الأمر ينتمي إلى مستخدم
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id'); // Changed 'id' to 'user_id'
     }
 
     // ✅ علاقة: ولي الأمر لديه عدة طلاب

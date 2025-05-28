@@ -27,9 +27,9 @@ class User extends Authenticatable
     'phone_number',
 ];
 public function parent()
-    {
-        return $this->hasOne(ParentModel::class, 'user_id', 'id');
-    }
+{
+    return $this->hasOne(ParentModel::class, 'user_id', 'user_id'); 
+}
 
     /**
      * The attributes that should be hidden for serialization.
