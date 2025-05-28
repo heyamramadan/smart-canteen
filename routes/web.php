@@ -35,6 +35,12 @@ Route::get('/index', function () {
 
 Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
 Route::post('/index', [UserController::class, 'store'])->name('users.store');
+// Make sure this points to your UserController, not Auth\UserController
+Route::get('/users/archive', [UserController::class, 'archive'])->name('users.archive');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+Route::post('/users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+Route::delete('/users/{user}/force-delete', [UserController::class, 'forceDelete'])->name('users.force-delete');
 
 
 Route::get('/students', [StudentController::class, 'index'])->name('students.index');

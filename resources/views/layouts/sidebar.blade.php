@@ -5,6 +5,12 @@
     <ul class="space-y-3">
         <!-- الملف الشخصي -->
         <li class="p-3 hover:bg-primary-500 rounded-lg transition">
+            <a href="/Dashborad" class="flex items-center">
+                <span class="ml-2">🎛️</span>
+                لوحة التحكم
+            </a>
+        </li>
+        <li class="p-3 hover:bg-primary-500 rounded-lg transition">
             <a href="#" class="flex items-center">
                 <span class="ml-2">👤</span>
                 الملف الشخصي
@@ -16,6 +22,12 @@
     <a href="{{ url('/index') }}" class="flex items-center">
         <span class="ml-2">👥</span>
         إدارة المستخدمين
+    </a>
+</li>
+   <li class="p-3 rounded-lg transition">
+    <a href="{{ route('users.archive') }}" class="block px-4 py-2 text-sm hover:bg-primary-100 rounded-lg transition flex items-center">
+        <span class="ml-2">🗄️</span>
+        ارشيف المستخدمين
     </a>
 </li>
 

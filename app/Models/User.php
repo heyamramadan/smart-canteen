@@ -18,6 +18,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $primaryKey = 'user_id';
    protected $fillable = [
     'username',
     'email',
@@ -25,6 +26,7 @@ class User extends Authenticatable
    'full_name',
     'role',
     'phone_number',
+    'user_id',
 ];
 public function parent()
 {

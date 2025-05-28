@@ -92,13 +92,17 @@
                                    <td class="p-3 text-sm">{{ $user->phone_number }}</td>
                                     <td class="p-3 text-sm">{{ $user->role }}</td>
                                      <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
-                                    <td class="p-3 flex items-center">
+                                     <td class="p-3 flex items-center">
                                         <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                             ✏️ تعديل
                                         </button>
-                                        <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                            🗑️ حذف
-                                        </button>
+                                        <form action="{{ route('users.destroy', $user->user_id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                                                🗑️ أرشيف
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -210,6 +214,28 @@ setTimeout(() => {
     if (msg) msg.remove();
 }, 3000);
 
+
+
+// In your main layout or a separate JS file
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirm before archiving
+    document.querySelectorAll('form[action*="destroy"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('هل أنت متأكد من أرشفة هذا المستخدم؟')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Confirm before permanent delete
+    document.querySelectorAll('form[action*="force-delete"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('هل أنت متأكد من الحذف النهائي لهذا المستخدم؟ لا يمكن استعادته لاحقاً.')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
     </script>
 </body>
 </html>

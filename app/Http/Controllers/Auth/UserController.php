@@ -44,9 +44,35 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
 
     public function index()
     {
-        $users = User::all(); // استرجاع جميع المستخدمين
+        $users = User::whereNull('deleted_at')->get();
         return view('user.index', compact('users'));
     }
 
+        // حدف المستخدم نهائياً
+        public function forceDelete($id)
+        {
+            User::withTrashed()->where('user_id', $id)->forceDelete();
+            return redirect()->route('users.archive')->with('success', 'تم حذف المستخدم نهائياً بنجاح');
+        }
+
+            // استعادة المستخدم من الأرشيف
+            public function restore($id)
+            {
+                User::withTrashed()->where('user_id', $id)->restore();
+                return redirect()->route('users.archive')->with('success', 'تم استعادة المستخدم بنجاح');
+            }
+
+            public function destroy($id)
+            {
+                $user = User::where('user_id', $id)->firstOrFail();
+                $user->delete();
+                
+                return redirect()->route('users.index')->with('success', 'تم أرشفة المستخدم بنجاح');
+            }
+    public function archive()
+    {
+        $archivedUsers = User::onlyTrashed()->get();
+        return view('user.archive', compact('archivedUsers'));
+    }
 }
 
