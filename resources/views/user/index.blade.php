@@ -85,22 +85,88 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach ($users as $user)
-                                <tr class="hover:bg-gray-50 transition">
+<tr class="hover:bg-gray-50 transition {{ $user->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
                                  <td class="p-3 text-sm">{{ $user->username }}</td>
                                  <td class="p-3 text-sm">{{ $user->full_name }}</td>
                                   <td class="p-3 text-sm">{{ $user->email }}</td>
                                    <td class="p-3 text-sm">{{ $user->phone_number }}</td>
                                     <td class="p-3 text-sm">{{ $user->role }}</td>
                                      <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
-                                    <td class="p-3 flex items-center">
-                                        <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                            ✏️ تعديل
-                                        </button>
-                                        <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                            🗑️ حذف
-                                        </button>
-                                    </td>
+                               <td class="p-3 flex items-center">
+    @if ($user->trashed())
+        <form method="POST" action="{{ route('users.restore', $user->id) }}" onsubmit="return confirm('هل تريد استعادة هذا المستخدم؟');">
+            @csrf
+            <button class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
+                ♻️ استعادة
+            </button>
+        </form>
+    @else
+      <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
+    ✏️ تعديل
+</button>
+
+        <form method="POST" action="{{ route('users.destroy', $user->id) }}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا المستخدم؟');">
+            @csrf
+            @method('DELETE')
+            <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                🗑️ أرشفة
+            </button>
+        </form>
+    @endif
+</td>
+
                                 </tr>
+                                <div id="editUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center z-10">
+            <h3 class="text-lg font-bold text-primary-700">تعديل بيانات المستخدم</h3>
+            <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">✖</button>
+        </div>
+        <div class="p-6">
+            <form method="POST" id="editUserForm">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="user_id" id="edit_user_id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
+                        <input type="email" name="email" id="edit_email" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
+                        <input type="text" name="username" id="edit_username" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
+                        <input type="text" name="full_name" id="edit_full_name" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">الدور</label>
+                        <select name="role" id="edit_role" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                            <option value="مسؤول">مسؤول</option>
+                            <option value="موظف">موظف</option>
+                            <option value="ولي أمر">ولي أمر</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
+                        <input type="text" name="phone_number" id="edit_phone_number" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end space-x-3 space-x-reverse">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
+                        حفظ التغييرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                             @endforeach
                         </tbody>
                     </table>
@@ -200,6 +266,25 @@
                 closeModal();
             }
         });
+        function openEditModal(id, username, email, full_name, role, phone) {
+    document.getElementById('edit_user_id').value = id;
+    document.getElementById('edit_username').value = username;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_full_name').value = full_name;
+    document.getElementById('edit_role').value = role;
+    document.getElementById('edit_phone_number').value = phone;
+
+    // تحديث الفورم بالمسار المناسب
+    document.getElementById('editUserForm').action = '/users/' + id;
+
+    document.getElementById('editUserModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+}
+
+function closeEditModal() {
+    document.getElementById('editUserModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
             // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
     @if ($errors->any())
         openModal();

@@ -32,9 +32,13 @@ Route::get('/Categories', function () {
 Route::get('/index', function () {
     return view( 'index');
 });
-
+//مستخدمين
 Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
 Route::post('/index', [UserController::class, 'store'])->name('users.store');
+Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 
 Route::get('/students', [StudentController::class, 'index'])->name('students.index');

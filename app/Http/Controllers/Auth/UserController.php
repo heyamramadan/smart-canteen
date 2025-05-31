@@ -41,12 +41,50 @@ class UserController extends Controller
         }
 return redirect()->route('users.index')->with('success', 'تم إنشاء المستخدم بنجاح');
     }
+//عرض
+   public function index()
+{
+    $users = User::withTrashed()->get();
+    return view('user.index', compact('users'));
+}
 
-    public function index()
-    {
-        $users = User::all(); // استرجاع جميع المستخدمين
-        return view('user.index', compact('users'));
-    }
+    //ارشفة
+public function destroy($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم بنجاح.');
+}
+//استعادة
+public function restore($id)
+{
+    $user = User::withTrashed()->findOrFail($id);
+    $user->restore();
+
+    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم بنجاح.');
+}
+public function update(Request $request, User $user)
+{
+    $request->validate([
+        'username' => 'required|max:255|unique:users,username,' . $user->id,
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'full_name' => 'required|string|max:255',
+        'role' => 'required|in:مسؤول,موظف,ولي أمر',
+        'phone_number' => 'nullable|string|max:20',
+    ]);
+
+    $user->update([
+        'username' => $request->username,
+        'email' => $request->email,
+        'full_name' => $request->full_name,
+        'role' => $request->role,
+        'phone_number' => $request->phone_number,
+    ]);
+
+    return redirect()->route('users.index')->with('success', 'تم تحديث بيانات المستخدم بنجاح.');
+}
+
 
 }
 
