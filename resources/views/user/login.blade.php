@@ -16,7 +16,11 @@
                     <img src="{{ asset('images/logo.png') }}" class="w-24 h-24" alt="logo" />
                 </div>
             </div>
-
+@if ($errors->has('unauthorized'))
+    <div class="mb-4 text-center text-red-600 font-semibold bg-red-100 p-2 rounded">
+        {{ $errors->first('unauthorized') }}
+    </div>
+@endif
             <form action="{{ url('/login') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>

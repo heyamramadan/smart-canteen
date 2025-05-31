@@ -17,9 +17,11 @@ Route::get('/login', function () {
 Route::post('/login',[AuthController::class,'login']);
 
 
-Route::get('/Dashborad', function () {
-    return view( 'Dashboard');
-});
+Route::middleware(['admin'])->group(function () {
+    Route::get('/Dashborad', function () {
+        return view('Dashboard');
+    });
+
 
 Route::get('/products', function () {
     return view( 'products');
@@ -29,11 +31,9 @@ Route::get('/Categories', function () {
     return view( 'Categories');
 });
 
-Route::get('/index', function () {
-    return view( 'index');
-});
+
 //مستخدمين
-Route::get('/index', action: [UserController::class, 'index'])->name('users.index');
+Route::get('/index', [UserController::class, 'index'])->name('users.index');
 Route::post('/index', [UserController::class, 'store'])->name('users.store');
 Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
@@ -44,3 +44,5 @@ Route::put('/users/{user}', [UserController::class, 'update'])->name('users.upda
 Route::get('/students', [StudentController::class, 'index'])->name('students.index');
 Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
 Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+
+});
