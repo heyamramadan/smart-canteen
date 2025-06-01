@@ -20,7 +20,7 @@ class AdminMiddleware
             return $next($request);
         }
 
-        return redirect('/login')->withErrors(['unauthorized' => 'غير مصرح لك بدخول هذه الصفحة.']);
+        return redirect('/login')->withErrors(['unauthorized' => 'هذه الصفحة متاحة فقط للمسؤولين']);
     }
 
 }
