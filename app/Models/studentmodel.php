@@ -40,4 +40,13 @@ class studentmodel extends Model
     {
         return $this->hasMany(BannedProduct::class, 'student_id', 'student_id');
     }
+    /**
+ * علاقة: الطالب لديه عدة فواتير
+ * hasMany: تربط الطالب بكل الطلبات المرتبطة به عبر student_id
+ */
+public function orders()
+{
+    return $this->hasMany(Order::class, 'student_id', 'student_id');
+}
+
 }
