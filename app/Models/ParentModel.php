@@ -25,10 +25,10 @@ class ParentModel extends Model
     {
         return $this->hasMany(studentmodel::class, 'parent_id', 'parent_id');
     }
-    //علاقة مع محافظة
-    public function wallets()
+    //علاقة مع محافظة كل ولي امر لديه محافظة واحدة فقط
+public function wallet()
 {
-    return $this->hasMany(Wallet::class, 'parent_id', 'parent_id');
+    return $this->hasOne(Wallet::class, 'parent_id', 'parent_id');
 }
 
 }
