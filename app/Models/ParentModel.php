@@ -25,4 +25,10 @@ class ParentModel extends Model
     {
         return $this->hasMany(studentmodel::class, 'parent_id', 'parent_id');
     }
+    //علاقة مع محافظة
+    public function wallets()
+{
+    return $this->hasMany(Wallet::class, 'parent_id', 'parent_id');
+}
+
 }

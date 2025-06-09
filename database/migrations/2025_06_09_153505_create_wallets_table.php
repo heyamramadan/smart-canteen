@@ -9,13 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('wallets', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+  public function up()
+{
+    Schema::create('wallets', function (Blueprint $table) {
+        $table->bigIncrements('wallet_id');
+        $table->unsignedBigInteger('parent_id');
+        $table->decimal('balance', 10, 2)->default(0);
+        $table->timestamps();
+
+        // المفتاح الأجنبي يربط wallet بجدول parents
+        $table->foreign('parent_id')->references('parent_id')->on('parents')->onDelete('cascade');
+    });
+}
+
 
     /**
      * Reverse the migrations.
