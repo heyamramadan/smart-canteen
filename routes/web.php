@@ -28,7 +28,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 
     Route::get('/categories', function () {
-        return view('Categories');
+        return view('categories');
     });
 
     // إدارة المستخدمين
@@ -51,7 +51,7 @@ Route::middleware(['auth', 'employee'])->group(function () {
         return view('employee.dashboard');
     });
 
-  
+
 
     // أضف مسارات أخرى للموظف إذا لزم
 });

@@ -40,7 +40,7 @@
 
                 <!-- إدارة التصنيفات -->
                 <li class="p-3 {{ request()->is('categories*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
-                    <a href="{{ url('/Categories') }}" class="flex items-center">
+                    <a href="{{ url('/categories') }}" class="flex items-center">
                         <span class="ml-2">📂</span>
                         إدارة التصنيفات
                     </a>
