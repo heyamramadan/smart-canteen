@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\StudentController;
+use App\Http\Controllers\Auth\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -27,10 +28,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('products');
     });
 
-    Route::get('/categories', function () {
-        return view('categories');
-    });
+      Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+
+    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     // إدارة المستخدمين
     Route::get('/index', [UserController::class, 'index'])->name('users.index');
     Route::post('/index', [UserController::class, 'store'])->name('users.store');
