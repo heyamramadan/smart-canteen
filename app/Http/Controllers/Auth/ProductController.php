@@ -4,31 +4,35 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Category;
+
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     // عرض المنتجات مع بحث بسيط
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
+ public function index(Request $request)
+{
+    $search = $request->input('search');
 
-        $products = Product::when($search, function($query, $search) {
-            return $query->where('name', 'like', "%$search%");
-        })->get();
+    $products = Product::when($search, function($query, $search) {
+        return $query->where('name', 'like', "%$search%");
+    })->get();
 
-        return view('products', compact('products', 'search'));
-    }
+    $categories = Category::all(); // جلب الأصناف
 
+    return view('products', compact('products', 'search', 'categories'));
+}
     // حفظ منتج جديد
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'category_id' => 'required|exists:categories,category_id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
-            'status' => 'required|string',
+             'is_active' => 'required|boolean',
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -38,11 +42,12 @@ class ProductController extends Controller
         }
 
         Product::create([
+            'category_id' => $validated['category_id'],
             'name' => $validated['name'],
             'description' => $validated['description'] ?? '',
             'price' => $validated['price'],
             'quantity' => $validated['quantity'],
-            'status' => $validated['status'],
+            'is_active' => $validated['is_active'],
             'image' => $validated['image'] ?? null,
         ]);
 
@@ -62,11 +67,12 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $validated = $request->validate([
+              'category_id' => 'required|exists:categories,category_id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'status' => 'required|string',
+             'quantity' => 'required|integer',
+          'is_active' => 'required|boolean',
             'image' => 'nullable|image|max:2048',
         ]);
 
