@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\StudentController;
 use App\Http\Controllers\Auth\CategoryController;
+use App\Http\Controllers\Auth\ProductController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -23,11 +24,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('Dashboard');
     });
+//منتجات
+  Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-    Route::get('/products', function () {
-        return view('products');
-    });
-
+//تصنيفات
       Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');

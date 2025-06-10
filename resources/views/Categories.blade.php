@@ -2,8 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة التصنيفات - لوحة تحكم المقصف</title>
+    <title>إدارة التصنيفات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -19,137 +18,144 @@
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-        body {
-            font-family: 'Tajawal', sans-serif;
-        }
+        body { font-family: 'Tajawal', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50">
-
 <div class="flex h-screen">
-    <!-- الشريط الجانبي -->
     @include('layouts.sidebar')
 
-    <!-- محتوى إدارة التصنيفات -->
     <div class="flex-1 p-6 overflow-auto">
-        <!-- شريط البحث وإضافة تصنيف -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
+        <!-- العنوان وزر الإضافة -->
+        <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                <span class="ml-2">📂</span>
-                إدارة التصنيفات
+                <span class="ml-2">📂</span> إدارة التصنيفات
             </h2>
-
-            <div class="flex items-center space-x-4 space-x-reverse">
-                <!-- حقل البحث -->
-                <div class="relative">
-                    <input type="text" placeholder="ابحث عن تصنيف..."
-                           class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
-                </div>
-
-                <!-- زر إضافة تصنيف -->
-                <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
-                    <span class="ml-1">+</span>
-                    إضافة تصنيف جديد
-                </button>
-            </div>
+            <button onclick="openModal('addModal')" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm">
+                + إضافة تصنيف جديد
+            </button>
         </div>
 
-        <!-- جدول التصنيفات -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="p-3 text-right text-sm text-gray-500">#</th>
-                            <th class="p-3 text-right text-sm text-gray-500">اسم التصنيف</th>
-                            <th class="p-3 text-right text-sm text-gray-500">عدد المنتجات</th>
-                            <th class="p-3 text-right text-sm text-gray-500">الحالة</th>
-                            <th class="p-3 text-right text-sm text-gray-500">تاريخ الإضافة</th>
-                            <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <!-- تصنيف 1 -->
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3 text-sm">1</td>
-                            <td class="p-3 text-sm font-medium">وجبات سريعة</td>
-                            <td class="p-3 text-sm">15</td>
-                            <td class="p-3">
-                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">نشط</span>
-                            </td>
-                            <td class="p-3 text-sm">2023/05/10</td>
-                            <td class="p-3 flex items-center">
-                                <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                    ✏️ تعديل
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                    🗑️ حذف
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- تصنيف 2 -->
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3 text-sm">2</td>
-                            <td class="p-3 text-sm font-medium">مشروبات</td>
-                            <td class="p-3 text-sm">8</td>
-                            <td class="p-3">
-                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">نشط</span>
-                            </td>
-                            <td class="p-3 text-sm">2023/04/15</td>
-                            <td class="p-3 flex items-center">
-                                <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                    ✏️ تعديل
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                    🗑️ حذف
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- تصنيف 3 -->
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3 text-sm">3</td>
-                            <td class="p-3 text-sm font-medium">حلويات</td>
-                            <td class="p-3 text-sm">12</td>
-                            <td class="p-3">
-                                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs">غير نشط</span>
-                            </td>
-                            <td class="p-3 text-sm">2023/03/20</td>
-                            <td class="p-3 flex items-center">
-                                <button class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                    ✏️ تعديل
-                                </button>
-                                <button class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                    🗑️ حذف
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- ✅ نموذج البحث -->
+        <form method="GET" action="{{ route('categories.index') }}" class="mb-4">
+            <div class="flex gap-2 items-center bg-white p-4 rounded shadow">
+                <input type="text" name="search" placeholder="ابحث باسم التصنيف..." value="{{ request('search') }}"
+                       class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded text-sm">بحث</button>
             </div>
+        </form>
 
-            <!-- تذييل الجدول (ترقيم الصفحات) -->
-            <div class="p-4 border-t flex justify-between items-center">
-                <div class="text-sm text-gray-500">
-                    عرض 1 إلى 3 من 10 تصنيفات
-                </div>
-                <div class="flex space-x-2 space-x-reverse">
-                    <button class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">السابق</button>
-                    <button class="px-3 py-1 border rounded-md bg-primary-500 text-white text-sm">1</button>
-                    <button class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">2</button>
-                    <button class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">3</button>
-                    <button class="px-3 py-1 border rounded-md text-sm hover:bg-gray-100">التالي</button>
-                </div>
+        <!-- جدول التصنيفات -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <table class="w-full text-sm text-center">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">#</th>
+                    <th class="p-3">رقم الصنف</th>
+                    <th class="p-3">الاسم</th>
+                    <th class="p-3">الوصف</th>
+                    <th class="p-3">تاريخ الإضافة</th>
+                    <th class="p-3">تاريخ التحديث</th>
+                    <th class="p-3">الإجراءات</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y">
+                @forelse($categories as $index => $category)
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">{{ $index + 1 }}</td>
+                        <td class="p-3">{{ $category->category_id }}</td>
+                        <td class="p-3">{{ $category->name }}</td>
+                        <td class="p-3">{{ $category->description ?? '-' }}</td>
+                        <td class="p-3">{{ $category->created_at->format('Y-m-d H:i') }}</td>
+                        <td class="p-3">{{ $category->updated_at->format('Y-m-d H:i') }}</td>
+                        <td class="p-3 flex justify-center space-x-2 space-x-reverse">
+                            <button onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}', `{{ $category->description }}`)" class="text-primary-600 hover:underline">✏️ تعديل</button>
+                            <form method="POST" action="{{ route('categories.destroy', $category->category_id) }}">
+                                @csrf @method('DELETE')
+                                <button onclick="return confirm('هل أنت متأكد من الحذف؟')" class="text-red-500 hover:underline">🗑️ حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="p-4 text-gray-500">لا توجد تصنيفات مطابقة.</td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
+
+            <!-- ✅ روابط الصفحات مع تمرير البحث -->
+            <div class="p-4">
+                {{ $categories->appends(['search' => request('search')])->links() }}
             </div>
         </div>
     </div>
 </div>
 
+<!-- 🟢 مودال الإضافة -->
+<div id="addModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-xl w-full max-w-md">
+        <h3 class="text-lg font-bold mb-4">إضافة تصنيف جديد</h3>
+        <form method="POST" action="{{ route('categories.store') }}">
+            @csrf
+            <div class="mb-4">
+                <label class="block mb-1 text-sm">اسم التصنيف</label>
+                <input name="name" required class="w-full border px-3 py-2 rounded" />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-1 text-sm">الوصف</label>
+                <textarea name="description" class="w-full border px-3 py-2 rounded"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2 space-x-reverse">
+                <button type="button" onclick="closeModal('addModal')" class="px-4 py-2 border rounded">إلغاء</button>
+                <button class="px-4 py-2 bg-primary-500 text-white rounded">حفظ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 🟠 مودال التعديل -->
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-xl w-full max-w-md">
+        <h3 class="text-lg font-bold mb-4">تعديل التصنيف</h3>
+        <form id="editForm" method="POST">
+            @csrf @method('PUT')
+            <div class="mb-4">
+                <label class="block mb-1 text-sm">اسم التصنيف</label>
+                <input name="name" id="editName" required class="w-full border px-3 py-2 rounded" />
+            </div>
+            <div class="mb-4">
+                <label class="block mb-1 text-sm">الوصف</label>
+                <textarea name="description" id="editDescription" class="w-full border px-3 py-2 rounded"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2 space-x-reverse">
+                <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 border rounded">إلغاء</button>
+                <button class="px-4 py-2 bg-primary-500 text-white rounded">تحديث</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    function openEditModal(id, name, description) {
+        document.getElementById('editName').value = name;
+        document.getElementById('editDescription').value = description;
+        document.getElementById('editForm').action = `/categories/${id}`;
+        openModal('editModal');
+    }
+</script>
 </body>
 </html>
