@@ -107,7 +107,7 @@
                                 >
                                     ✏️ تعديل
                                 </button>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                                <form action="{{ route('products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">

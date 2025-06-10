@@ -15,6 +15,7 @@ class Product extends Model
         'name',         // اسم المنتج
         'description',  // وصف المنتج
         'price',        // سعر المنتج
+     'quantity',// كمية منتج
         'image',        // رابط أو اسم صورة المنتج (اختياري)
         'is_active',    // حالة تفعيل المنتج (1 = مفعل، 0 = غير مفعل)
     ];
