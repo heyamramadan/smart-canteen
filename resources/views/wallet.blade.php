@@ -121,62 +121,75 @@
         </div>
     </div>
 
-    <script>
-        function showChargeModal(id, name, email, phone, balance) {
-            document.getElementById('parentId').value = id;
-            document.getElementById('modalParentName').textContent = name;
-            document.getElementById('modalParentContact').textContent = `${email} | ${phone}`;
-            document.getElementById('modalCurrentBalance').textContent = `${balance.toFixed(2)} ر.س`;
-            document.getElementById('chargeForm').reset();
-            document.getElementById('chargeModal').classList.remove('hidden');
-        }
+  <script>
+    function showChargeModal(id, name, email, phone, balance) {
+        document.getElementById('parentId').value = id;
+        document.getElementById('modalParentName').textContent = name;
+        document.getElementById('modalParentContact').textContent = `${email} | ${phone}`;
+        document.getElementById('modalCurrentBalance').textContent = `${balance.toFixed(2)} ر.س`;
+        document.getElementById('chargeForm').reset();
+        document.getElementById('chargeModal').classList.remove('hidden');
+    }
 
-        function closeChargeModal() {
-            document.getElementById('chargeModal').classList.add('hidden');
-        }
+    function closeChargeModal() {
+        document.getElementById('chargeModal').classList.add('hidden');
+    }
 
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.add('hidden');
-        }
+    function closeSuccessModal() {
+        document.getElementById('successModal').classList.add('hidden');
+    }
 
-        function submitCharge() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const parentId = document.getElementById('parentId').value;
+    function updateParentBalance(parentId, amount) {
+        document.querySelectorAll('tbody tr').forEach(row => {
+            const chargeButton = row.querySelector('button');
+            if (chargeButton && chargeButton.getAttribute('onclick').includes(parentId)) {
+                const balanceCell = row.querySelector('td:nth-child(5)');
+                const currentBalance = parseFloat(balanceCell.textContent.replace(/[^\d.]/g, ''));
+                const newBalance = currentBalance + amount;
+                balanceCell.textContent = `${newBalance.toFixed(2)} ر.س`;
+            }
+        });
+    }
 
-            if (!amount || amount <= 0) return alert('أدخل مبلغًا صحيحًا');
+    function submitCharge() {
+        const amount = parseFloat(document.getElementById('amount').value);
+        const parentId = document.getElementById('parentId').value;
 
-            fetch("{{ route('wallet.charge') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    parent_id: parentId,
-                    amount: amount
-                })
+        if (!amount || amount <= 0) return alert('أدخل مبلغًا صحيحًا');
+
+        fetch("{{ route('wallet.charge') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                parent_id: parentId,
+                amount: amount
             })
-            .then(res => {
-                if (!res.ok) throw new Error("فشل في تنفيذ الشحن");
-                return res.json();
-            })
-            .then(data => {
-                document.getElementById('successMessage').textContent = data.message;
-                closeChargeModal();
-                document.getElementById('successModal').classList.remove('hidden');
-            })
-            .catch(err => alert(err.message));
-        }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("فشل في تنفيذ الشحن");
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById('successMessage').textContent = data.message;
+            closeChargeModal();
+            document.getElementById('successModal').classList.remove('hidden');
+            updateParentBalance(parentId, amount);
+        })
+        .catch(err => alert(err.message));
+    }
 
-        function filterParents() {
-            const filter = document.getElementById('parentFilter').value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                const email = row.children[2].textContent.toLowerCase();
-                const phone = row.children[3].textContent.toLowerCase();
-                row.classList.toggle('hidden', !(name.includes(filter) || email.includes(filter) || phone.includes(filter)));
-            });
-        }
-    </script>
+    function filterParents() {
+        const filter = document.getElementById('parentFilter').value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+            const name = row.children[1].textContent.toLowerCase();
+            const email = row.children[2].textContent.toLowerCase();
+            const phone = row.children[3].textContent.toLowerCase();
+            row.classList.toggle('hidden', !(name.includes(filter) || email.includes(filter) || phone.includes(filter)));
+        });
+    }
+</script>
 </body>
 </html>
