@@ -83,7 +83,7 @@
     </div>
 
     <!-- مودال الشحن -->
-    <div id="chargeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="chargeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold">شحن الرصيد</h3>
@@ -98,20 +98,9 @@
             </div>
             <form id="chargeForm" onsubmit="event.preventDefault(); submitCharge();">
                 <input type="hidden" id="parentId">
+
                 <label class="block text-sm mb-1">المبلغ</label>
                 <input type="number" id="amount" class="w-full border rounded px-3 py-2 mb-3" min="1">
-
-                <label class="block text-sm mb-1">طريقة الدفع</label>
-                <select id="paymentMethod" class="w-full border rounded px-3 py-2 mb-3">
-                    <option value="">اختر</option>
-                    <option value="bank_transfer">تحويل بنكي</option>
-                    <option value="cash">نقدًا</option>
-                </select>
-
-                <div id="paymentDetailsSection" class="hidden">
-                    <label class="block text-sm mb-1">تفاصيل الدفع</label>
-                    <textarea id="paymentDetails" class="w-full border rounded px-3 py-2 mb-3"></textarea>
-                </div>
 
                 <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-2 rounded">تنفيذ الشحن</button>
             </form>
@@ -119,7 +108,7 @@
     </div>
 
     <!-- مودال النجاح -->
-    <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="successModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 text-center">
             <div class="mb-4">
                 <div class="w-16 h-16 bg-green-100 mx-auto flex items-center justify-center rounded-full">
@@ -133,18 +122,12 @@
     </div>
 
     <script>
-        document.getElementById('paymentMethod').addEventListener('change', function () {
-            const section = document.getElementById('paymentDetailsSection');
-            section.classList.toggle('hidden', !(this.value === 'bank_transfer' || this.value === 'cash'));
-        });
-
         function showChargeModal(id, name, email, phone, balance) {
             document.getElementById('parentId').value = id;
             document.getElementById('modalParentName').textContent = name;
             document.getElementById('modalParentContact').textContent = `${email} | ${phone}`;
             document.getElementById('modalCurrentBalance').textContent = `${balance.toFixed(2)} ر.س`;
             document.getElementById('chargeForm').reset();
-            document.getElementById('paymentDetailsSection').classList.add('hidden');
             document.getElementById('chargeModal').classList.remove('hidden');
         }
 
