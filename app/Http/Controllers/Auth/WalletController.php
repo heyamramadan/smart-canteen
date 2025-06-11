@@ -19,22 +19,30 @@ public function index()
 
     return view('wallet', compact('parents'));
 }
+
 public function charge(Request $request)
 {
-    $request->validate(rules: [
-        'parent_id' => 'required|exists:wallets,parent_id',
+    $request->validate([
+        'parent_id' => 'required|exists:parents,parent_id',
         'amount' => 'required|numeric|min:1',
     ]);
 
+    // جلب المحفظة عن طريق parent_id
     $wallet = Wallet::where('parent_id', $request->parent_id)->first();
 
     if (!$wallet) {
-        return response()->json(['error' => 'لم يتم العثور على محفظة'], 404);
+        // إذا المحفظة غير موجودة، يمكن إنشاء محفظة جديدة (اختياري)
+        $wallet = Wallet::create([
+            'parent_id' => $request->parent_id,
+            'balance' => 0,
+        ]);
     }
 
+    // تحديث الرصيد
     $wallet->balance += $request->amount;
     $wallet->save();
 
     return response()->json(['message' => 'تم شحن الرصيد بنجاح']);
 }
+
 }

@@ -71,7 +71,7 @@
                                     <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">نشط</span>
                                 </td>
                                 <td class="p-3">
-                                    <button onclick="showChargeModal({{ $parent->id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">شحن</button>
+                                    <button onclick="showChargeModal({{ $parent->parent->parent_id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">شحن</button>
                                 </td>
                             </tr>
                             @endforeach
