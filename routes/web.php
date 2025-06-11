@@ -61,6 +61,9 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
 
+Route::get('/Point', function () {
+    return view('Point of Sale');
+});
 });
 
 
