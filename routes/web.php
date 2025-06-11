@@ -60,6 +60,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 });
+Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
+
 
 // ✅ مسارات الموظفين
 Route::middleware(['auth', 'employee'])->group(function () {
