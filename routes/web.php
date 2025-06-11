@@ -59,8 +59,10 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
      //محافظة
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
-});
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
+
+});
+
 
 
 // ✅ مسارات الموظفين

@@ -151,38 +151,38 @@
         function closeChargeModal() {
             document.getElementById('chargeModal').classList.add('hidden');
         }
-function submitCharge() {
-    const amount = parseFloat(document.getElementById('amount').value);
-    const parentId = document.getElementById('parentId').value;
-
-    if (!amount || amount <= 0) return alert('أدخل مبلغًا صحيحًا');
-
-    fetch("{{ route('wallet.charge') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify({
-            parent_id: parentId,
-            amount: amount
-        })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("فشل في تنفيذ الشحن");
-        return res.json();
-    })
-    .then(data => {
-        document.getElementById('successMessage').textContent = data.message;
-        closeChargeModal();
-        document.getElementById('successModal').classList.remove('hidden');
-    })
-    .catch(err => alert(err.message));
-}
-
 
         function closeSuccessModal() {
             document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function submitCharge() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const parentId = document.getElementById('parentId').value;
+
+            if (!amount || amount <= 0) return alert('أدخل مبلغًا صحيحًا');
+
+            fetch("{{ route('wallet.charge') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    parent_id: parentId,
+                    amount: amount
+                })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("فشل في تنفيذ الشحن");
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById('successMessage').textContent = data.message;
+                closeChargeModal();
+                document.getElementById('successModal').classList.remove('hidden');
+            })
+            .catch(err => alert(err.message));
         }
 
         function filterParents() {

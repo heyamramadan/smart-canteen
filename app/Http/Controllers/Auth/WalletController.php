@@ -21,7 +21,7 @@ public function index()
 }
 public function charge(Request $request)
 {
-    $request->validate([
+    $request->validate(rules: [
         'parent_id' => 'required|exists:wallets,parent_id',
         'amount' => 'required|numeric|min:1',
     ]);
