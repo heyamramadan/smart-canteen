@@ -55,7 +55,6 @@
                                 <th class="p-3 text-right">البريد الإلكتروني</th>
                                 <th class="p-3 text-right">رقم الهاتف</th>
                                 <th class="p-3 text-right">الرصيد الحالي</th>
-                                <th class="p-3 text-right">الحالة</th>
                                 <th class="p-3 text-right">الإجراءات</th>
                             </tr>
                         </thead>
@@ -67,9 +66,7 @@
                                 <td class="p-3">{{ $parent->email }}</td>
                                 <td class="p-3">{{ $parent->phone_number }}</td>
                                 <td class="p-3 font-medium">{{ number_format($parent->parent->wallet->balance ?? 0, 2) }} ر.س</td>
-                                <td class="p-3">
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">نشط</span>
-                                </td>
+
                                 <td class="p-3">
                                     <button onclick="showChargeModal({{ $parent->parent->parent_id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">شحن</button>
                                 </td>
