@@ -1,253 +1,140 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>الطلبات الحالية - لوحة تحكم المقصف</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            100: '#FFEDD5',
-                            500: '#F97316',
-                            600: '#EA580C',
-                            700: '#C2410C',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-        body { font-family: 'Tajawal', sans-serif; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Canteen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      const orders = [
+        { name: 'T-Bone Steak', qty: 2, price: 33.00 },
+        { name: 'Soup of the Day', qty: 1, price: 7.50 },
+        { name: 'Pancakes', qty: 2, price: 13.50 }
+      ];
+
+      function updateSummary() {
+        const subtotal = orders.reduce((sum, item) => sum + item.qty * item.price, 0);
+        const discount = 8.00;
+        const tax = subtotal * 0.12;
+        const total = subtotal - discount + tax;
+
+        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('discount').textContent = `-$${discount.toFixed(2)}`;
+        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+      }
+
+      function renderOrders() {
+        const container = document.getElementById('order-list');
+        container.innerHTML = '';
+        orders.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'flex justify-between items-center border-b pb-2';
+          div.innerHTML = `
+            <div>
+              <div class="font-semibold">${item.name}</div>
+              <div class="text-sm text-orange-600">x${item.qty}</div>
+            </div>
+            <div class="text-right">
+              <button class="bg-orange-500 text-white px-2 rounded mr-2" onclick="changeQty(${index}, -1)">-</button>
+              <span>$${(item.qty * item.price).toFixed(2)}</span>
+                  <button class="bg-orange-500 text-white px-2 rounded" onclick="changeQty(${index}, 1)">+</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+        updateSummary();
+      }
+
+      window.changeQty = function(index, delta) {
+        orders[index].qty += delta;
+        if (orders[index].qty <= 0) orders.splice(index, 1);
+        renderOrders();
+      }
+
+      renderOrders();
+    });
+  </script>
 </head>
-<body class="bg-gray-50">
-    <div class="flex h-screen">
-        @include('layouts.sidebar')
+<body class="bg-white text-black">
+  <div class="flex flex-col md:flex-row min-h-screen">
+      @include('layouts.sidebar')
 
-        <div class="flex-1 p-6 overflow-auto">
-            <div class="bg-white rounded-xl shadow-lg mb-6 p-4">
-                <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                    <span class="ml-2">🛒</span> الطلبات الحالية
-                </h2>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-md font-semibold text-gray-700">قائمة الطلبات</h3>
-                    <div class="flex items-center gap-2">
-                        <select id="clientFilter" class="border rounded-lg px-3 py-1 text-sm">
-                            <option value="all">جميع العملاء</option>
-                            <option value="client1">عميل 1</option>
-                            <option value="client2">عميل 2</option>
-                        </select>
-                        <button onclick="filterOrders()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm">تصفية</button>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-100 text-gray-600">
-                            <tr>
-                                <th class="p-3 text-right">اسم العميل</th>
-                                <th class="p-3 text-right">الوقت</th>
-                                <th class="p-3 text-right">التاريخ</th>
-                                <th class="p-3 text-right">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y">
-                            <tr class="hover:bg-gray-50">
-                                <td class="p-3">عميل 1</td>
-                                <td class="p-3">12:30 م</td>
-                                <td class="p-3">1446-12-15</td>
-                                <td class="p-3">
-                                    <button onclick="showOrderDetails(1)" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">عرض التفاصيل</button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="p-3">عميل 2</td>
-                                <td class="p-3">01:45 م</td>
-                                <td class="p-3">1446-12-15</td>
-                                <td class="p-3">
-                                    <button onclick="showOrderDetails(2)" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">عرض التفاصيل</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- إحصائيات سريعة -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-white rounded-xl shadow-lg p-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500 text-sm">إجمالي الطلبات اليوم</p>
-                            <h3 class="text-xl font-bold">24</h3>
-                        </div>
-                        <div class="bg-primary-100 p-3 rounded-full">
-                            <span class="text-primary-600">📦</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-lg p-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500 text-sm">إجمالي المبيعات</p>
-                            <h3 class="text-xl font-bold">1,245 ر.س</h3>
-                        </div>
-                        <div class="bg-primary-100 p-3 rounded-full">
-                            <span class="text-primary-600">💰</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-lg p-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500 text-sm">متوسط قيمة الطلب</p>
-                            <h3 class="text-xl font-bold">51.87 ر.س</h3>
-                        </div>
-                        <div class="bg-primary-100 p-3 rounded-full">
-                            <span class="text-primary-600">📊</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <!-- Categories -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
+          🍽️ <div class="text-lg font-semibold">Lunch</div>
+          <div class="text-sm text-orange-600">Items</div>
         </div>
-    </div>
-
-    <!-- مودال تفاصيل الطلب -->
-    <div id="orderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6 relative">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">تفاصيل الطلب</h3>
-                <button onclick="closeOrderModal()" class="text-gray-500">✖</button>
-            </div>
-
-            <div class="mb-6">
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-500">اسم العميل:</span>
-                    <span id="modalClientName" class="font-medium">عميل 1</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-500">وقت الطلب:</span>
-                    <span id="modalOrderTime">12:30 م</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">تاريخ الطلب:</span>
-                    <span id="modalOrderDate">1446-12-15</span>
-                </div>
-            </div>
-
-            <div class="border rounded-lg overflow-hidden mb-4">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-100 text-gray-600">
-                        <tr>
-                            <th class="p-3 text-right">الصنف</th>
-                            <th class="p-3 text-right">الكمية</th>
-                            <th class="p-3 text-right">السعر</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y" id="orderItems">
-                        <!-- سيتم ملؤها بالجافاسكريبت -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="bg-gray-100 p-4 rounded-lg">
-                <div class="flex justify-between mb-2">
-                    <span>المجموع الفرعي:</span>
-                    <span id="modalSubtotal">$100.50</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span>الخصومات:</span>
-                    <span id="modalDiscounts">-$8.00</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span>الضريبة (12%):</span>
-                    <span id="modalTax">$11.20</span>
-                </div>
-                <div class="flex justify-between font-bold text-lg mt-3 pt-3 border-t">
-                    <span>الإجمالي:</span>
-                    <span id="modalTotal">$93.46</span>
-                </div>
-            </div>
-
-            <div class="mt-6 flex justify-end gap-2">
-                <button onclick="printOrder()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">طباعة</button>
-                <button onclick="completeOrder()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded">إتمام الطلب</button>
-            </div>
+        <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
+          🥗 <div class="text-lg font-semibold">Salad</div>
+          <div class="text-sm text-orange-600">Items</div>
         </div>
-    </div>
+        <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
+          🍔 <div class="text-lg font-semibold">Burger</div>
+          <div class="text-sm text-orange-600">Items</div>
+        </div>
+        <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
+          ☕ <div class="text-lg font-semibold">Coffee</div>
+          <div class="text-sm text-orange-600">Items</div>
+        </div>
+        <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
+          🍰 <div class="text-lg font-semibold">Dessert</div>
+          <div class="text-sm text-orange-600">Items</div>
+        </div>
+      </div>
 
-    <script>
-        function filterOrders() {
-            const clientFilter = document.getElementById('clientFilter').value;
-            document.querySelectorAll('tbody tr').forEach(row => {
-                const clientName = row.children[0].textContent.toLowerCase();
-                row.classList.toggle('hidden',
-                    clientFilter !== 'all' &&
-                    !clientName.includes(clientFilter.toLowerCase())
-                );
-            });
-        }
+      <!-- Products -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="border rounded-lg p-4 hover:shadow">
+          <img src="https://via.placeholder.com/150" class="rounded mb-2 w-full" />
+          <div class="font-semibold text-lg">Chicken Salad</div>
+          <div class="text-sm text-orange-600">$12.99</div>
+        </div>
+        <div class="border rounded-lg p-4 hover:shadow">
+          <img src="https://via.placeholder.com/150" class="rounded mb-2 w-full" />
+          <div class="font-semibold text-lg">Ramen</div>
+          <div class="text-sm text-orange-600">$14.99</div>
+        </div>
+        <div class="border rounded-lg p-4 hover:shadow">
+          <img src="https://via.placeholder.com/150" class="rounded mb-2 w-full" />
+          <div class="font-semibold text-lg">Steak</div>
+          <div class="text-sm text-orange-600">$33.00</div>
+        </div>
+      </div>
+    </main>
 
-        function showOrderDetails(orderId) {
-            // هنا يمكنك جلب بيانات الطلب من الخادم باستخدام AJAX
-            // لأغراض العرض، سنستخدم بيانات ثابتة
+    <!-- Order Summary -->
+    <aside class="w-full md:w-80 border-l p-6 bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-orange-500">Current Order</h2>
+        <button class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded" onclick="location.reload()">Clear All</button>
+      </div>
 
-            document.getElementById('modalClientName').textContent = 'عميل 1';
-            document.getElementById('modalOrderTime').textContent = '12:30 م';
-            document.getElementById('modalOrderDate').textContent = '1446-12-15';
+      <div id="order-list" class="space-y-4 mb-6"></div>
 
-            // تفاصيل العناصر
-            const itemsContainer = document.getElementById('orderItems');
-            itemsContainer.innerHTML = `
-                <tr>
-                    <td class="p-3">T-Bone Stake</td>
-                    <td class="p-3">2</td>
-                    <td class="p-3">$66.00</td>
-                </tr>
-                <tr>
-                    <td class="p-3">Soup of the Day</td>
-                    <td class="p-3">1</td>
-                    <td class="p-3">$7.50</td>
-                </tr>
-                <tr>
-                    <td class="p-3">Pancakes</td>
-                    <td class="p-3">2</td>
-                    <td class="p-3">$27.00</td>
-                </tr>
-            `;
-
-            // الملخص المالي
-            document.getElementById('modalSubtotal').textContent = '$100.50';
-            document.getElementById('modalDiscounts').textContent = '-$8.00';
-            document.getElementById('modalTax').textContent = '$11.20';
-            document.getElementById('modalTotal').textContent = '$93.46';
-
-            document.getElementById('orderModal').classList.remove('hidden');
-        }
-
-        function closeOrderModal() {
-            document.getElementById('orderModal').classList.add('hidden');
-        }
-
-        function printOrder() {
-            // يمكنك تنفيذ وظيفة الطباعة هنا
-            alert('سيتم فتح نافذة الطباعة');
-        }
-
-        function completeOrder() {
-            // يمكنك تنفيذ وظيفة إتمام الطلب هنا
-            alert('تم إتمام الطلب بنجاح');
-            closeOrderModal();
-        }
-    </script>
+      <div class="bg-orange-100 text-black p-4 rounded-lg">
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span id="subtotal">$0.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Discounts</span>
+          <span id="discount">-$0.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Tax(12%)</span>
+          <span id="tax">$0.00</span>
+        </div>
+        <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2">
+          <span>Total</span>
+          <span id="total">$0.00</span>
+        </div>
+      </div>
+    </aside>
+  </div>
 </body>
 </html>

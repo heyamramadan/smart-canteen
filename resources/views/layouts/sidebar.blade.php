@@ -45,6 +45,7 @@
                         إدارة التصنيفات
                     </a>
                 </li>
+                
                 <!-- شحن محفظة أولياء الأمور -->
 <li class="p-3 {{ request()->is('wallet*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
     <a href="{{ route('wallet') }}" class="flex items-center">
