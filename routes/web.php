@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\StudentController;
 use App\Http\Controllers\Auth\CategoryController;
 use App\Http\Controllers\Auth\ProductController;
+use App\Http\Controllers\Auth\WalletController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -57,9 +58,7 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
      //محافظة
 
-Route::get('/wallet', function () {
-    return view('wallet');
-})->name('wallet');
+Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 });
 
 // ✅ مسارات الموظفين

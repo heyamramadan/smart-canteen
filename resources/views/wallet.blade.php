@@ -75,64 +75,29 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm">1</td>
-                                <td class="p-3 text-sm">أحمد محمد</td>
-                                <td class="p-3 text-sm">ahmed@example.com</td>
-                                <td class="p-3 text-sm">0501234567</td>
-                                <td class="p-3 text-sm font-medium">150.00 ر.س</td>
-                                <td class="p-3 text-sm"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">نشط</span></td>
-                                <td class="p-3 text-sm">
-                                    <button onclick="showChargeModal(1, 'أحمد محمد', 'ahmed@example.com', '0501234567', 150)"
-                                            class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded text-sm transition">
-                                        شحن الرصيد
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm">2</td>
-                                <td class="p-3 text-sm">سارة خالد</td>
-                                <td class="p-3 text-sm">sara@example.com</td>
-                                <td class="p-3 text-sm">0559876543</td>
-                                <td class="p-3 text-sm font-medium">75.00 ر.س</td>
-                                <td class="p-3 text-sm"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">نشط</span></td>
-                                <td class="p-3 text-sm">
-                                    <button onclick="showChargeModal(2, 'سارة خالد', 'sara@example.com', '0559876543', 75)"
-                                            class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded text-sm transition">
-                                        شحن الرصيد
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm">3</td>
-                                <td class="p-3 text-sm">علي حسن</td>
-                                <td class="p-3 text-sm">ali@example.com</td>
-                                <td class="p-3 text-sm">0512345678</td>
-                                <td class="p-3 text-sm font-medium">200.00 ر.س</td>
-                                <td class="p-3 text-sm"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">نشط</span></td>
-                                <td class="p-3 text-sm">
-                                    <button onclick="showChargeModal(3, 'علي حسن', 'ali@example.com', '0512345678', 200)"
-                                            class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded text-sm transition">
-                                        شحن الرصيد
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-3 text-sm">4</td>
-                                <td class="p-3 text-sm">نورة سعد</td>
-                                <td class="p-3 text-sm">nora@example.com</td>
-                                <td class="p-3 text-sm">0587654321</td>
-                                <td class="p-3 text-sm font-medium">50.00 ر.س</td>
-                                <td class="p-3 text-sm"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">موقوف</span></td>
-                                <td class="p-3 text-sm">
-                                    <button onclick="showChargeModal(4, 'نورة سعد', 'nora@example.com', '0587654321', 50)"
-                                            class="bg-gray-300 text-gray-500 px-3 py-1 rounded text-sm cursor-not-allowed" disabled>
-                                        شحن الرصيد
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
+                     <tbody class="divide-y divide-gray-200">
+    @foreach ($parents as $index => $parent)
+        <tr class="hover:bg-gray-50 transition">
+            <td class="p-3 text-sm">{{ $index + 1 }}</td>
+            <td class="p-3 text-sm">{{ $parent->full_name }}</td>
+            <td class="p-3 text-sm">{{ $parent->email }}</td>
+            <td class="p-3 text-sm">{{ $parent->phone_number }}</td>
+            <td class="p-3 text-sm font-medium">{{ number_format($parent->parent->wwallet->balance ?? 0, 2) }} ر.س</td>
+            <td class="p-3 text-sm">
+                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                    نشط
+                </span>
+            </td>
+            <td class="p-3 text-sm">
+                <button onclick="showChargeModal({{ $parent->id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})"
+                        class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded text-sm transition">
+                    شحن الرصيد
+                </button>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
                     </table>
                 </div>
 
