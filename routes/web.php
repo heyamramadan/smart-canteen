@@ -62,7 +62,7 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
 
-
+//مبيعات
 Route::get('/point', [PointController::class, 'index'])->name('point');
 
 });
@@ -70,12 +70,13 @@ Route::get('/point', [PointController::class, 'index'])->name('point');
 
 
 // ✅ مسارات الموظفين
-Route::middleware(['auth', 'employee'])->group(function () {
-    Route::get('/employee-dashboard', function () {
-        return view('employee.dashboard');
-    });
 
+Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
+    //مبيعات 
+    Route::get('/point', [PointController::class, 'index'])->name('point');
+
+});
 
 
     // أضف مسارات أخرى للموظف إذا لزم
-});
+

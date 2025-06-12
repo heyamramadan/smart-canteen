@@ -45,6 +45,7 @@
                         إدارة التصنيفات
                     </a>
                 </li>
+                     <!-- مبيعات-->
                 <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
     <a href="{{ url('/point') }}" class="flex items-center">
         <span class="ml-2">🧾</span>
@@ -84,7 +85,14 @@
                     </a>
                 </li>
             @elseif(auth()->user()->role === 'موظف')
-
+          </li>
+                     <!-- مبيعات-->
+                <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/point') }}" class="flex items-center">
+        <span class="ml-2">🧾</span>
+        المبيعات
+    </a>
+</li>
 
             @endif
         @endauth
