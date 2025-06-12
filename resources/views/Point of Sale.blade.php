@@ -27,9 +27,8 @@
 <!-- الهيكل العام -->
 <div class="flex h-screen">
   <!-- الشريط الجانبي -->
-  <div class="w-64 bg-white border-l">
+
     @include('layouts.sidebar')
-  </div>
 
   <!-- المحتوى الرئيسي -->
   <div class="flex-1 flex flex-col overflow-hidden">
@@ -37,56 +36,60 @@
     <!-- الصف العلوي: بيانات الطالب والمنتجات -->
     <div class="flex flex-col md:flex-row h-1/2">
 
-      <!-- بيانات الطالب -->
-      <div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
-        <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
+     <!-- بيانات الطالب -->
+<div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
+  <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
-          <input type="text" class="w-full p-2 border rounded mb-4" placeholder="ادخل رقم أو اسم الطالب" />
+  <!-- حقل البحث -->
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
+    <input type="text" class="w-full p-2 border rounded mb-4" placeholder="ادخل رقم أو اسم الطالب" />
+  </div>
 
-          <div class="bg-primary-50 p-3 rounded-lg">
-            <div class="flex items-center mb-3">
-              <div class="w-10 h-10 rounded-full bg-primary-200 flex items-center justify-center ml-2">ص</div>
-              <div>
-                <div class="font-semibold">محمد أحمد</div>
-                <div class="text-xs text-gray-500">رقم: 12345</div>
-              </div>
-            </div>
+  <!-- جدول بيانات الطالب -->
+  <div class="overflow-x-auto mb-6">
+    <table class="w-full text-sm text-right border border-primary-100 rounded">
+      <thead class="bg-primary-100 text-primary-700">
+        <tr>
+          <th class="p-2 border">اسم الطالب</th>
+          <th class="p-2 border">اسم الأب</th>
+          <th class="p-2 border">الصف</th>
+          <th class="p-2 border">سقف الشراء</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-white hover:bg-gray-50">
+          <td class="p-2 border font-medium">محمد</td>
+          <td class="p-2 border">أحمد</td>
+          <td class="p-2 border">الثالث أ</td>
+          <td class="p-2 border text-green-600 font-semibold">200.00 ر.س</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-            <div class="space-y-2">
-              <div class="flex justify-between">
-                <span class="text-sm">الصف:</span>
-                <span class="text-sm font-medium">الثالث أ</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm">الرصيد:</span>
-                <span class="text-sm font-medium text-green-600">150.00 ر.س</span>
-              </div>
-            </div>
-          </div>
+  <!-- الطلبات السابقة -->
+  <div class="border-t pt-4">
+    <h3 class="font-semibold text-primary mb-2">طلبات سابقة</h3>
+    <div class="space-y-2">
+      <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
+        <div class="flex justify-between">
+          <span>12/05/2023</span>
+          <span class="font-medium">45.00 ر.س</span>
         </div>
-
-        <div class="border-t pt-4">
-          <h3 class="font-semibold text-primary mb-2">طلبات سابقة</h3>
-          <div class="space-y-2">
-            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-              <div class="flex justify-between">
-                <span>12/05/2023</span>
-                <span class="font-medium">45.00 ر.س</span>
-              </div>
-              <div class="text-xs text-gray-500">2 منتجات</div>
-            </div>
-            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-              <div class="flex justify-between">
-                <span>10/05/2023</span>
-                <span class="font-medium">32.50 ر.س</span>
-              </div>
-              <div class="text-xs text-gray-500">3 منتجات</div>
-            </div>
-          </div>
-        </div>
+        <div class="text-xs text-gray-500">2 منتجات</div>
       </div>
+      <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
+        <div class="flex justify-between">
+          <span>10/05/2023</span>
+          <span class="font-medium">32.50 ر.س</span>
+        </div>
+        <div class="text-xs text-gray-500">3 منتجات</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <!-- المنتجات -->
       <div class="w-full md:w-1/2 bg-white p-4 overflow-y-auto border-r">
@@ -207,10 +210,7 @@
         <!-- عنوان الفاتورة -->
         <div class="mb-4">
           <h1 class="text-xl font-bold text-primary">فاتورة بيع</h1>
-          <div class="flex justify-between">
-            <p class="text-gray-600">التاريخ: <span id="currentDate"></span></p>
-            <p class="text-gray-600">الطالب: محمد أحمد - الصف: الثالث أ</p>
-          </div>
+         
         </div>
 
         <!-- جدول الطلبات -->
