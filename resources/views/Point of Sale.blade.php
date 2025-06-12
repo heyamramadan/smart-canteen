@@ -58,11 +58,11 @@
   </script>
 </head>
 <body class="bg-white text-black">
-  <div class="flex flex-col md:flex-row min-h-screen">
+  <div class="flex h-screen">
       @include('layouts.sidebar')
 
     <!-- Main Content -->
-    <main class="flex-1 p-6">
+ <main class="flex-1 p-6 overflow-auto">
       <!-- Categories -->
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div class="border rounded-lg p-4 text-center hover:bg-orange-50 transition cursor-pointer">
@@ -108,7 +108,7 @@
     </main>
 
     <!-- Order Summary -->
-    <aside class="w-full md:w-80 border-l p-6 bg-white">
+       <aside class="w-80 border-l p-6 bg-white overflow-auto">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-orange-500">Current Order</h2>
         <button class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded" onclick="location.reload()">Clear All</button>
@@ -138,3 +138,4 @@
   </div>
 </body>
 </html>
+

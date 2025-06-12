@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\StudentController;
 use App\Http\Controllers\Auth\CategoryController;
 use App\Http\Controllers\Auth\ProductController;
 use App\Http\Controllers\Auth\WalletController;
+use App\Http\Controllers\Auth\PointController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -61,6 +62,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
 
+
+Route::get('/point', [PointController::class, 'index'])->name('point');
 
 });
 
