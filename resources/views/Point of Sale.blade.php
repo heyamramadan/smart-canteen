@@ -124,6 +124,7 @@
                 <th class="p-2 border">المنتج</th>
                 <th class="p-2 border">السعر</th>
                   <th class="p-2 border">الكمية المتوفرة</th>
+                  <th class="p-2 border">الإجراء</th>
               </tr>
             </thead>
             <tbody id="productTable">
@@ -131,31 +132,67 @@
                 <td class="p-2 border">ستيك لحم</td>
                 <td class="p-2 border">33.00 ر.س</td>
         <td class="p-2 border text-center">5</td>
+          <td class="p-2 border text-center">
+   <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
               <tr data-category="الوجبات">
                 <td class="p-2 border">دجاج مشوي</td>
                 <td class="p-2 border">28.00 ر.س</td>
         <td class="p-2 border text-center">50</td>
+                 <td class="p-2 border text-center">
+    <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
               <tr data-category="الوجبات">
                 <td class="p-2 border">شوربة اليوم</td>
                 <td class="p-2 border">7.50 ر.س</td>
           <td class="p-2 border text-center">77</td>
+            <td class="p-2 border text-center">
+   <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
               <tr data-category="المشروبات">
                 <td class="p-2 border">عصير برتقال</td>
                 <td class="p-2 border">5.00 ر.س</td>
           <td class="p-2 border text-center">770</td>
+            <td class="p-2 border text-center">
+ <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
               <tr data-category="الحلويات">
                 <td class="p-2 border">كعكة شوكولاتة</td>
                 <td class="p-2 border">10.00 ر.س</td>
           <td class="p-2 border text-center">77</td>
+            <td class="p-2 border text-center">
+<button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
               <tr data-category="السندويشات">
                 <td class="p-2 border">سندويش جبن</td>
                 <td class="p-2 border">6.00 ر.س</td>
         <td class="p-2 border text-center">400</td>
+          <td class="p-2 border text-center">
+ <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
+  +
+</button>
+
+  </td>
               </tr>
             </tbody>
           </table>
@@ -255,6 +292,11 @@
 
   // عرض التاريخ الحالي
   document.getElementById("currentDate").textContent = new Date().toLocaleDateString('ar-SA');
+
+  function addToInvoice(name, price) {
+    alert(`تمت إضافة ${name} بسعر ${price} ر.س إلى الفاتورة`);
+    // هنا يمكنك لاحقًا تعديل الدالة لإضافة صف جديد في جدول الفاتورة فعليًا
+  }
 </script>
 
 </body>
