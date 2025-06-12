@@ -75,6 +75,13 @@
                     إدارة التصنيفات
                 </a>
             </li>
+             <!-- قسم  المبيعات -->
+            <li class="p-3 hover:bg-primary-500 rounded-lg transition">
+                <a href="{{ url('/point') }}" class="flex items-center">
+                    <span class="ml-2">🧾</span>
+               المبيعات
+                </a>
+            </li>
             <!-- قسم شحن المحفظة -->
 <li class="p-3 hover:bg-primary-500 rounded-lg transition">
     <a href="{{ url('/wallet') }}" class="flex items-center">
