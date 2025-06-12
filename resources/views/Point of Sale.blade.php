@@ -136,9 +136,8 @@
                 <td class="p-2 border">33.00 ر.س</td>
         <td class="p-2 border text-center">5</td>
           <td class="p-2 border text-center">
-   <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+  <button onclick="addToInvoice('ستيك لحم', 33)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
+
 
   </td>
               </tr>
@@ -147,9 +146,8 @@
                 <td class="p-2 border">28.00 ر.س</td>
         <td class="p-2 border text-center">50</td>
                  <td class="p-2 border text-center">
-    <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+   <button onclick="addToInvoice('ستيك دجاج مشوي', 28)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
+
 
   </td>
               </tr>
@@ -158,9 +156,8 @@
                 <td class="p-2 border">7.50 ر.س</td>
           <td class="p-2 border text-center">77</td>
             <td class="p-2 border text-center">
-   <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+   <button onclick="addToInvoice('شوربة اليوم', 7.50)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
+
 
   </td>
               </tr>
@@ -169,9 +166,7 @@
                 <td class="p-2 border">5.00 ر.س</td>
           <td class="p-2 border text-center">770</td>
             <td class="p-2 border text-center">
- <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+  <button onclick="addToInvoice('عصير برتقال', 5.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
 
   </td>
               </tr>
@@ -180,9 +175,7 @@
                 <td class="p-2 border">10.00 ر.س</td>
           <td class="p-2 border text-center">77</td>
             <td class="p-2 border text-center">
-<button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+  <button onclick="addToInvoice(' كعكة شوكولاتة', 10.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
 
   </td>
               </tr>
@@ -191,9 +184,7 @@
                 <td class="p-2 border">6.00 ر.س</td>
         <td class="p-2 border text-center">400</td>
           <td class="p-2 border text-center">
- <button onclick="addToInvoice(...)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">
-  +
-</button>
+<button onclick="addToInvoice('سندويش جبن', 6.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
 
   </td>
               </tr>
@@ -203,101 +194,117 @@
       </div>
     </div>
 
-    <!-- الفاتورة -->
-    <div class="flex-1 p-4 bg-white border-t overflow-y-auto">
-      <div class="max-w-4xl mx-auto">
 
-        <!-- عنوان الفاتورة -->
-        <div class="mb-4">
-          <h1 class="text-xl font-bold text-primary">فاتورة بيع</h1>
-         
-        </div>
+<!-- فاتورة البيع -->
+<div class="flex-1 p-4 bg-white border-t overflow-y-auto">
+  <div class="max-w-4xl mx-auto">
 
-        <!-- جدول الطلبات -->
-        <div class="mb-4">
-          <table class="w-full border-collapse">
-            <thead>
-              <tr class="bg-primary-100">
-                <th class="p-2 border text-right">اسم الصنف</th>
-                <th class="p-2 border">الكمية</th>
-                <th class="p-2 border">السعر</th>
-                <th class="p-2 border">الإجمالي</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="p-2 border">ستيك لحم</td>
-                <td class="p-2 border text-center">
-                  <button class="bg-primary text-white px-2 rounded">-</button>
-                  <span class="mx-2">2</span>
-                  <button class="bg-primary text-white px-2 rounded">+</button>
-                </td>
-                <td class="p-2 border text-center">33.00 ر.س</td>
-                <td class="p-2 border text-center">66.00 ر.س</td>
-              </tr>
-              <tr>
-                <td class="p-2 border">شوربة اليوم</td>
-                <td class="p-2 border text-center">
-                  <button class="bg-primary text-white px-2 rounded">-</button>
-                  <span class="mx-2">1</span>
-                  <button class="bg-primary text-white px-2 rounded">+</button>
-                </td>
-                <td class="p-2 border text-center">7.50 ر.س</td>
-                <td class="p-2 border text-center">7.50 ر.س</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- عنوان -->
+    <h1 class="text-xl font-bold text-primary mb-4">فاتورة البيع</h1>
 
-        <!-- ملخص الفاتورة -->
-        <div class="bg-primary-50 text-black p-4 rounded-lg">
-          <div class="flex justify-between mb-2">
-            <span class="font-semibold">المجموع الفرعي</span>
-            <span>73.50 ر.س</span>
-          </div>
-          <div class="flex justify-between mb-2">
-            <span class="font-semibold">الخصم</span>
-            <span>-0.00 ر.س</span>
-          </div>
-          <div class="flex justify-between mb-2">
-            <span class="font-semibold">الضريبة (12%)</span>
-            <span>8.82 ر.س</span>
-          </div>
-          <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2">
-            <span>الإجمالي</span>
-            <span>82.32 ر.س</span>
-          </div>
-        </div>
+    <!-- جدول الفاتورة -->
+    <div class="mb-4 overflow-x-auto">
+      <table class="w-full border text-sm text-right" id="invoiceTable">
+        <thead class="bg-primary-100 text-primary-700">
+          <tr>
+            <th class="p-2 border">المنتج</th>
+            <th class="p-2 border">الكمية</th>
+            <th class="p-2 border">سعر القطعة</th>
+            <th class="p-2 border">الإجمالي</th>
+            <th class="p-2 border">الإجراء</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- الصفوف تتم إضافتها هنا ديناميكياً -->
+        </tbody>
+      </table>
+    </div>
 
-        <!-- زر التأكيد -->
-        <div class="mt-4 text-center">
-          <button class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-lg text-lg font-bold">
-            تأكيد عملية البيع
-          </button>
-        </div>
+    <!-- الإجمالي -->
+    <div class="bg-primary-50 text-black p-4 rounded-lg mb-4">
+      <div class="flex justify-between font-bold text-lg">
+        <span>إجمالي الفاتورة</span>
+        <span id="totalAmount">0.00 ر.س</span>
       </div>
+    </div>
+
+    <!-- زر التأكيد -->
+    <div class="text-center">
+      <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg text-lg font-bold">
+        تأكيد عملية البيع
+      </button>
     </div>
   </div>
 </div>
-
 <!-- JavaScript -->
 <script>
-  // تصفية المنتجات حسب التصنيف
+  const invoiceTableBody = document.querySelector('#invoiceTable tbody');
+  const totalAmountSpan = document.getElementById('totalAmount');
+
+  let invoiceItems = [];
+
+  function addToInvoice(name, price) {
+    price = parseFloat(price);
+    const existingItem = invoiceItems.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      invoiceItems.push({ name, price, quantity: 1 });
+    }
+    renderInvoice();
+  }
+
+  function removeItem(index) {
+    invoiceItems.splice(index, 1);
+    renderInvoice();
+  }
+
+  function updateQuantity(index, delta) {
+    const item = invoiceItems[index];
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+      removeItem(index);
+    } else {
+      renderInvoice();
+    }
+  }
+
+  function renderInvoice() {
+    invoiceTableBody.innerHTML = '';
+    let total = 0;
+
+    invoiceItems.forEach((item, index) => {
+      const row = document.createElement('tr');
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      row.innerHTML = `
+        <td class="p-2 border">${item.name}</td>
+        <td class="p-2 border text-center">
+          <button onclick="updateQuantity(${index}, -1)" class="bg-primary-500 text-white px-2 rounded">-</button>
+          <span class="mx-2">${item.quantity}</span>
+          <button onclick="updateQuantity(${index}, 1)" class="bg-primary-500 text-white px-2 rounded">+</button>
+        </td>
+        <td class="p-2 border text-center">${item.price.toFixed(2)} ر.س</td>
+        <td class="p-2 border text-center">${itemTotal.toFixed(2)} ر.س</td>
+        <td class="p-2 border text-center">
+          <button onclick="removeItem(${index})" class="text-red-600 font-bold">إزالة</button>
+        </td>
+      `;
+      invoiceTableBody.appendChild(row);
+    });
+
+    totalAmountSpan.textContent = `${total.toFixed(2)} ر.س`;
+  }
+
   function filterProducts(category) {
     const rows = document.querySelectorAll("#productTable tr");
     rows.forEach(row => {
       row.style.display = row.dataset.category === category ? "" : "none";
     });
   }
-
-  // عرض التاريخ الحالي
-  document.getElementById("currentDate").textContent = new Date().toLocaleDateString('ar-SA');
-
-  function addToInvoice(name, price) {
-    alert(`تمت إضافة ${name} بسعر ${price} ر.س إلى الفاتورة`);
-    // هنا يمكنك لاحقًا تعديل الدالة لإضافة صف جديد في جدول الفاتورة فعليًا
-  }
 </script>
+
 
 </body>
 </html>
