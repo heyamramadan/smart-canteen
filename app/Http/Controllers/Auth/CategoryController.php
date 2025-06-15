@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
+use app\Models\BannedProduct;
+use app\Models\studentmodel;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -81,19 +84,40 @@ class CategoryController extends Controller
     }
 
 
-    
-    public function getCategoriesForStudent($student_id)
+
+public function getAllowedCategories($id)
 {
-    $student = \App\Models\StudentModel::findOrFail($student_id);
+    // 1. التحقق من وجود الطالب
+    $student = Studentmodel::findOrFail($id);
 
-    $categories = Category::with(['products' => function ($query) use ($student) {
-        // فلترة المنتجات التي **ليست ممنوعة** لهذا الطالب
-        $query->whereDoesntHave('bannedProducts', function ($q) use ($student) {
-            $q->where('student_id', $student->student_id);
-        });
-    }])->get();
+    // 2. قائمة المنتجات الممنوعة (بيانات اختبارية مؤقتة)
+    $bannedProductIds = [1, 3, 5]; // يمكنك تغيير هذه الأرقام حسب احتياجك
 
-    return response()->json($categories);
+    // 3. جلب المنتجات غير الممنوعة
+    $allowedProducts = Product::with('category')
+        ->whereNotIn('id', $bannedProductIds)
+        ->where('is_active', true)
+        ->get();
+
+    // 4. تجميع البيانات للإرجاع
+    $categories = $allowedProducts->groupBy('category.id')->map(function($products, $categoryId) {
+        return [
+            'id' => $categoryId,
+            'name' => $products->first()->category->name ?? 'غير محدد'
+        ];
+    })->values();
+
+    return response()->json([
+        'categories' => $categories,
+        'products' => $allowedProducts->map(function($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'category_name' => $product->category->name ?? 'غير محدد'
+            ];
+        })
+    ]);
 }
-
 }

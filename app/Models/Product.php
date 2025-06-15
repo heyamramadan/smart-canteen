@@ -20,20 +20,13 @@ class Product extends Model
         'is_active',    // حالة تفعيل المنتج (1 = مفعل، 0 = غير مفعل)
     ];
 
-    /**
-     * العلاقة: المنتج ينتمي إلى صنف واحد فقط
-     * هذا يعني أن كل منتج مرتبط بصنف واحد عبر المفتاح الأجنبي category_id
-     * belongsTo: علاقة عكسية بين المنتج والصنف
-     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
 
-    /**
-     * العلاقة: المنتج يمكن أن يكون ممنوعًا في عدة حالات (ممنوع في عدة طلبات ممنوعة)
-     * hasMany: علاقة واحد إلى متعدد بين المنتج وجدول المنتجات الممنوعة
-     */
+
+
     public function bannedProducts()
     {
         return $this->hasMany(BannedProduct::class, 'product_id', 'product_id');

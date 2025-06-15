@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ParentModel;
 use Illuminate\Http\Request;
 use App\Models\Studentmodel;
+use App\Models\BannedProduct;
+use App\Models\Product;
 
 class StudentController extends Controller
 {
@@ -62,5 +64,39 @@ public function search(Request $request)
 
     return response()->json($students);
 }
+public function getAllowedCategories($id)
+{
+    // التحقق من وجود الطالب
+    $student = Studentmodel::findOrFail($id);
 
+    // جلب المنتجات المحظورة لهذا الطالب
+    $bannedProductIds = BannedProduct::where('student_id', $id)->pluck('product_id');
+
+    // جلب المنتجات غير المحظورة
+    $allowedProducts = Product::with('category')
+        ->whereNotIn('id', $bannedProductIds)
+        ->get();
+
+    // استخراج التصنيفات من المنتجات المسموحة
+    $categories = $allowedProducts->pluck('category')->unique('id')->values();
+
+    // إرجاع البيانات بصيغة JSON
+    return response()->json([
+        'categories' => $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+            ];
+        }),
+        'products' => $allowedProducts->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'category_name' => $product->category->name ?? 'غير محدد',
+            ];
+        }),
+    ]);
+}
 }
