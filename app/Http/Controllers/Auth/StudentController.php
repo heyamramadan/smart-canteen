@@ -60,43 +60,47 @@ public function search(Request $request)
 {
     $query = $request->input('query');
 
-    $students = Studentmodel::where('full_name', 'LIKE', '%' . $query . '%')->get();
+    $students = Studentmodel::with('parent.user') // اجلب الأب أيضاً لو كنت تحتاجه
+        ->where('full_name', 'LIKE', '%' . $query . '%')
+        ->get();
 
     return response()->json($students);
 }
-public function getAllowedCategories($id)
-{
-    // التحقق من وجود الطالب
-    $student = Studentmodel::findOrFail($id);
 
-    // جلب المنتجات المحظورة لهذا الطالب
-    $bannedProductIds = BannedProduct::where('student_id', $id)->pluck('product_id');
+    public function getAllowedCategories($student_id)
+    {
+        // تحقق أن الطالب موجود
+        $student = Studentmodel::findOrFail($student_id);
 
-    // جلب المنتجات غير المحظورة
-    $allowedProducts = Product::with('category')
-        ->whereNotIn('id', $bannedProductIds)
-        ->get();
+        // جلب معرفات المنتجات المحظورة لهذا الطالب
+        $bannedProductIds = BannedProduct::where('student_id', $student_id)->pluck('product_id')->toArray();
 
-    // استخراج التصنيفات من المنتجات المسموحة
-    $categories = $allowedProducts->pluck('category')->unique('id')->values();
+        // جلب المنتجات المفعلة وليست محظورة
+        $allowedProducts = Product::where('is_active', 1)
+            ->whereNotIn('product_id', $bannedProductIds)
+            ->with('category')
+            ->get();
 
-    // إرجاع البيانات بصيغة JSON
-    return response()->json([
-        'categories' => $categories->map(function ($category) {
-            return [
-                'id' => $category->id,
-                'name' => $category->name,
-            ];
-        }),
-        'products' => $allowedProducts->map(function ($product) {
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => $product->quantity,
-                'category_name' => $product->category->name ?? 'غير محدد',
-            ];
-        }),
-    ]);
-}
+        // تجميع المنتجات حسب التصنيف
+        $categories = [];
+
+        foreach ($allowedProducts as $product) {
+            $category = $product->category;
+            if (!$category) continue;
+
+            // إذا التصنيف غير موجود في المصفوفة
+            if (!isset($categories[$category->category_id])) {
+                $categories[$category->category_id] = [
+                    'category' => $category,
+                    'products' => [],
+                ];
+            }
+
+            $categories[$category->category_id]['products'][] = $product;
+        }
+
+        // تمرير التصنيفات والمنتجات للعرض في صفحة Blade
+        return view('categories.allowed', compact('categories', 'student'));
+    }
+
 }

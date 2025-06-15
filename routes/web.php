@@ -58,9 +58,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
-    //جلب تصنيفات غير ممنوعة
-Route::get('/students/{id}/allowed-categories', [CategoryController::class, 'getCategoriesForStudent']);
-
+// للحصول على التصنيفات المسموحة للطالب
+Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
 
      //محافظة
 

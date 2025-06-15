@@ -179,6 +179,12 @@
 
     if (query.length < 2) {
       studentsTableBody.innerHTML = '';
+      categoriesContainer.innerHTML = `<span class="text-gray-400">يرجى اختيار طالب أولاً</span>`;
+      productTableBody.innerHTML = '';
+      currentStudentId = null;
+      allProducts = [];
+      invoiceItems = [];
+      renderInvoice();
       return;
     }
 
@@ -199,9 +205,13 @@
             currentStudentId = student.student_id;
             loadCategoriesAndProducts(currentStudentId);
             highlightSelectedStudent(tr);
+            invoiceItems = [];
+            renderInvoice();
           });
           studentsTableBody.appendChild(tr);
         });
+      }).catch(() => {
+        studentsTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-2 text-red-500">خطأ في جلب الطلاب</td></tr>`;
       });
   });
 
@@ -216,11 +226,6 @@
 
   // جلب التصنيفات والمنتجات للطالب المحدد
   function loadCategoriesAndProducts(studentId) {
-    // فرضا هذا endpoint يرجع بيانات مثل:
-    // {
-    //   categories: [{ id, name }, ...],
-    //   products: [{ id, name, price, quantity, category_name }, ...]
-    // }
     fetch(`/students/${studentId}/allowed-categories`)
       .then(res => res.json())
       .then(data => {
@@ -245,7 +250,7 @@
     categoriesContainer.innerHTML = '';
     categories.forEach(cat => {
       const label = document.createElement('label');
-      label.className = "cursor-pointer";
+      label.className = "cursor-pointer select-none";
       label.innerHTML = `
         <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange(this.value)">
         <span class="px-3 py-1 border rounded hover:bg-primary-50">${cat.name}</span>
@@ -256,16 +261,13 @@
 
   function onCategoryChange(category) {
     currentCategory = category;
-    filterProducts(category);
+    renderProducts(allProducts);
   }
 
   // عرض المنتجات مع فلترة
   function renderProducts(products) {
-    if (!products.length) {
-      productTableBody.innerHTML = `<tr><td colspan="4" class="p-2 border text-center text-gray-500">لا توجد منتجات متاحة</td></tr>`;
-      return;
-    }
     let filtered = currentCategory ? products.filter(p => p.category_name === currentCategory) : products;
+
     if (!filtered.length) {
       productTableBody.innerHTML = `<tr><td colspan="4" class="p-2 border text-center text-gray-500">لا توجد منتجات في هذا التصنيف</td></tr>`;
       return;
@@ -280,26 +282,29 @@
         <td class="p-2 border">${product.price.toFixed(2)} ر.س</td>
         <td class="p-2 border text-center">${product.quantity}</td>
         <td class="p-2 border text-center">
-          <button onclick="addToInvoice('${product.name}', ${product.price})" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
+          <button onclick="addToInvoice(${product.id}, '${product.name}', ${product.price}, ${product.quantity})" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700" ${product.quantity <= 0 ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>+</button>
         </td>
       `;
       productTableBody.appendChild(tr);
     });
   }
 
-  function filterProducts(category) {
-    currentCategory = category;
-    renderProducts(allProducts);
-  }
-
   // إضافة منتج إلى الفاتورة
-  function addToInvoice(name, price) {
-    price = parseFloat(price);
-    const existingItem = invoiceItems.find(i => i.name === name);
+  // تمرير id لضمان التفريق بين المنتجات
+  function addToInvoice(id, name, price, availableQty) {
+    const existingItem = invoiceItems.find(i => i.id === id);
     if (existingItem) {
-      existingItem.quantity++;
+      if (existingItem.quantity < availableQty) {
+        existingItem.quantity++;
+      } else {
+        alert('الكمية المطلوبة أكبر من المتوفر.');
+      }
     } else {
-      invoiceItems.push({ name, price, quantity: 1 });
+      if (availableQty > 0) {
+        invoiceItems.push({ id, name, price, quantity: 1 });
+      } else {
+        alert('المنتج غير متوفر حالياً.');
+      }
     }
     renderInvoice();
   }
@@ -312,10 +317,19 @@
 
   // تحديث كمية منتج في الفاتورة
   function updateQuantity(index, delta) {
-    invoiceItems[index].quantity += delta;
-    if (invoiceItems[index].quantity <= 0) {
+    const item = invoiceItems[index];
+    const product = allProducts.find(p => p.id === item.id);
+
+    if (!product) return;
+
+    let newQty = item.quantity + delta;
+    if (newQty > product.quantity) {
+      alert('لا يمكن زيادة الكمية عن المتوفر.');
+      return;
+    } else if (newQty <= 0) {
       removeItem(index);
     } else {
+      item.quantity = newQty;
       renderInvoice();
     }
   }
@@ -357,8 +371,37 @@
       alert('لا يوجد منتجات في الفاتورة.');
       return;
     }
-    // هنا ترسل البيانات للسيرفر مثلاً
-    alert('تم تأكيد عملية البيع (ويمكن تعديلها لتعمل مع API)');
+
+    // تحضير بيانات الفاتورة للإرسال (مثال)
+    const saleData = {
+      student_id: currentStudentId,
+      items: invoiceItems.map(i => ({ product_id: i.id, quantity: i.quantity })),
+    };
+
+    // إرسال البيانات للسيرفر (مثال)
+    fetch('/sales/confirm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify(saleData),
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('حدث خطأ في تأكيد البيع');
+      return res.json();
+    })
+    .then(data => {
+      alert('تم تأكيد عملية البيع بنجاح');
+      // إعادة تهيئة
+      invoiceItems = [];
+      renderInvoice();
+      // ممكن إعادة تحميل المنتجات لتحديث الكميات
+      loadCategoriesAndProducts(currentStudentId);
+    })
+    .catch(err => {
+      alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
+    });
   }
 </script>
 

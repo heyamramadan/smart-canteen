@@ -95,7 +95,7 @@ public function getAllowedCategories($id)
 
     // 3. جلب المنتجات غير الممنوعة
     $allowedProducts = Product::with('category')
-        ->whereNotIn('id', $bannedProductIds)
+        ->whereNotIn('product_id', $bannedProductIds)
         ->where('is_active', true)
         ->get();
 
