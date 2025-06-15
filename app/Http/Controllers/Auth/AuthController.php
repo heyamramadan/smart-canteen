@@ -30,7 +30,7 @@ class AuthController extends Controller
             if (Auth::user()->role === 'مسؤول') {
                 return redirect()->intended('/dashboard');
             } elseif (Auth::user()->role === 'موظف') {
-                return redirect()->intended('/employee-dashboard');
+                return redirect()->intended('/point');
             }
 
             // احتياطاً: إذا لم يكن الدور معروف
