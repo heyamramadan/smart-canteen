@@ -58,6 +58,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+    //جلب تصنيفات غير ممنوعة
+    Route::get('/students/{id}/categories', [CategoryController::class, 'getCategoriesForStudent']);
 
      //محافظة
 

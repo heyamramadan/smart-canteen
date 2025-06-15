@@ -79,4 +79,18 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'تم حذف التصنيف بنجاح.');
     }
+    public function getCategoriesForStudent($student_id)
+{
+    $student = \App\Models\StudentModel::findOrFail($student_id);
+
+    $categories = Category::with(['products' => function ($query) use ($student) {
+        // فلترة المنتجات التي **ليست ممنوعة** لهذا الطالب
+        $query->whereDoesntHave('bannedProducts', function ($q) use ($student) {
+            $q->where('student_id', $student->student_id);
+        });
+    }])->get();
+
+    return response()->json($categories);
+}
+
 }
