@@ -57,6 +57,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+
      //محافظة
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
@@ -72,7 +74,7 @@ Route::get('/point', [PointController::class, 'index'])->name('point');
 // ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
-    //مبيعات 
+    //مبيعات
     Route::get('/point', [PointController::class, 'index'])->name('point');
 
 });

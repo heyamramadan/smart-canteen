@@ -40,33 +40,27 @@
 <div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
   <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
 
-  <!-- حقل البحث -->
-  <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
-    <input type="text" class="w-full p-2 border rounded mb-4" placeholder="ادخل رقم أو اسم الطالب" />
-  </div>
+<!-- حقل البحث -->
+<div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
+  <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" />
+</div>
+<!-- نتائج البحث -->
+<div class="overflow-x-auto mb-6">
+  <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
+    <thead class="bg-primary-100 text-primary-700">
+      <tr>
+        <th class="p-2 border">اسم الطالب</th>
+        <th class="p-2 border">اسم الأب</th>
+        <th class="p-2 border">الصف</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- النتائج ستُملأ بواسطة JavaScript -->
+    </tbody>
+  </table>
+</div>
 
-  <!-- جدول بيانات الطالب -->
-  <div class="overflow-x-auto mb-6">
-    <table class="w-full text-sm text-right border border-primary-100 rounded">
-      <thead class="bg-primary-100 text-primary-700">
-        <tr>
-          <th class="p-2 border">اسم الطالب</th>
-          <th class="p-2 border">اسم الأب</th>
-          <th class="p-2 border">الصف</th>
-          <th class="p-2 border">سقف الشراء</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="bg-white hover:bg-gray-50">
-          <td class="p-2 border font-medium">محمد</td>
-          <td class="p-2 border">أحمد</td>
-          <td class="p-2 border">الثالث أ</td>
-          <td class="p-2 border text-green-600 font-semibold">200.00 ر.س</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
   <!-- الطلبات السابقة -->
   <div class="border-t pt-4">
@@ -303,6 +297,29 @@
       row.style.display = row.dataset.category === category ? "" : "none";
     });
   }
+  document.getElementById('studentSearchInput').addEventListener('input', function () {
+  const query = this.value;
+
+  if (query.length < 2) return; // تجاهل الأحرف القليلة جدًا
+
+  fetch(`/students/search?query=${encodeURIComponent(query)}`)
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.querySelector('#studentsTable tbody');
+      tbody.innerHTML = '';
+
+      data.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="p-2 border">${student.full_name}</td>
+          <td class="p-2 border">${student.father_name ?? '—'}</td>
+          <td class="p-2 border">${student.class}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+});
+
 </script>
 
 

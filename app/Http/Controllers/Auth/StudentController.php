@@ -52,5 +52,15 @@ class StudentController extends Controller
     $parents = ParentModel::with('user')->get(); // تأكد من استدعاء موديل ولي الأمر و علاقته
 
     return view('user.students', compact('students', 'parents'));
+
 }
+public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $students = Studentmodel::where('full_name', 'LIKE', '%' . $query . '%')->get();
+
+    return response()->json($students);
+}
+
 }
