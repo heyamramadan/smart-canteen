@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
     'role' => 'مسؤول',
     'full_name' => 'هيام رمضان', //
         ]);
+        
     }
 }

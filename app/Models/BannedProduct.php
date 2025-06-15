@@ -18,19 +18,19 @@ class BannedProduct extends Model
         'created_at',
     ];
 
-    // علاقة المحظورات مع ولي الأمر
+  
     public function parent()
     {
         return $this->belongsTo(ParentModel::class, 'parent_id', 'parent_id');
     }
 
-    // علاقة المحظورات مع الطالب
+
     public function student()
     {
         return $this->belongsTo(StudentModel::class, 'student_id', 'student_id');
     }
 
-    // علاقة المحظورات مع المنتج (الطعام)
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
