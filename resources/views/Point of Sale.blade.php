@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,30 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>نظام المقصف الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            100: '#FFEDD5',
-                            500: '#F97316',
-                            600: '#EA580C',
-                            700: '#C2410C',
-                        }
-                    }
-                }
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              100: '#FFEDD5',
+              500: '#F97316',
+              600: '#EA580C',
+              700: '#C2410C',
             }
+          }
         }
-    </script>
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-50">
 
 <!-- الهيكل العام -->
 <div class="flex h-screen">
   <!-- الشريط الجانبي -->
-
-    @include('layouts.sidebar')
+  @include('layouts.sidebar')
 
   <!-- المحتوى الرئيسي -->
   <div class="flex-1 flex flex-col overflow-hidden">
@@ -37,292 +35,332 @@
     <!-- الصف العلوي: بيانات الطالب والمنتجات -->
     <div class="flex flex-col md:flex-row h-1/2">
 
-     <!-- بيانات الطالب -->
-<div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
-  <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
+      <!-- بيانات الطالب -->
+      <div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
+        <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
 
-<!-- حقل البحث -->
-<div class="mb-4">
-  <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
-  <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" />
-</div>
-<!-- نتائج البحث -->
-<div class="overflow-x-auto mb-6">
-  <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
-    <thead class="bg-primary-100 text-primary-700">
-      <tr>
-        <th class="p-2 border">اسم الطالب</th>
-        <th class="p-2 border">اسم الأب</th>
-        <th class="p-2 border">الصف</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- النتائج ستُملأ بواسطة JavaScript -->
-    </tbody>
-  </table>
-</div>
-
-
-  <!-- الطلبات السابقة -->
-  <div class="border-t pt-4">
-    <h3 class="font-semibold text-primary mb-2">طلبات سابقة</h3>
-    <div class="space-y-2">
-      <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-        <div class="flex justify-between">
-          <span>12/05/2023</span>
-          <span class="font-medium">45.00 ر.س</span>
+        <!-- حقل البحث -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
+          <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" autocomplete="off" />
         </div>
-        <div class="text-xs text-gray-500">2 منتجات</div>
-      </div>
-      <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-        <div class="flex justify-between">
-          <span>10/05/2023</span>
-          <span class="font-medium">32.50 ر.س</span>
-        </div>
-        <div class="text-xs text-gray-500">3 منتجات</div>
-      </div>
-    </div>
-  </div>
-</div>
 
+        <!-- نتائج البحث -->
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
+            <thead class="bg-primary-100 text-primary-700">
+              <tr>
+                <th class="p-2 border">اسم الطالب</th>
+                <th class="p-2 border">اسم الأب</th>
+                <th class="p-2 border">الصف</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- النتائج ستُملأ بواسطة JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- الطلبات السابقة -->
+        <div class="border-t pt-4">
+          <h3 class="font-semibold text-primary mb-2">طلبات سابقة</h3>
+          <div class="space-y-2">
+            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
+              <div class="flex justify-between">
+                <span>12/05/2023</span>
+                <span class="font-medium">45.00 ر.س</span>
+              </div>
+              <div class="text-xs text-gray-500">2 منتجات</div>
+            </div>
+            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
+              <div class="flex justify-between">
+                <span>10/05/2023</span>
+                <span class="font-medium">32.50 ر.س</span>
+              </div>
+              <div class="text-xs text-gray-500">3 منتجات</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- المنتجات -->
-      <div class="w-full md:w-1/2 bg-white p-4 overflow-y-auto border-r">
+      <div class="w-full md:w-1/2 bg-white p-4 overflow-y-auto border-r flex flex-col">
         <h2 class="text-xl font-bold text-primary mb-6 text-center">المنتجات</h2>
 
         <!-- التصنيفات -->
         <div class="mb-4">
           <h3 class="font-semibold text-primary mb-2">التصنيفات</h3>
-          <div class="flex flex-wrap gap-4">
-            <label class="cursor-pointer">
-              <input type="radio" name="category" value="الوجبات" class="hidden" onchange="filterProducts(this.value)">
-              <span class="px-3 py-1 border rounded hover:bg-primary-50">الوجبات</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="category" value="المشروبات" class="hidden" onchange="filterProducts(this.value)">
-              <span class="px-3 py-1 border rounded hover:bg-primary-50">المشروبات</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="category" value="الحلويات" class="hidden" onchange="filterProducts(this.value)">
-              <span class="px-3 py-1 border rounded hover:bg-primary-50">الحلويات</span>
-            </label>
-            <label class="cursor-pointer">
-              <input type="radio" name="category" value="السندويشات" class="hidden" onchange="filterProducts(this.value)">
-              <span class="px-3 py-1 border rounded hover:bg-primary-50">السندويشات</span>
-            </label>
+          <div id="categoriesContainer" class="flex flex-wrap gap-4">
+            <!-- التصنيفات ديناميكية تظهر هنا -->
+            <span class="text-gray-400">يرجى اختيار طالب أولاً</span>
           </div>
         </div>
 
         <!-- المنتجات المتاحة -->
-        <div>
+        <div class="flex-1 overflow-y-auto">
           <h3 class="font-semibold text-primary mb-2">المنتجات المتاحة</h3>
           <table class="w-full border text-right">
             <thead>
               <tr class="bg-primary-100">
                 <th class="p-2 border">المنتج</th>
                 <th class="p-2 border">السعر</th>
-                  <th class="p-2 border">الكمية المتوفرة</th>
-                  <th class="p-2 border">الإجراء</th>
+                <th class="p-2 border">الكمية المتوفرة</th>
+                <th class="p-2 border">الإجراء</th>
               </tr>
             </thead>
             <tbody id="productTable">
-              <tr data-category="الوجبات">
-                <td class="p-2 border">ستيك لحم</td>
-                <td class="p-2 border">33.00 ر.س</td>
-        <td class="p-2 border text-center">5</td>
-          <td class="p-2 border text-center">
-  <button onclick="addToInvoice('ستيك لحم', 33)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-
-  </td>
-              </tr>
-              <tr data-category="الوجبات">
-                <td class="p-2 border">دجاج مشوي</td>
-                <td class="p-2 border">28.00 ر.س</td>
-        <td class="p-2 border text-center">50</td>
-                 <td class="p-2 border text-center">
-   <button onclick="addToInvoice('ستيك دجاج مشوي', 28)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-
-  </td>
-              </tr>
-              <tr data-category="الوجبات">
-                <td class="p-2 border">شوربة اليوم</td>
-                <td class="p-2 border">7.50 ر.س</td>
-          <td class="p-2 border text-center">77</td>
-            <td class="p-2 border text-center">
-   <button onclick="addToInvoice('شوربة اليوم', 7.50)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-
-  </td>
-              </tr>
-              <tr data-category="المشروبات">
-                <td class="p-2 border">عصير برتقال</td>
-                <td class="p-2 border">5.00 ر.س</td>
-          <td class="p-2 border text-center">770</td>
-            <td class="p-2 border text-center">
-  <button onclick="addToInvoice('عصير برتقال', 5.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-  </td>
-              </tr>
-              <tr data-category="الحلويات">
-                <td class="p-2 border">كعكة شوكولاتة</td>
-                <td class="p-2 border">10.00 ر.س</td>
-          <td class="p-2 border text-center">77</td>
-            <td class="p-2 border text-center">
-  <button onclick="addToInvoice(' كعكة شوكولاتة', 10.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-  </td>
-              </tr>
-              <tr data-category="السندويشات">
-                <td class="p-2 border">سندويش جبن</td>
-                <td class="p-2 border">6.00 ر.س</td>
-        <td class="p-2 border text-center">400</td>
-          <td class="p-2 border text-center">
-<button onclick="addToInvoice('سندويش جبن', 6.00)" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
-
-  </td>
-              </tr>
+              <!-- المنتجات ديناميكية تظهر هنا -->
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
+    <!-- فاتورة البيع -->
+    <div class="flex-1 p-4 bg-white border-t overflow-y-auto">
+      <div class="max-w-4xl mx-auto">
 
-<!-- فاتورة البيع -->
-<div class="flex-1 p-4 bg-white border-t overflow-y-auto">
-  <div class="max-w-4xl mx-auto">
+        <!-- عنوان -->
+        <h1 class="text-xl font-bold text-primary mb-4">فاتورة البيع</h1>
 
-    <!-- عنوان -->
-    <h1 class="text-xl font-bold text-primary mb-4">فاتورة البيع</h1>
+        <!-- جدول الفاتورة -->
+        <div class="mb-4 overflow-x-auto">
+          <table class="w-full border text-sm text-right" id="invoiceTable">
+            <thead class="bg-primary-100 text-primary-700">
+              <tr>
+                <th class="p-2 border">المنتج</th>
+                <th class="p-2 border">الكمية</th>
+                <th class="p-2 border">سعر القطعة</th>
+                <th class="p-2 border">الإجمالي</th>
+                <th class="p-2 border">الإجراء</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- الصفوف تتم إضافتها هنا ديناميكياً -->
+            </tbody>
+          </table>
+        </div>
 
-    <!-- جدول الفاتورة -->
-    <div class="mb-4 overflow-x-auto">
-      <table class="w-full border text-sm text-right" id="invoiceTable">
-        <thead class="bg-primary-100 text-primary-700">
-          <tr>
-            <th class="p-2 border">المنتج</th>
-            <th class="p-2 border">الكمية</th>
-            <th class="p-2 border">سعر القطعة</th>
-            <th class="p-2 border">الإجمالي</th>
-            <th class="p-2 border">الإجراء</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- الصفوف تتم إضافتها هنا ديناميكياً -->
-        </tbody>
-      </table>
-    </div>
+        <!-- الإجمالي -->
+        <div class="bg-primary-50 text-black p-4 rounded-lg mb-4">
+          <div class="flex justify-between font-bold text-lg">
+            <span>إجمالي الفاتورة</span>
+            <span id="totalAmount">0.00 ر.س</span>
+          </div>
+        </div>
 
-    <!-- الإجمالي -->
-    <div class="bg-primary-50 text-black p-4 rounded-lg mb-4">
-      <div class="flex justify-between font-bold text-lg">
-        <span>إجمالي الفاتورة</span>
-        <span id="totalAmount">0.00 ر.س</span>
+        <!-- زر التأكيد -->
+        <div class="text-center">
+          <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg text-lg font-bold" onclick="confirmSale()">
+            تأكيد عملية البيع
+          </button>
+        </div>
       </div>
-    </div>
-
-    <!-- زر التأكيد -->
-    <div class="text-center">
-      <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg text-lg font-bold">
-        تأكيد عملية البيع
-      </button>
     </div>
   </div>
 </div>
-<!-- JavaScript -->
+
 <script>
   const invoiceTableBody = document.querySelector('#invoiceTable tbody');
   const totalAmountSpan = document.getElementById('totalAmount');
+  const categoriesContainer = document.getElementById('categoriesContainer');
+  const productTableBody = document.getElementById('productTable');
+  const studentSearchInput = document.getElementById('studentSearchInput');
+  const studentsTableBody = document.querySelector('#studentsTable tbody');
 
   let invoiceItems = [];
+  let allProducts = []; // المنتجات الكاملة بعد الجلب
+  let currentStudentId = null;
+  let currentCategory = null;
 
+  // بحث الطلاب
+  studentSearchInput.addEventListener('input', function () {
+    const query = this.value.trim();
+
+    if (query.length < 2) {
+      studentsTableBody.innerHTML = '';
+      return;
+    }
+
+    fetch(`/students/search?query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        studentsTableBody.innerHTML = '';
+        data.forEach(student => {
+          const tr = document.createElement('tr');
+          tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
+          tr.innerHTML = `
+            <td class="p-2 border">${student.full_name}</td>
+            <td class="p-2 border">${student.father_name ?? '—'}</td>
+            <td class="p-2 border">${student.class}</td>
+          `;
+          // عند اختيار طالب
+          tr.addEventListener('click', () => {
+            currentStudentId = student.student_id;
+            loadCategoriesAndProducts(currentStudentId);
+            highlightSelectedStudent(tr);
+          });
+          studentsTableBody.appendChild(tr);
+        });
+      });
+  });
+
+  function highlightSelectedStudent(selectedRow) {
+    // إزالة تمييز من الكل
+    studentsTableBody.querySelectorAll('tr').forEach(r => {
+      r.classList.remove('bg-primary-100', 'text-white');
+    });
+    // تمييز الصف المحدد
+    selectedRow.classList.add('bg-primary-100', 'text-white');
+  }
+
+  // جلب التصنيفات والمنتجات للطالب المحدد
+  function loadCategoriesAndProducts(studentId) {
+    // فرضا هذا endpoint يرجع بيانات مثل:
+    // {
+    //   categories: [{ id, name }, ...],
+    //   products: [{ id, name, price, quantity, category_name }, ...]
+    // }
+    fetch(`/students/${studentId}/allowed-categories`)
+      .then(res => res.json())
+      .then(data => {
+        renderCategories(data.categories);
+        allProducts = data.products;
+        currentCategory = null;
+        renderProducts(allProducts);
+      })
+      .catch(() => {
+        categoriesContainer.innerHTML = `<span class="text-red-500">خطأ في جلب التصنيفات والمنتجات</span>`;
+        productTableBody.innerHTML = '';
+      });
+  }
+
+  // عرض التصنيفات
+  function renderCategories(categories) {
+    if (!categories.length) {
+      categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
+      productTableBody.innerHTML = '';
+      return;
+    }
+    categoriesContainer.innerHTML = '';
+    categories.forEach(cat => {
+      const label = document.createElement('label');
+      label.className = "cursor-pointer";
+      label.innerHTML = `
+        <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange(this.value)">
+        <span class="px-3 py-1 border rounded hover:bg-primary-50">${cat.name}</span>
+      `;
+      categoriesContainer.appendChild(label);
+    });
+  }
+
+  function onCategoryChange(category) {
+    currentCategory = category;
+    filterProducts(category);
+  }
+
+  // عرض المنتجات مع فلترة
+  function renderProducts(products) {
+    if (!products.length) {
+      productTableBody.innerHTML = `<tr><td colspan="4" class="p-2 border text-center text-gray-500">لا توجد منتجات متاحة</td></tr>`;
+      return;
+    }
+    let filtered = currentCategory ? products.filter(p => p.category_name === currentCategory) : products;
+    if (!filtered.length) {
+      productTableBody.innerHTML = `<tr><td colspan="4" class="p-2 border text-center text-gray-500">لا توجد منتجات في هذا التصنيف</td></tr>`;
+      return;
+    }
+
+    productTableBody.innerHTML = '';
+    filtered.forEach(product => {
+      const tr = document.createElement('tr');
+      tr.dataset.category = product.category_name;
+      tr.innerHTML = `
+        <td class="p-2 border">${product.name}</td>
+        <td class="p-2 border">${product.price.toFixed(2)} ر.س</td>
+        <td class="p-2 border text-center">${product.quantity}</td>
+        <td class="p-2 border text-center">
+          <button onclick="addToInvoice('${product.name}', ${product.price})" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700">+</button>
+        </td>
+      `;
+      productTableBody.appendChild(tr);
+    });
+  }
+
+  function filterProducts(category) {
+    currentCategory = category;
+    renderProducts(allProducts);
+  }
+
+  // إضافة منتج إلى الفاتورة
   function addToInvoice(name, price) {
     price = parseFloat(price);
-    const existingItem = invoiceItems.find(item => item.name === name);
+    const existingItem = invoiceItems.find(i => i.name === name);
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantity++;
     } else {
       invoiceItems.push({ name, price, quantity: 1 });
     }
     renderInvoice();
   }
 
+  // إزالة عنصر من الفاتورة
   function removeItem(index) {
     invoiceItems.splice(index, 1);
     renderInvoice();
   }
 
+  // تحديث كمية منتج في الفاتورة
   function updateQuantity(index, delta) {
-    const item = invoiceItems[index];
-    item.quantity += delta;
-    if (item.quantity <= 0) {
+    invoiceItems[index].quantity += delta;
+    if (invoiceItems[index].quantity <= 0) {
       removeItem(index);
     } else {
       renderInvoice();
     }
   }
 
+  // عرض الفاتورة
   function renderInvoice() {
     invoiceTableBody.innerHTML = '';
     let total = 0;
-
-    invoiceItems.forEach((item, index) => {
-      const row = document.createElement('tr');
+    invoiceItems.forEach((item, i) => {
       const itemTotal = item.price * item.quantity;
       total += itemTotal;
 
+      const row = document.createElement('tr');
       row.innerHTML = `
         <td class="p-2 border">${item.name}</td>
         <td class="p-2 border text-center">
-          <button onclick="updateQuantity(${index}, -1)" class="bg-primary-500 text-white px-2 rounded">-</button>
+          <button onclick="updateQuantity(${i}, -1)" class="bg-primary-500 text-white px-2 rounded">-</button>
           <span class="mx-2">${item.quantity}</span>
-          <button onclick="updateQuantity(${index}, 1)" class="bg-primary-500 text-white px-2 rounded">+</button>
+          <button onclick="updateQuantity(${i}, 1)" class="bg-primary-500 text-white px-2 rounded">+</button>
         </td>
         <td class="p-2 border text-center">${item.price.toFixed(2)} ر.س</td>
         <td class="p-2 border text-center">${itemTotal.toFixed(2)} ر.س</td>
         <td class="p-2 border text-center">
-          <button onclick="removeItem(${index})" class="text-red-600 font-bold">إزالة</button>
+          <button onclick="removeItem(${i})" class="text-red-600 font-bold">إزالة</button>
         </td>
       `;
       invoiceTableBody.appendChild(row);
     });
-
     totalAmountSpan.textContent = `${total.toFixed(2)} ر.س`;
   }
 
-  function filterProducts(category) {
-    const rows = document.querySelectorAll("#productTable tr");
-    rows.forEach(row => {
-      row.style.display = row.dataset.category === category ? "" : "none";
-    });
+  // تأكيد البيع (يمكن تعديلها حسب نظامك)
+  function confirmSale() {
+    if (!currentStudentId) {
+      alert('يرجى اختيار طالب أولاً.');
+      return;
+    }
+    if (invoiceItems.length === 0) {
+      alert('لا يوجد منتجات في الفاتورة.');
+      return;
+    }
+    // هنا ترسل البيانات للسيرفر مثلاً
+    alert('تم تأكيد عملية البيع (ويمكن تعديلها لتعمل مع API)');
   }
-  document.getElementById('studentSearchInput').addEventListener('input', function () {
-  const query = this.value;
-
-  if (query.length < 2) return; // تجاهل الأحرف القليلة جدًا
-
-  fetch(`/students/search?query=${encodeURIComponent(query)}`)
-    .then(response => response.json())
-    .then(data => {
-      const tbody = document.querySelector('#studentsTable tbody');
-      tbody.innerHTML = '';
-
-      data.forEach(student => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="p-2 border">${student.full_name}</td>
-          <td class="p-2 border">${student.father_name ?? '—'}</td>
-          <td class="p-2 border">${student.class}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    });
-});
-
 </script>
-
 
 </body>
 </html>

@@ -79,6 +79,9 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'تم حذف التصنيف بنجاح.');
     }
+
+
+    
     public function getCategoriesForStudent($student_id)
 {
     $student = \App\Models\StudentModel::findOrFail($student_id);
