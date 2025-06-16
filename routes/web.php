@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\CategoryController;
 use App\Http\Controllers\Auth\ProductController;
 use App\Http\Controllers\Auth\WalletController;
 use App\Http\Controllers\Auth\PointController;
+use App\Http\Controllers\Auth\OrderController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -66,8 +67,7 @@ Route::get('/students/{student_id}/allowed-categories', [StudentController::clas
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
 
-//مبيعات
-Route::get('/point', [PointController::class, 'index'])->name('point');
+
 
 });
 
@@ -76,11 +76,6 @@ Route::get('/point', [PointController::class, 'index'])->name('point');
 // ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
-    //مبيعات
     Route::get('/point', [PointController::class, 'index'])->name('point');
-
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 });
-
-
-    // أضف مسارات أخرى للموظف إذا لزم
-

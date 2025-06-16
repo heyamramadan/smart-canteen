@@ -23,6 +23,9 @@ class OrderItem extends Model
         'price',
     ];
 
+     protected $casts = [
+        'price' => 'decimal:2',
+    ];
     /**
      * العلاقة: العنصر ينتمي إلى طلب
      */
@@ -38,4 +41,10 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
+        // إجمالي سعر العنصر (الكمية × السعر)
+    public function getTotalAttribute()
+    {
+        return $this->quantity * $this->price;
+    }
+
 }

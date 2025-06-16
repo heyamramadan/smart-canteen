@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>نظام المقصف الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -235,7 +237,7 @@
             if (data.success) {
                 // تحديث واجهة المستخدم ببيانات الطالب
                 updateStudentInfo(data.student);
-                
+
                 // عرض التصنيفات والمنتجات
                 renderCategories(data.categories);
                 allProducts = data.products;
@@ -260,7 +262,7 @@ function updateStudentInfo(student) {
         <p>الاسم: ${student.full_name}</p>
         <p>الصف: ${student.class}</p>
     `;
-    
+
     // تأكد من وجود عنصر لعرض معلومات الطالب في واجهتك
     const studentInfoContainer = document.getElementById('studentInfoContainer');
     if (studentInfoContainer) {
@@ -275,9 +277,9 @@ function updateStudentInfo(student) {
         productTableBody.innerHTML = '';
         return;
     }
-    
+
     categoriesContainer.innerHTML = '';
-    
+
     // إضافة خيار "عرض الكل"
     const allLabel = document.createElement('label');
     allLabel.className = "cursor-pointer select-none";
@@ -286,7 +288,7 @@ function updateStudentInfo(student) {
         <span class="px-3 py-1 border rounded hover:bg-primary-50 bg-primary-100">عرض الكل</span>
     `;
     categoriesContainer.appendChild(allLabel);
-    
+
     // عرض كل التصنيفات
     categories.forEach(cat => {
         const label = document.createElement('label');
@@ -318,8 +320,8 @@ function escapeSingleQuote(str) {
         }
     });
 
-    let filtered = currentCategory ? 
-        products.filter(p => p.category_name.trim() === currentCategory.trim()) : 
+    let filtered = currentCategory ?
+        products.filter(p => p.category_name.trim() === currentCategory.trim()) :
         products;
 
     if (!filtered.length) {
@@ -345,8 +347,8 @@ function escapeSingleQuote(str) {
                 ${isDisabled ? 'غير متوفر' : product.quantity}
             </td>
             <td class="p-2 border text-center">
-                <button onclick="addToInvoice(${product.id}, '${escapeSingleQuote(product.name)}', ${product.price}, ${product.quantity})" 
-                    class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700" 
+                <button onclick="addToInvoice(${product.id}, '${escapeSingleQuote(product.name)}', ${product.price}, ${product.quantity})"
+                    class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700"
                     ${isDisabled ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>
                     +
                 </button>
@@ -361,7 +363,7 @@ function escapeSingleQuote(str) {
 // إضافة منتج إلى الفاتورة
 function addToInvoice(id, name, price, availableQty) {
     const existingItem = invoiceItems.find(i => i.id === id);
-    
+
     if (existingItem) {
         if (existingItem.quantity < availableQty) {
             existingItem.quantity++;
@@ -382,7 +384,7 @@ function addToInvoice(id, name, price, availableQty) {
             return;
         }
     }
-    
+
     renderInvoice();
 }
 
@@ -438,48 +440,68 @@ function addToInvoice(id, name, price, availableQty) {
     totalAmountSpan.textContent = `${total.toFixed(2)} ر.س`;
   }
 
-  // تأكيد البيع (يمكن تعديلها حسب نظامك)
-  function confirmSale() {
+
+async function confirmSale() {
     if (!currentStudentId) {
-      alert('يرجى اختيار طالب أولاً.');
-      return;
+        alert('يرجى اختيار طالب أولاً.');
+        return;
     }
     if (invoiceItems.length === 0) {
-      alert('لا يوجد منتجات في الفاتورة.');
-      return;
+        alert('لا يوجد منتجات في الفاتورة.');
+        return;
     }
 
-    // تحضير بيانات الفاتورة للإرسال (مثال)
-    const saleData = {
-      student_id: currentStudentId,
-      items: invoiceItems.map(i => ({ product_id: i.id, quantity: i.quantity })),
-    };
+    try {
+        // تحضير بيانات الفاتورة للإرسال
+        const saleData = {
+            student_id: currentStudentId,
+            items: invoiceItems.map(i => ({
+                product_id: i.id,
+                quantity: i.quantity,
+                price: i.price
+            })),
+            total_amount: invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        };
 
-    // إرسال البيانات للسيرفر (مثال)
-    fetch('/sales/confirm', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify(saleData),
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('حدث خطأ في تأكيد البيع');
-      return res.json();
-    })
-    .then(data => {
-      alert('تم تأكيد عملية البيع بنجاح');
-      // إعادة تهيئة
-      invoiceItems = [];
-      renderInvoice();
-      // ممكن إعادة تحميل المنتجات لتحديث الكميات
-      loadCategoriesAndProducts(currentStudentId);
-    })
-    .catch(err => {
-      alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
-    });
-  }
+        // الحصول على CSRF token من meta tag أو من cookies
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                         getCookie('XSRF-TOKEN');
+
+        // إرسال البيانات للسيرفر
+        const response = await fetch('/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(saleData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
+        }
+
+        alert('تم تأكيد عملية البيع بنجاح');
+        // إعادة تهيئة
+        invoiceItems = [];
+        renderInvoice();
+        // إعادة تحميل المنتجات لتحديث الكميات
+        loadCategoriesAndProducts(currentStudentId);
+    } catch (err) {
+        alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
+        console.error(err);
+    }
+}
+
+// دالة مساعدة للحصول على الكوكيز
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
 </script>
 
 </body>
