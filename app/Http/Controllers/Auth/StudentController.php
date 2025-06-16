@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Studentmodel;
 use App\Models\BannedProduct;
 use App\Models\Product;
-
+use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
     // دالة عرض صفحة إضافة طالب جديد
@@ -67,40 +67,67 @@ public function search(Request $request)
     return response()->json($students);
 }
 
-    public function getAllowedCategories($student_id)
-    {
+public function getAllowedCategories($student_id)
+{
+    try {
         // تحقق أن الطالب موجود
         $student = Studentmodel::findOrFail($student_id);
 
         // جلب معرفات المنتجات المحظورة لهذا الطالب
-        $bannedProductIds = BannedProduct::where('student_id', $student_id)->pluck('product_id')->toArray();
+        $bannedProductIds = BannedProduct::where('student_id', $student_id)
+            ->pluck('product_id')
+            ->toArray();
 
-        // جلب المنتجات المفعلة وليست محظورة
+        // جلب المنتجات المفعلة وليست محظورة مع التصنيفات
         $allowedProducts = Product::where('is_active', 1)
             ->whereNotIn('product_id', $bannedProductIds)
             ->with('category')
             ->get();
 
-        // تجميع المنتجات حسب التصنيف
+        // تحضير البيانات للإرجاع كـ JSON
         $categories = [];
+        $productsData = [];
 
         foreach ($allowedProducts as $product) {
-            $category = $product->category;
-            if (!$category) continue;
+            if (!$product->category) continue;
 
-            // إذا التصنيف غير موجود في المصفوفة
-            if (!isset($categories[$category->category_id])) {
-                $categories[$category->category_id] = [
-                    'category' => $category,
-                    'products' => [],
+            // إضافة التصنيف إذا لم يكن موجوداً
+            if (!isset($categories[$product->category->category_id])) {
+                $categories[$product->category->category_id] = [
+                    'category_id' => $product->category->category_id,
+                    'name' => $product->category->name,
                 ];
             }
 
-            $categories[$category->category_id]['products'][] = $product;
+            // إضافة بيانات المنتج
+            $productsData[] = [
+                'id' => $product->product_id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'category_id' => $product->category->category_id,
+                'category_name' => $product->category->name,
+            ];
         }
 
-        // تمرير التصنيفات والمنتجات للعرض في صفحة Blade
-        return view('categories.allowed', compact('categories', 'student'));
+        return response()->json([
+            'success' => true,
+            'categories' => array_values($categories), // تحويل إلى مصفوفة عددية
+            'products' => $productsData,
+            'student' => [
+                'student_id' => $student->student_id,
+                'full_name' => $student->full_name,
+                'father_name' => $student->father_name,
+                'class' => $student->class,
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'حدث خطأ: ' . $e->getMessage()
+        ], 500);
     }
+}
 
 }

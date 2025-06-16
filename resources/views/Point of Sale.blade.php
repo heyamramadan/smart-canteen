@@ -45,6 +45,9 @@
           <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" autocomplete="off" />
         </div>
 
+        <div id="studentInfoContainer" class="mb-4"></div>
+
+
         <!-- نتائج البحث -->
         <div class="overflow-x-auto mb-6">
           <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
@@ -227,87 +230,161 @@
   // جلب التصنيفات والمنتجات للطالب المحدد
   function loadCategoriesAndProducts(studentId) {
     fetch(`/students/${studentId}/allowed-categories`)
-      .then(res => res.json())
-      .then(data => {
-        renderCategories(data.categories);
-        allProducts = data.products;
-        currentCategory = null;
-        renderProducts(allProducts);
-      })
-      .catch(() => {
-        categoriesContainer.innerHTML = `<span class="text-red-500">خطأ في جلب التصنيفات والمنتجات</span>`;
-        productTableBody.innerHTML = '';
-      });
-  }
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // تحديث واجهة المستخدم ببيانات الطالب
+                updateStudentInfo(data.student);
+                
+                // عرض التصنيفات والمنتجات
+                renderCategories(data.categories);
+                allProducts = data.products;
+                currentCategory = null;
+                renderProducts(allProducts);
+            } else {
+                showError(data.message);
+            }
+        })
+        .catch(err => {
+            showError('حدث خطأ في جلب البيانات: ' + err.message);
+        });
+}
 
+// عرض معلومات الطالب
+function updateStudentInfo(student) {
+    // يمكنك إضافة هذا القسم في واجهة البيع لعرض بيانات الطالب المحدد
+    const studentInfoDiv = document.createElement('div');
+    studentInfoDiv.className = 'bg-blue-50 p-3 rounded mb-4';
+    studentInfoDiv.innerHTML = `
+        <h3 class="font-bold">الطالب المحدد:</h3>
+        <p>الاسم: ${student.full_name}</p>
+        <p>الصف: ${student.class}</p>
+    `;
+    
+    // تأكد من وجود عنصر لعرض معلومات الطالب في واجهتك
+    const studentInfoContainer = document.getElementById('studentInfoContainer');
+    if (studentInfoContainer) {
+        studentInfoContainer.innerHTML = '';
+        studentInfoContainer.appendChild(studentInfoDiv);
+    }
+}
   // عرض التصنيفات
   function renderCategories(categories) {
-    if (!categories.length) {
-      categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
-      productTableBody.innerHTML = '';
-      return;
+    if (!categories || categories.length === 0) {
+        categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
+        productTableBody.innerHTML = '';
+        return;
     }
+    
     categoriesContainer.innerHTML = '';
+    
+    // إضافة خيار "عرض الكل"
+    const allLabel = document.createElement('label');
+    allLabel.className = "cursor-pointer select-none";
+    allLabel.innerHTML = `
+        <input type="radio" name="category" value="" class="hidden" onchange="onCategoryChange('')" ${!currentCategory ? 'checked' : ''}>
+        <span class="px-3 py-1 border rounded hover:bg-primary-50 bg-primary-100">عرض الكل</span>
+    `;
+    categoriesContainer.appendChild(allLabel);
+    
+    // عرض كل التصنيفات
     categories.forEach(cat => {
-      const label = document.createElement('label');
-      label.className = "cursor-pointer select-none";
-      label.innerHTML = `
-        <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange(this.value)">
-        <span class="px-3 py-1 border rounded hover:bg-primary-50">${cat.name}</span>
-      `;
-      categoriesContainer.appendChild(label);
+        const label = document.createElement('label');
+        label.className = "cursor-pointer select-none";
+        label.innerHTML = `
+            <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange('${cat.name}')" ${currentCategory === cat.name ? 'checked' : ''}>
+            <span class="px-3 py-1 border rounded hover:bg-primary-50 ${currentCategory === cat.name ? 'bg-primary-100' : ''}">${cat.name}</span>
+        `;
+        categoriesContainer.appendChild(label);
     });
-  }
+}
 
-  function onCategoryChange(category) {
-    currentCategory = category;
+function onCategoryChange(category) {
+    currentCategory = category === "" ? null : category;
     renderProducts(allProducts);
-  }
+}
 
+
+// دالة مساعدة للتعامل مع الأحرف الخاصة في أسماء المنتجات
+function escapeSingleQuote(str) {
+    return str.replace(/'/g, "\\'");
+}
   // عرض المنتجات مع فلترة
   function renderProducts(products) {
-    let filtered = currentCategory ? products.filter(p => p.category_name === currentCategory) : products;
+    // تحويل السعر من سترينق إلى رقم إذا لزم الأمر
+    products.forEach(p => {
+        if (typeof p.price === 'string') {
+            p.price = parseFloat(p.price);
+        }
+    });
+
+    let filtered = currentCategory ? 
+        products.filter(p => p.category_name.trim() === currentCategory.trim()) : 
+        products;
 
     if (!filtered.length) {
-      productTableBody.innerHTML = `<tr><td colspan="4" class="p-2 border text-center text-gray-500">لا توجد منتجات في هذا التصنيف</td></tr>`;
-      return;
+        productTableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="p-2 border text-center text-gray-500">
+                    لا توجد منتجات ${currentCategory ? 'في هذا التصنيف' : 'متاحة'}
+                </td>
+            </tr>
+        `;
+        return;
     }
 
     productTableBody.innerHTML = '';
     filtered.forEach(product => {
-      const tr = document.createElement('tr');
-      tr.dataset.category = product.category_name;
-      tr.innerHTML = `
-        <td class="p-2 border">${product.name}</td>
-        <td class="p-2 border">${product.price.toFixed(2)} ر.س</td>
-        <td class="p-2 border text-center">${product.quantity}</td>
-        <td class="p-2 border text-center">
-          <button onclick="addToInvoice(${product.id}, '${product.name}', ${product.price}, ${product.quantity})" class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700" ${product.quantity <= 0 ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>+</button>
-        </td>
-      `;
-      productTableBody.appendChild(tr);
+        const isDisabled = product.quantity <= 0;
+        const tr = document.createElement('tr');
+        tr.className = isDisabled ? 'opacity-50' : '';
+        tr.innerHTML = `
+            <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.name}</td>
+            <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.price.toFixed(2)} ر.س</td>
+            <td class="p-2 border text-center ${isDisabled ? 'text-red-500' : ''}">
+                ${isDisabled ? 'غير متوفر' : product.quantity}
+            </td>
+            <td class="p-2 border text-center">
+                <button onclick="addToInvoice(${product.id}, '${escapeSingleQuote(product.name)}', ${product.price}, ${product.quantity})" 
+                    class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700" 
+                    ${isDisabled ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>
+                    +
+                </button>
+            </td>
+        `;
+        productTableBody.appendChild(tr);
     });
-  }
+}
 
   // إضافة منتج إلى الفاتورة
   // تمرير id لضمان التفريق بين المنتجات
-  function addToInvoice(id, name, price, availableQty) {
+// إضافة منتج إلى الفاتورة
+function addToInvoice(id, name, price, availableQty) {
     const existingItem = invoiceItems.find(i => i.id === id);
+    
     if (existingItem) {
-      if (existingItem.quantity < availableQty) {
-        existingItem.quantity++;
-      } else {
-        alert('الكمية المطلوبة أكبر من المتوفر.');
-      }
+        if (existingItem.quantity < availableQty) {
+            existingItem.quantity++;
+        } else {
+            alert('لا يمكن طلب كمية أكبر من الكمية المتاحة (' + availableQty + ')');
+            return;
+        }
     } else {
-      if (availableQty > 0) {
-        invoiceItems.push({ id, name, price, quantity: 1 });
-      } else {
-        alert('المنتج غير متوفر حالياً.');
-      }
+        if (availableQty > 0) {
+            invoiceItems.push({
+                id: id,
+                name: name,
+                price: price,
+                quantity: 1
+            });
+        } else {
+            alert('هذا المنتج غير متوفر حالياً');
+            return;
+        }
     }
+    
     renderInvoice();
-  }
+}
 
   // إزالة عنصر من الفاتورة
   function removeItem(index) {
