@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class studentmodel extends Model
 {
     use HasFactory;
+    
 
     // المفتاح الأساسي للجدول (رقم تعريف الطالب)
     protected $primaryKey = 'student_id';

@@ -67,7 +67,33 @@ public function search(Request $request)
 
     return response()->json($students);
 }
+// عرض صفحة تعديل بيانات الطالب
+// عرض صفحة تعديل بيانات الطالب
+public function edit(Studentmodel $student)
+{
+    $parents = ParentModel::with('user')->get();
+    return view('user.edit_student', compact('student', 'parents'));
+}
 
+// تحديث بيانات الطالب
+public function update(Request $request, Studentmodel $student)
+{
+    $validated = $request->validate([
+        'full_name' => 'required|string|max:255',
+        'class' => 'required|string|max:255',
+        'birth_date' => 'nullable|date',
+        'parent_id' => 'required|exists:parents,parent_id'
+    ]);
+
+    $parent = ParentModel::with('user')->find($validated['parent_id']);
+    $fatherName = $parent->user->full_name ?? 'غير معروف';
+
+    $student->update(array_merge($validated, [
+        'father_name' => $fatherName
+    ]));
+
+    return redirect()->route('students.index')->with('success', 'تم تعديل بيانات الطالب بنجاح!');
+}
 public function getAllowedCategories($student_id)
 {
     try {
