@@ -61,9 +61,6 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update'); // تغيير هنا
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
-Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
-// للحصول على التصنيفات المسموحة للطالب
-Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
 
      //محافظة
 
@@ -81,4 +78,6 @@ Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
     Route::get('/point', [PointController::class, 'index'])->name('point');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+    Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
 });
