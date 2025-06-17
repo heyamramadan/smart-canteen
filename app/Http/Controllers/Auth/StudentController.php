@@ -58,11 +58,17 @@ class StudentController extends Controller
 }
 public function search(Request $request)
 {
-
     $query = $request->input('query');
 
-    $students = Studentmodel::with('parent.user') // اجلب الأب أيضاً لو كنت تحتاجه
-        ->where('full_name', 'LIKE', '%' . $query . '%')
+    $students = Studentmodel::with('parent.user')
+        ->when($query, function($q) use ($query) {
+            $q->where('full_name', 'LIKE', '%' . $query . '%')
+              ->orWhere('father_name', 'LIKE', '%' . $query . '%')
+              ->orWhere('class', 'LIKE', '%' . $query . '%')
+              ->orWhereHas('parent.user', function($q) use ($query) {
+                  $q->where('full_name', 'LIKE', '%' . $query . '%');
+              });
+        })
         ->get();
 
     return response()->json($students);

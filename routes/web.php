@@ -61,6 +61,7 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update'); // تغيير هنا
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
 // للحصول على التصنيفات المسموحة للطالب
 Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
 
