@@ -58,6 +58,7 @@ class StudentController extends Controller
 }
 public function search(Request $request)
 {
+
     $query = $request->input('query');
 
     $students = Studentmodel::with('parent.user') // اجلب الأب أيضاً لو كنت تحتاجه
