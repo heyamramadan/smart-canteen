@@ -76,7 +76,7 @@ Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet
 // ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
-    Route::get('/point', [PointController::class, 'index'])->name('point');
+    Route::get('/point', [OrderController::class, 'create'])->name('point');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
     Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');

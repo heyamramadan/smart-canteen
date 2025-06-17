@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function create()
+{
+    // عرض صفحة واجهة البيع
+    return view('Point of Sale');
+}
+
     public function store(Request $request)
     {
         // التحقق من أن المستخدم موظف
