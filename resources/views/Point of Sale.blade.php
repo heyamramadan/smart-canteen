@@ -58,6 +58,7 @@
                 <th class="p-2 border">اسم الطالب</th>
                 <th class="p-2 border">اسم الأب</th>
                 <th class="p-2 border">الصف</th>
+              <th class="p-2 border">سقف الشراء</th>
               </tr>
             </thead>
             <tbody>
