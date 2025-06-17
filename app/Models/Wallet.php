@@ -13,6 +13,7 @@ class Wallet extends Model
     protected $fillable = [
         'parent_id',
         'balance',
+         'daily_limit',
     ];
 
     // العلاقة: المحفظة تنتمي إلى ولي الأمر
