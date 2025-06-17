@@ -55,7 +55,6 @@
                 <thead class="bg-gray-100">
                 <tr>
                     <th class="p-3">#</th>
-                    <th class="p-3">رقم الصنف</th>
                     <th class="p-3">الاسم</th>
                     <th class="p-3">الوصف</th>
                     <th class="p-3">تاريخ الإضافة</th>
@@ -67,7 +66,6 @@
                 @forelse($categories as $index => $category)
                     <tr class="hover:bg-gray-50">
                         <td class="p-3">{{ $index + 1 }}</td>
-                        <td class="p-3">{{ $category->category_id }}</td>
                         <td class="p-3">{{ $category->name }}</td>
                         <td class="p-3">{{ $category->description ?? '-' }}</td>
                         <td class="p-3">{{ $category->created_at->format('Y-m-d H:i') }}</td>

@@ -65,8 +65,8 @@
                                 <td class="p-3">{{ $parent->full_name }}</td>
                                 <td class="p-3">{{ $parent->email }}</td>
                                 <td class="p-3">{{ $parent->phone_number }}</td>
-                                <td class="p-3 font-medium">{{ number_format($parent->parent->wallet->balance ?? 0, 2) }} ر.س</td>
-                            
+                                <td class="p-3 font-medium">{{ number_format($parent->parent->wallet->balance ?? 0, 2) }}د.ل</td>
+
                                 <td class="p-3">
                                     <button onclick="showChargeModal({{ $parent->parent->parent_id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">شحن</button>
                                 </td>
