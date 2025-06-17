@@ -103,28 +103,23 @@ public function update(Request $request, Studentmodel $student)
 public function getAllowedCategories($student_id)
 {
     try {
-        // تحقق أن الطالب موجود
-        $student = Studentmodel::findOrFail($student_id);
+        $student = Studentmodel::with(['parent.wallet'])->findOrFail($student_id);
 
-        // جلب معرفات المنتجات المحظورة لهذا الطالب
         $bannedProductIds = BannedProduct::where('student_id', $student_id)
             ->pluck('product_id')
             ->toArray();
 
-        // جلب المنتجات المفعلة وليست محظورة مع التصنيفات
         $allowedProducts = Product::where('is_active', 1)
             ->whereNotIn('product_id', $bannedProductIds)
             ->with('category')
             ->get();
 
-        // تحضير البيانات للإرجاع كـ JSON
         $categories = [];
         $productsData = [];
 
         foreach ($allowedProducts as $product) {
             if (!$product->category) continue;
 
-            // إضافة التصنيف إذا لم يكن موجوداً
             if (!isset($categories[$product->category->category_id])) {
                 $categories[$product->category->category_id] = [
                     'category_id' => $product->category->category_id,
@@ -132,7 +127,6 @@ public function getAllowedCategories($student_id)
                 ];
             }
 
-            // إضافة بيانات المنتج
             $productsData[] = [
                 'id' => $product->product_id,
                 'name' => $product->name,
@@ -145,13 +139,15 @@ public function getAllowedCategories($student_id)
 
         return response()->json([
             'success' => true,
-            'categories' => array_values($categories), // تحويل إلى مصفوفة عددية
+            'categories' => array_values($categories),
             'products' => $productsData,
             'student' => [
                 'student_id' => $student->student_id,
                 'full_name' => $student->full_name,
                 'father_name' => $student->father_name,
                 'class' => $student->class,
+                'daily_limit' => $student->parent->wallet->daily_limit ?? 0,
+                'remaining_limit' => $this->calculateRemainingLimit($student->parent->wallet)
             ]
         ]);
 
@@ -163,4 +159,18 @@ public function getAllowedCategories($student_id)
     }
 }
 
+private function calculateRemainingLimit($wallet)
+{
+    if (!$wallet) return 0;
+
+    // حساب إجمالي المشتريات اليومية لهذا الطالب
+    $todayPurchases = \App\Models\Order::whereHas('student', function($q) use ($wallet) {
+            $q->where('parent_id', $wallet->parent_id);
+        })
+        ->whereDate('created_at', today())
+        ->sum('total_amount');
+
+    $remaining = $wallet->daily_limit - $todayPurchases;
+    return max($remaining, 0); // التأكد من عدم الرجوع بقيمة سالبة
+}
 }

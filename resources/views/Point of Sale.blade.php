@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
- <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>نظام المقصف الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -49,7 +48,6 @@
 
         <div id="studentInfoContainer" class="mb-4"></div>
 
-
         <!-- نتائج البحث -->
         <div class="overflow-x-auto mb-6">
           <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
@@ -58,7 +56,7 @@
                 <th class="p-2 border">اسم الطالب</th>
                 <th class="p-2 border">اسم الأب</th>
                 <th class="p-2 border">الصف</th>
-              <th class="p-2 border">سقف الشراء</th>
+                <th class="p-2 border">سقف الشراء</th>
               </tr>
             </thead>
             <tbody>
@@ -153,6 +151,9 @@
             <span>إجمالي الفاتورة</span>
             <span id="totalAmount">0.00 ر.س</span>
           </div>
+          <div id="limitInfo" class="text-right text-sm mt-2 hidden">
+            <span id="remainingLimitText"></span>
+          </div>
         </div>
 
         <!-- زر التأكيد -->
@@ -173,11 +174,14 @@
   const productTableBody = document.getElementById('productTable');
   const studentSearchInput = document.getElementById('studentSearchInput');
   const studentsTableBody = document.querySelector('#studentsTable tbody');
+  const limitInfoDiv = document.getElementById('limitInfo');
+  const remainingLimitText = document.getElementById('remainingLimitText');
 
   let invoiceItems = [];
-  let allProducts = []; // المنتجات الكاملة بعد الجلب
+  let allProducts = [];
   let currentStudentId = null;
   let currentCategory = null;
+  let dailyLimit = 0; // تغيير اسم المتغير ليعكس أنه ثابت
 
   // بحث الطلاب
   studentSearchInput.addEventListener('input', function () {
@@ -205,8 +209,8 @@
             <td class="p-2 border">${student.full_name}</td>
             <td class="p-2 border">${student.father_name ?? '—'}</td>
             <td class="p-2 border">${student.class}</td>
+            <td class="p-2 border">${student.daily_limit ? student.daily_limit.toFixed(2) + ' ر.س' : '—'}</td>
           `;
-          // عند اختيار طالب
           tr.addEventListener('click', () => {
             currentStudentId = student.student_id;
             loadCategoriesAndProducts(currentStudentId);
@@ -217,33 +221,40 @@
           studentsTableBody.appendChild(tr);
         });
       }).catch(() => {
-        studentsTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-2 text-red-500">خطأ في جلب الطلاب</td></tr>`;
+        studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center p-2 text-red-500">خطأ في جلب الطلاب</td></tr>`;
       });
   });
 
   function highlightSelectedStudent(selectedRow) {
-    // إزالة تمييز من الكل
     studentsTableBody.querySelectorAll('tr').forEach(r => {
       r.classList.remove('bg-primary-100', 'text-white');
     });
-    // تمييز الصف المحدد
     selectedRow.classList.add('bg-primary-100', 'text-white');
   }
 
   // جلب التصنيفات والمنتجات للطالب المحدد
-  function loadCategoriesAndProducts(studentId) {
+// في دالة loadCategoriesAndProducts
+function loadCategoriesAndProducts(studentId) {
     fetch(`/students/${studentId}/allowed-categories`)
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // تحديث واجهة المستخدم ببيانات الطالب
-                updateStudentInfo(data.student);
+                // تحويل daily_limit إلى رقم إذا كان سلسلة نصية
+                if (data.student && data.student.daily_limit) {
+                    data.student.daily_limit = parseFloat(data.student.daily_limit) || 0;
+                }
 
-                // عرض التصنيفات والمنتجات
+                updateStudentInfo(data.student);
                 renderCategories(data.categories);
                 allProducts = data.products;
                 currentCategory = null;
                 renderProducts(allProducts);
+
+                // تخزين سقف الشراء الثابت فقط
+                if (data.student.daily_limit !== undefined) {
+                    dailyLimit = data.student.daily_limit;
+                    updateLimitInfo();
+                }
             } else {
                 showError(data.message);
             }
@@ -253,30 +264,59 @@
         });
 }
 
-// عرض معلومات الطالب
+// في دالة updateStudentInfo
 function updateStudentInfo(student) {
-    // يمكنك إضافة هذا القسم في واجهة البيع لعرض بيانات الطالب المحدد
-    const studentInfoDiv = document.createElement('div');
-    studentInfoDiv.className = 'bg-blue-50 p-3 rounded mb-4';
-    studentInfoDiv.innerHTML = `
-        <h3 class="font-bold">الطالب المحدد:</h3>
-        <p>الاسم: ${student.full_name}</p>
-        <p>الصف: ${student.class}</p>
-    `;
-
-    // تأكد من وجود عنصر لعرض معلومات الطالب في واجهتك
     const studentInfoContainer = document.getElementById('studentInfoContainer');
-    if (studentInfoContainer) {
-        studentInfoContainer.innerHTML = '';
-        studentInfoContainer.appendChild(studentInfoDiv);
+
+    // التحقق من وجود daily_limit وتنسيقه بشكل آمن
+    const dailyLimitDisplay = student.daily_limit !== undefined && student.daily_limit !== null ?
+        parseFloat(student.daily_limit).toFixed(2) + ' ر.س' :
+        'غير محدد';
+
+    studentInfoContainer.innerHTML = `
+        <div class="bg-blue-50 p-3 rounded mb-4">
+            <h3 class="font-bold">الطالب المحدد:</h3>
+            <p>الاسم: ${student.full_name}</p>
+            <p>الصف: ${student.class}</p>
+            <p class="text-gray-700">
+                سقف الشراء اليومي: ${dailyLimitDisplay}
+            </p>
+        </div>
+    `;
+}
+
+// في دالة updateLimitInfo
+function updateLimitInfo() {
+    const total = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    if (dailyLimit > 0) {
+        limitInfoDiv.classList.remove('hidden');
+        const formattedLimit = parseFloat(dailyLimit).toFixed(2);
+
+        if (total > dailyLimit) {
+            remainingLimitText.innerHTML = `
+                <span class="text-red-600 font-bold">
+                    تحذير: تجاوز سقف الشراء اليومي (${formattedLimit} ر.س)
+                </span>
+            `;
+        } else {
+            remainingLimitText.innerHTML = `
+                <span class="text-gray-700">
+                    السقف اليومي: ${formattedLimit} ر.س
+                </span>
+            `;
+        }
+    } else {
+        limitInfoDiv.classList.add('hidden');
     }
 }
+
   // عرض التصنيفات
   function renderCategories(categories) {
     if (!categories || categories.length === 0) {
-        categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
-        productTableBody.innerHTML = '';
-        return;
+      categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
+      productTableBody.innerHTML = '';
+      return;
     }
 
     categoriesContainer.innerHTML = '';
@@ -285,109 +325,106 @@ function updateStudentInfo(student) {
     const allLabel = document.createElement('label');
     allLabel.className = "cursor-pointer select-none";
     allLabel.innerHTML = `
-        <input type="radio" name="category" value="" class="hidden" onchange="onCategoryChange('')" ${!currentCategory ? 'checked' : ''}>
-        <span class="px-3 py-1 border rounded hover:bg-primary-50 bg-primary-100">عرض الكل</span>
+      <input type="radio" name="category" value="" class="hidden" onchange="onCategoryChange('')" ${!currentCategory ? 'checked' : ''}>
+      <span class="px-3 py-1 border rounded hover:bg-primary-50 bg-primary-100">عرض الكل</span>
     `;
     categoriesContainer.appendChild(allLabel);
 
     // عرض كل التصنيفات
     categories.forEach(cat => {
-        const label = document.createElement('label');
-        label.className = "cursor-pointer select-none";
-        label.innerHTML = `
-            <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange('${cat.name}')" ${currentCategory === cat.name ? 'checked' : ''}>
-            <span class="px-3 py-1 border rounded hover:bg-primary-50 ${currentCategory === cat.name ? 'bg-primary-100' : ''}">${cat.name}</span>
-        `;
-        categoriesContainer.appendChild(label);
+      const label = document.createElement('label');
+      label.className = "cursor-pointer select-none";
+      label.innerHTML = `
+        <input type="radio" name="category" value="${cat.name}" class="hidden" onchange="onCategoryChange('${cat.name}')" ${currentCategory === cat.name ? 'checked' : ''}>
+        <span class="px-3 py-1 border rounded hover:bg-primary-50 ${currentCategory === cat.name ? 'bg-primary-100' : ''}">${cat.name}</span>
+      `;
+      categoriesContainer.appendChild(label);
     });
-}
+  }
 
-function onCategoryChange(category) {
+  function onCategoryChange(category) {
     currentCategory = category === "" ? null : category;
     renderProducts(allProducts);
-}
+  }
 
-
-// دالة مساعدة للتعامل مع الأحرف الخاصة في أسماء المنتجات
-function escapeSingleQuote(str) {
+  // دالة مساعدة للتعامل مع الأحرف الخاصة في أسماء المنتجات
+  function escapeSingleQuote(str) {
     return str.replace(/'/g, "\\'");
-}
+  }
+
   // عرض المنتجات مع فلترة
   function renderProducts(products) {
-    // تحويل السعر من سترينق إلى رقم إذا لزم الأمر
     products.forEach(p => {
-        if (typeof p.price === 'string') {
-            p.price = parseFloat(p.price);
-        }
+      if (typeof p.price === 'string') {
+        p.price = parseFloat(p.price);
+      }
     });
 
     let filtered = currentCategory ?
-        products.filter(p => p.category_name.trim() === currentCategory.trim()) :
-        products;
+      products.filter(p => p.category_name.trim() === currentCategory.trim()) :
+      products;
 
     if (!filtered.length) {
-        productTableBody.innerHTML = `
-            <tr>
-                <td colspan="4" class="p-2 border text-center text-gray-500">
-                    لا توجد منتجات ${currentCategory ? 'في هذا التصنيف' : 'متاحة'}
-                </td>
-            </tr>
-        `;
-        return;
+      productTableBody.innerHTML = `
+        <tr>
+          <td colspan="4" class="p-2 border text-center text-gray-500">
+            لا توجد منتجات ${currentCategory ? 'في هذا التصنيف' : 'متاحة'}
+          </td>
+        </tr>
+      `;
+      return;
     }
 
     productTableBody.innerHTML = '';
     filtered.forEach(product => {
-        const isDisabled = product.quantity <= 0;
-        const tr = document.createElement('tr');
-        tr.className = isDisabled ? 'opacity-50' : '';
-        tr.innerHTML = `
-            <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.name}</td>
-            <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.price.toFixed(2)} ر.س</td>
-            <td class="p-2 border text-center ${isDisabled ? 'text-red-500' : ''}">
-                ${isDisabled ? 'غير متوفر' : product.quantity}
-            </td>
-            <td class="p-2 border text-center">
-                <button onclick="addToInvoice(${product.id}, '${escapeSingleQuote(product.name)}', ${product.price}, ${product.quantity})"
-                    class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700"
-                    ${isDisabled ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>
-                    +
-                </button>
-            </td>
-        `;
-        productTableBody.appendChild(tr);
+      const isDisabled = product.quantity <= 0;
+      const tr = document.createElement('tr');
+      tr.className = isDisabled ? 'opacity-50' : '';
+      tr.innerHTML = `
+        <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.name}</td>
+        <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.price.toFixed(2)} ر.س</td>
+        <td class="p-2 border text-center ${isDisabled ? 'text-red-500' : ''}">
+          ${isDisabled ? 'غير متوفر' : product.quantity}
+        </td>
+        <td class="p-2 border text-center">
+          <button onclick="addToInvoice(${product.id}, '${escapeSingleQuote(product.name)}', ${product.price}, ${product.quantity})"
+            class="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-700"
+            ${isDisabled ? 'disabled class="opacity-50 cursor-not-allowed"' : ''}>
+            +
+          </button>
+        </td>
+      `;
+      productTableBody.appendChild(tr);
     });
-}
+  }
 
   // إضافة منتج إلى الفاتورة
-  // تمرير id لضمان التفريق بين المنتجات
-// إضافة منتج إلى الفاتورة
-function addToInvoice(id, name, price, availableQty) {
+  function addToInvoice(id, name, price, availableQty) {
     const existingItem = invoiceItems.find(i => i.id === id);
 
     if (existingItem) {
-        if (existingItem.quantity < availableQty) {
-            existingItem.quantity++;
-        } else {
-            alert('لا يمكن طلب كمية أكبر من الكمية المتاحة (' + availableQty + ')');
-            return;
-        }
+      if (existingItem.quantity < availableQty) {
+        existingItem.quantity++;
+      } else {
+        alert('لا يمكن طلب كمية أكبر من الكمية المتاحة (' + availableQty + ')');
+        return;
+      }
     } else {
-        if (availableQty > 0) {
-            invoiceItems.push({
-                id: id,
-                name: name,
-                price: price,
-                quantity: 1
-            });
-        } else {
-            alert('هذا المنتج غير متوفر حالياً');
-            return;
-        }
+      if (availableQty > 0) {
+        invoiceItems.push({
+          id: id,
+          name: name,
+          price: price,
+          quantity: 1
+        });
+      } else {
+        alert('هذا المنتج غير متوفر حالياً');
+        return;
+      }
     }
 
     renderInvoice();
-}
+  }
 
   // إزالة عنصر من الفاتورة
   function removeItem(index) {
@@ -439,70 +476,77 @@ function addToInvoice(id, name, price, availableQty) {
       invoiceTableBody.appendChild(row);
     });
     totalAmountSpan.textContent = `${total.toFixed(2)} ر.س`;
+    updateLimitInfo();
   }
 
-
-async function confirmSale() {
+  async function confirmSale() {
     if (!currentStudentId) {
-        alert('يرجى اختيار طالب أولاً.');
-        return;
+      alert('يرجى اختيار طالب أولاً.');
+      return;
     }
     if (invoiceItems.length === 0) {
-        alert('لا يوجد منتجات في الفاتورة.');
-        return;
+      alert('لا يوجد منتجات في الفاتورة.');
+      return;
+    }
+
+    const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    // التحقق من السقف اليومي إذا كان موجوداً
+    if (dailyLimit > 0 && totalAmount > dailyLimit) {
+      alert(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} ر.س`);
+      return;
     }
 
     try {
-        // تحضير بيانات الفاتورة للإرسال
-        const saleData = {
-            student_id: currentStudentId,
-            items: invoiceItems.map(i => ({
-                product_id: i.id,
-                quantity: i.quantity,
-                price: i.price
-            })),
-            total_amount: invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-        };
+      const saleData = {
+        student_id: currentStudentId,
+        items: invoiceItems.map(i => ({
+          product_id: i.id,
+          quantity: i.quantity,
+          price: i.price
+        })),
+        total_amount: totalAmount
+      };
 
-        // الحصول على CSRF token من meta tag أو من cookies
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
-                         getCookie('XSRF-TOKEN');
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                       getCookie('XSRF-TOKEN');
 
-        // إرسال البيانات للسيرفر
-        const response = await fetch('/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(saleData),
-        });
+      const response = await fetch('/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(saleData),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
-        }
+      if (!response.ok) {
+        throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
+      }
 
-        alert('تم تأكيد عملية البيع بنجاح');
-        // إعادة تهيئة
-        invoiceItems = [];
-        renderInvoice();
-        // إعادة تحميل المنتجات لتحديث الكميات
-        loadCategoriesAndProducts(currentStudentId);
+      alert('تم تأكيد عملية البيع بنجاح');
+      invoiceItems = [];
+      renderInvoice();
+      loadCategoriesAndProducts(currentStudentId);
     } catch (err) {
-        alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
-        console.error(err);
+      alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
+      console.error(err);
     }
-}
+  }
 
-// دالة مساعدة للحصول على الكوكيز
-function getCookie(name) {
+  // دالة مساعدة للحصول على الكوكيز
+  function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
-}
+  }
+
+  function showError(message) {
+    alert(message);
+  }
 </script>
 
 </body>
