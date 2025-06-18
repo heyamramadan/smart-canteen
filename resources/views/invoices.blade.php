@@ -80,12 +80,14 @@
                             <td class="p-3 text-sm">{{ $invoice->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total_amount, 2) }} د.ل</td>
                             <td class="p-3 flex items-center space-x-2 space-x-reverse">
-                                <button
-                                    onclick='openInvoiceModal(@json($invoice))'
-                                    class="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-100 transition"
-                                >
-                                    👁️ عرض
-                                </button>
+                           <button
+    onclick='openInvoiceModal(@json($invoice))'
+    class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition"
+>
+    👁️ عرض
+</button>
+
+
                                 <form action="{{ route('invoices.destroy', $invoice->order_id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف الفاتورة؟')">
                                     @csrf
                                     @method('DELETE')
