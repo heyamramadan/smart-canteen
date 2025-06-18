@@ -44,9 +44,7 @@
                     />
                 </div>
 
-                <div class="text-sm text-center text-orange-500 mb-6">
-                    <a href="#" class="hover:underline">نسيت كلمة المرور؟</a>
-                </div>
+                <div class="mb-6"></div>
 
                 <button
                     type="submit"
