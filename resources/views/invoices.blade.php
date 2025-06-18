@@ -86,6 +86,13 @@
 >
     👁️ عرض
 </button>
+  <button
+        onclick='printInvoiceDirect(@json($invoice))'
+        class="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-100 transition"
+        title="طباعة الفاتورة"
+    >
+        🖨️ طباعة
+    </button>
 
 
                                 <form action="{{ route('invoices.destroy', $invoice->order_id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف الفاتورة؟')">
@@ -119,6 +126,7 @@
     <div class="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center z-10">
             <h3 class="text-lg font-bold text-primary-700">تفاصيل الفاتورة</h3>
+
             <button onclick="closeInvoiceModal()" class="text-gray-500 hover:text-gray-700">✖</button>
         </div>
         <div class="p-6 space-y-4" id="invoiceDetails">
@@ -163,6 +171,39 @@
         document.body.classList.remove('overflow-hidden');
         document.getElementById('invoiceDetails').innerHTML = '';
     }
+  function printInvoiceDirect(invoice) {
+    // بناء محتوى الفاتورة للطباعة
+    let html = `
+        <div style="direction: rtl; font-family: 'Tajawal', sans-serif; padding: 20px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">🧾 فاتورة شراء</h2>
+            <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
+            <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
+            <p><strong>اسم الأب:</strong> ${invoice.student?.father_name || '—'}</p>
+            <p><strong>الفصل:</strong> ${invoice.student?.class || '—'}</p>
+            <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
+            <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
+            <hr style="margin: 15px 0;">
+    `;
+
+    if (invoice.order_items && invoice.order_items.length > 0) {
+        html += `<h4 style="font-weight: bold; margin-bottom: 10px;">الأصناف:</h4><ul>`;
+        invoice.order_items.forEach(item => {
+            html += `<li>${item.product?.name || '—'} × ${item.quantity} = ${(item.price * item.quantity).toFixed(2)} د.ل</li>`;
+        });
+        html += '</ul>';
+    }
+
+    html += '</div>';
+
+    // فتح نافذة طباعة جديدة
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+
 </script>
 
 </body>
