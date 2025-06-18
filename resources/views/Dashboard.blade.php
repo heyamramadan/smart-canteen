@@ -86,6 +86,13 @@
                         المبيعات
                     </a>
                 </li>
+                <li class="p-3 {{ request()->is('invoices*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/invoices') }}" class="flex items-center">
+        <span class="ml-2">📄</span>
+        الفواتير
+    </a>
+</li>
+
 
                 @if(auth()->user()->role === 'مسؤول')
                     <!-- التقارير والإعدادات تظهر للمسؤول فقط -->
