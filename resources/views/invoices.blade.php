@@ -1,4 +1,4 @@
-{{-- resources/views/invoices/index.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -75,7 +75,7 @@
                             <td class="p-3 text-sm">{{ $invoice->student->name ?? '—' }}</td>
                             <td class="p-3 text-sm">{{ $invoice->employee->name ?? '—' }}</td>
                             <td class="p-3 text-sm">{{ $invoice->created_at->format('Y-m-d') }}</td>
-                            <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total, 2) }} د.ل</td>
+                            <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total_amount, 2) }} د.ل</td>
                             <td class="p-3 flex items-center space-x-2 space-x-reverse">
                                 <button
                                     onclick='openInvoiceModal(@json($invoice))'
@@ -100,6 +100,10 @@
                     </tbody>
                 </table>
             </div>
+            <!-- روابط الصفحات -->
+            <div class="p-4">
+                {{ $invoices->links() }}
+            </div>
         </div>
     </div>
 </div>
@@ -123,15 +127,17 @@
         const modal = document.getElementById('invoiceModal');
         const details = document.getElementById('invoiceDetails');
 
+        // بناء محتوى تفاصيل الفاتورة
         let html = `
             <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
             <p><strong>الطالب:</strong> ${invoice.student?.name || '—'}</p>
             <p><strong>الموظف:</strong> ${invoice.employee?.name || '—'}</p>
             <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
-            <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total).toFixed(2)} د.ل</p>
+            <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
         `;
 
-        if (invoice.order_items?.length > 0) {
+        // عرض الأصناف مع الكمية والسعر لكل صنف
+        if (invoice.order_items && invoice.order_items.length > 0) {
             html += `<hr><h4 class="text-md font-bold mb-2">الأصناف:</h4><ul class="list-disc pl-5 space-y-1">`;
             invoice.order_items.forEach(item => {
                 html += `<li>${item.product?.name || '—'} × ${item.quantity} = ${(item.price * item.quantity).toFixed(2)} د.ل</li>`;
@@ -145,7 +151,8 @@
     }
 
     function closeInvoiceModal() {
-        document.getElementById('invoiceModal').classList.add('hidden');
+        const modal = document.getElementById('invoiceModal');
+        modal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
         document.getElementById('invoiceDetails').innerHTML = '';
     }
