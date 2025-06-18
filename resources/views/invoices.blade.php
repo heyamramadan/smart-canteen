@@ -62,7 +62,8 @@
                         <tr>
                             <th class="p-3 text-sm text-gray-500">رقم الفاتورة</th>
                             <th class="p-3 text-sm text-gray-500">اسم الطالب</th>
-                            <th class="p-3 text-sm text-gray-500">الموظف</th>
+                            <th class="p-3 text-sm text-gray-500">اسم الأب</th>
+                             <th class="p-3 text-sm text-gray-500">الفصل</th>
                             <th class="p-3 text-sm text-gray-500">التاريخ</th>
                             <th class="p-3 text-sm text-gray-500">الإجمالي</th>
                             <th class="p-3 text-sm text-gray-500">الإجراءات</th>
@@ -73,7 +74,8 @@
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3 text-sm font-medium">#{{ $invoice->order_id }}</td>
                             <td class="p-3 text-sm">{{ $invoice->student->name ?? '—' }}</td>
-                            <td class="p-3 text-sm">{{ $invoice->employee->name ?? '—' }}</td>
+                           <td class="p-3 text-sm">{{ $invoice->student->parent->name ?? '—' }}</td>
+                           <td class="p-3 text-sm">{{ $invoice->student->classroom->name ?? '—' }}</td>
                             <td class="p-3 text-sm">{{ $invoice->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total_amount, 2) }} د.ل</td>
                             <td class="p-3 flex items-center space-x-2 space-x-reverse">
@@ -131,7 +133,8 @@
         let html = `
             <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
             <p><strong>الطالب:</strong> ${invoice.student?.name || '—'}</p>
-            <p><strong>الموظف:</strong> ${invoice.employee?.name || '—'}</p>
+            <p><strong>اسم الأب:</strong> ${invoice.student?.parent?.name || '—'}</p>
+            <p><strong>الفصل:</strong> ${invoice.student?.classroom?.name || '—'}</p>
             <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
             <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
         `;
