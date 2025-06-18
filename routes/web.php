@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\ProductController;
 use App\Http\Controllers\Auth\WalletController;
 use App\Http\Controllers\Auth\PointController;
 use App\Http\Controllers\Auth\OrderController;
+use App\Http\Controllers\Auth\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -80,4 +81,10 @@ Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
     Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
+    //فواتير
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
+Route::get('/invoices/{id}/print', [InvoiceController::class, 'print'])->name('invoices.print');
+Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+
 });
