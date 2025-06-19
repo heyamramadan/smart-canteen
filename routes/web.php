@@ -87,4 +87,6 @@ Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices
 Route::get('/invoices/{id}/print', [InvoiceController::class, 'print'])->name('invoices.print');
 Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 
+///
+Route::view('/profile', 'user.profile')->name('profile');
 });
