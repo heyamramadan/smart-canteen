@@ -108,7 +108,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                                🗑️ حذف
+                                                🗑️ أرشفة
                                             </button>
                                         </form>
                                     </td>
@@ -393,7 +393,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                            🗑️ حذف
+                            🗑️ أرشفة
                         </button>
                     </form>
                 </td>
