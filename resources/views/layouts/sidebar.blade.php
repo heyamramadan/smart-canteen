@@ -69,12 +69,7 @@
                         التقارير
                     </a>
                 </li>
-                <li class="p-3 hover:bg-primary-500 rounded-lg transition">
-                    <a href="#" class="flex items-center">
-                        <span class="ml-2">⚙️</span>
-                        إعدادات النظام
-                    </a>
-                </li>
+              
             @endif
         @endauth
     </ul>
