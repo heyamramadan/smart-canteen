@@ -4,7 +4,7 @@
     <ul class="space-y-3">
         <!-- الملف الشخصي: يظهر للجميع -->
         <li class="p-3 hover:bg-primary-500 rounded-lg transition">
-            <a href="#" class="flex items-center">
+            <a href="{{ url('/profile') }}" class="flex items-center">
                 <span class="ml-2">👤</span>
                 الملف الشخصي
             </a>
@@ -69,7 +69,7 @@
                         التقارير
                     </a>
                 </li>
-              
+
             @endif
         @endauth
     </ul>
