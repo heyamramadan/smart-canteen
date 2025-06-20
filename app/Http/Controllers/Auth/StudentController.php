@@ -173,4 +173,25 @@ private function calculateRemainingLimit($wallet)
     $remaining = $wallet->daily_limit - $todayPurchases;
     return max($remaining, 0); // التأكد من عدم الرجوع بقيمة سالبة
 }
+public function destroy($id)
+{
+    $student = Studentmodel::findOrFail($id);
+    $student->delete(); // سيتم أرشفته وليس حذفه فعليًا
+
+    return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
+}
+
+public function restore($id)
+{
+    $student = StudentModel::onlyTrashed()->findOrFail($id);
+    $student->restore();
+
+    return redirect()->route('students.archived')->with('success', 'تم استعادة الطالب بنجاح.');
+}
+
+public function archived()
+{
+    $students = StudentModel::onlyTrashed()->get();
+    return view('students.archived', compact('students'));
+}
 }

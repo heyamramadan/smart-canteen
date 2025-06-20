@@ -104,7 +104,8 @@
                                         )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                             ✏️ تعديل
                                         </button>
-                                        <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
+<form method="POST" action="{{ route('students.destroy', $student->student_id) }}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
+
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">

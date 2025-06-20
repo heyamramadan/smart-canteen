@@ -62,6 +62,9 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update'); // تغيير هنا
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+Route::get('/students/archived', [StudentController::class, 'archived'])->name('students.archived');
+Route::put('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
+
 
      //محافظة
 
