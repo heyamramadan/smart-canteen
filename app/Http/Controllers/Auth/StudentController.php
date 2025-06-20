@@ -47,15 +47,13 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح!');
     }
 
-    // دالة عرض قائمة الطلاب
-    public function index(){
-
-   $students = Studentmodel::all();
-    $parents = ParentModel::with('user')->get(); // تأكد من استدعاء موديل ولي الأمر و علاقته
-
-    return view('user.students', compact('students', 'parents'));
-
-}
+  // دالة عرض قائمة الطلاب
+    public function index()
+    {
+        $students = Studentmodel::withTrashed()->get();
+        $parents = ParentModel::with('user')->get();
+        return view('user.students', compact('students', 'parents'));
+    }
 public function search(Request $request)
 {
     $query = $request->input('query');
@@ -173,25 +171,25 @@ private function calculateRemainingLimit($wallet)
     $remaining = $wallet->daily_limit - $todayPurchases;
     return max($remaining, 0); // التأكد من عدم الرجوع بقيمة سالبة
 }
-public function destroy($id)
-{
-    $student = Studentmodel::findOrFail($id);
-    $student->delete(); // سيتم أرشفته وليس حذفه فعليًا
+  public function destroy($id)
+    {
+        $student = Studentmodel::findOrFail($id);
+        $student->delete();
 
-    return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
-}
+        // يمكنك هنا إضافة أي عمليات إضافية تحتاجها عند أرشفة الطالب
+        // مثل أرشفة المنتجات المحظورة أو الطلبات المرتبطة به
 
-public function restore($id)
-{
-    $student = StudentModel::onlyTrashed()->findOrFail($id);
-    $student->restore();
+        return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
+    }
 
-    return redirect()->route('students.archived')->with('success', 'تم استعادة الطالب بنجاح.');
-}
+    public function restore($id)
+    {
+        $student = Studentmodel::onlyTrashed()->findOrFail($id);
+        $student->restore();
 
-public function archived()
-{
-    $students = StudentModel::onlyTrashed()->get();
-    return view('students.archived', compact('students'));
-}
+        // يمكنك هنا إضافة أي عمليات إضافية تحتاجها عند استعادة الطالب
+
+        return redirect()->route('students.index')->with('success', 'تم استعادة الطالب بنجاح.');
+    }
+
 }

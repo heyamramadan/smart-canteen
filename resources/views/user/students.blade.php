@@ -97,6 +97,7 @@
                                         @if($student->trashed())
                                             <form method="POST" action="{{ route('students.restore', $student->student_id) }}" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
                                                 @csrf
+                                
                                                 <button type="submit" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
                                                     ♻️ استعادة
                                                 </button>
