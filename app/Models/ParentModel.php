@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ParentModel extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     // اسم جدول ولي الأمر في قاعدة البيانات
     protected $table = 'parents';

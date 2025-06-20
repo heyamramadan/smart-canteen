@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class studentmodel extends Model
 {
-    use HasFactory;
-    
+    use HasFactory,SoftDeletes;
+
 
     // المفتاح الأساسي للجدول (رقم تعريف الطالب)
     protected $primaryKey = 'student_id';

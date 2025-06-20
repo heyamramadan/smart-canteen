@@ -52,18 +52,52 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
 public function destroy($id)
 {
     $user = User::findOrFail($id);
+
+    // إذا كان ولي أمر، نحتاج لأرشفة الطلاب المرتبطين به
+    if ($user->role === 'ولي أمر') {
+        $parent = $user->parent;
+
+        if ($parent) {
+            // أرشفة جميع الطلاب التابعين له
+            foreach ($parent->students as $student) {
+                $student->delete(); // soft delete
+            }
+
+            // أرشفة سجل parent
+            $parent->delete();
+        }
+    }
+
+    // أرشفة المستخدم نفسه
     $user->delete();
 
-    return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم بنجاح.');
+    return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم وطلابه بنجاح.');
 }
+
 //استعادة
 public function restore($id)
 {
     $user = User::withTrashed()->findOrFail($id);
+
+    if ($user->role === 'ولي أمر') {
+        $parent = $user->parent()->withTrashed()->first();
+
+        if ($parent) {
+            // استرجاع سجل parent
+            $parent->restore();
+
+            // استرجاع الطلاب المرتبطين به
+            foreach ($parent->students()->withTrashed()->get() as $student) {
+                $student->restore();
+            }
+        }
+    }
+
     $user->restore();
 
-    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم بنجاح.');
+    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وطلابه بنجاح.');
 }
+
 public function update(Request $request, User $user)
 {
     $request->validate([
