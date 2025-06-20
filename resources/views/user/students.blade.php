@@ -58,12 +58,12 @@
                 </h2>
 
                 <div class="flex items-center space-x-4 space-x-reverse">
-                 <!-- حقل البحث -->
-<div class="relative">
-    <input type="text" id="searchInput" placeholder="ابحث عن طالب..."
-           class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
-    <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
-</div>
+                    <!-- حقل البحث -->
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="ابحث عن طالب..."
+                               class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                        <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
+                    </div>
                     <!-- زر إضافة طالب -->
                     <button onclick="openAddModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
                         <span class="ml-1">+</span> إضافة طالب جديد
@@ -87,31 +87,39 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach($students as $student)
-                                <tr class="hover:bg-gray-50 transition">
+                                <tr class="hover:bg-gray-50 transition {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
                                     <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->father_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
                                     <td class="p-3 text-sm">{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : 'غير محدد' }}</td>
                                     <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
                                     <td class="p-3 flex items-center">
-                                        <button onclick="openEditModal(
-                                            '{{ $student->student_id }}',
-                                            '{{ $student->full_name }}',
-                                            '{{ $student->father_name }}',
-                                            '{{ $student->class }}',
-                                            '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
-                                            '{{ $student->parent_id }}'
-                                        )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                            ✏️ تعديل
-                                        </button>
-<form method="POST" action="{{ route('students.destroy', $student->student_id) }}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
-
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                                🗑️ أرشفة
+                                        @if($student->trashed())
+                                            <form method="POST" action="{{ route('students.restore', $student->student_id) }}" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
+                                                @csrf
+                                                <button type="submit" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
+                                                    ♻️ استعادة
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button onclick="openEditModal(
+                                                '{{ $student->student_id }}',
+                                                '{{ $student->full_name }}',
+                                                '{{ $student->father_name }}',
+                                                '{{ $student->class }}',
+                                                '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
+                                                '{{ $student->parent_id }}'
+                                            )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
+                                                ✏️ تعديل
                                             </button>
-                                        </form>
+                                            <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                                                    🗑️ أرشفة
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -145,6 +153,14 @@
                             <input type="text" name="full_name" value="{{ old('full_name') }}" required
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                             @error('full_name')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">اسم الأب</label>
+                            <input type="text" name="father_name" value="{{ old('father_name') }}"
+                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+                            @error('father_name')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -228,6 +244,11 @@
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                         </div>
                         <div>
+                            <label class="block text-sm text-gray-600 mb-1">اسم الأب</label>
+                            <input type="text" name="father_name" id="edit_father_name"
+                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+                        </div>
+                        <div>
                             <label class="block text-sm text-gray-600 mb-1">الصف الدراسي</label>
                             <select name="class" id="edit_class" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                                 <option value="">اختر الصف</option>
@@ -294,6 +315,7 @@
         function openEditModal(id, fullName, fatherName, classVal, birthDate, parentId) {
             document.getElementById('edit_student_id').value = id;
             document.getElementById('edit_full_name').value = fullName;
+            document.getElementById('edit_father_name').value = fatherName;
             document.getElementById('edit_class').value = classVal;
             document.getElementById('edit_birth_date').value = birthDate;
             document.getElementById('edit_parent_id').value = parentId;
@@ -333,75 +355,88 @@
         @if ($errors->any())
             openAddModal();
         @endif
-    </script>
-    <script>
-    // البحث عن الطلاب أثناء الكتابة
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const query = e.target.value.trim();
 
-        if (query.length > 0) {
-            fetch(`/students/search?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    updateStudentsTable(data);
-                })
-                .catch(error => console.error('Error:', error));
-        } else {
-            // إذا كان حقل البحث فارغاً، أعد عرض كل الطلاب
-            fetch(`/students/search`)
-                .then(response => response.json())
-                .then(data => {
-                    updateStudentsTable(data);
-                });
-        }
-    });
+        // البحث عن الطلاب أثناء الكتابة
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.trim();
 
-    // تحديث جدول الطلاب بالنتائج
-    function updateStudentsTable(students) {
-        const tbody = document.querySelector('tbody');
-        tbody.innerHTML = '';
-
-        if (students.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
-                </tr>
-            `;
-            return;
-        }
-
-        students.forEach(student => {
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 transition';
-            row.innerHTML = `
-                <td class="p-3 text-sm font-medium">${student.full_name}</td>
-                <td class="p-3 text-sm">${student.father_name}</td>
-                <td class="p-3 text-sm">${student.class}</td>
-                <td class="p-3 text-sm">${student.birth_date ? student.birth_date : 'غير محدد'}</td>
-                <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
-                <td class="p-3 flex items-center">
-                    <button onclick="openEditModal(
-                        '${student.student_id}',
-                        '${student.full_name}',
-                        '${student.father_name}',
-                        '${student.class}',
-                        '${student.birth_date ? student.birth_date : ''}',
-                        '${student.parent_id}'
-                    )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                        ✏️ تعديل
-                    </button>
-                    <form method="POST" action="/students/${student.student_id}" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                            🗑️ أرشفة
-                        </button>
-                    </form>
-                </td>
-            `;
-            tbody.appendChild(row);
+            if (query.length > 0) {
+                fetch(`/students/search?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateStudentsTable(data);
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                // إذا كان حقل البحث فارغاً، أعد عرض كل الطلاب
+                fetch(`/students/search`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateStudentsTable(data);
+                    });
+            }
         });
-    }
-</script>
+
+        // تحديث جدول الطلاب بالنتائج
+        function updateStudentsTable(students) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            if (students.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            students.forEach(student => {
+                const isArchived = student.deleted_at !== null;
+                const rowClass = isArchived ? 'bg-gray-100 text-gray-400 hover:bg-gray-200' : 'hover:bg-gray-50';
+
+                const row = document.createElement('tr');
+                row.className = `transition ${rowClass}`;
+
+                row.innerHTML = `
+                    <td class="p-3 text-sm font-medium">${student.full_name}</td>
+                    <td class="p-3 text-sm">${student.father_name}</td>
+                    <td class="p-3 text-sm">${student.class}</td>
+                    <td class="p-3 text-sm">${student.birth_date ? student.birth_date : 'غير محدد'}</td>
+                    <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
+                    <td class="p-3 flex items-center">
+                        ${isArchived ? `
+                            <form method="POST" action="/students/${student.student_id}/restore" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
+                                @csrf
+                                <button class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
+                                    ♻️ استعادة
+                                </button>
+                            </form>
+                        ` : `
+                            <button onclick="openEditModal(
+                                '${student.student_id}',
+                                '${student.full_name}',
+                                '${student.father_name}',
+                                '${student.class}',
+                                '${student.birth_date ? student.birth_date : ''}',
+                                '${student.parent_id}'
+                            )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
+                                ✏️ تعديل
+                            </button>
+                            <form method="POST" action="/students/${student.student_id}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                                    🗑️ أرشفة
+                                </button>
+                            </form>
+                        `}
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+    </script>
 </body>
 </html>
