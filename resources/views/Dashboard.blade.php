@@ -77,6 +77,14 @@
                             شحن المحفظة
                         </a>
                     </li>
+                    <li class="p-3 {{ request()->is('cards*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/cards') }}" class="flex items-center">
+        <span class="ml-2">💳</span>
+        إصدار بطاقة إلكترونية
+    </a>
+</li>
+
+
                 @endif
 
                 <!-- المبيعات: تظهر للمسؤول والموظف -->
