@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بطاقات الطلاب مع فلترة وإصدار</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              100: '#FFEDD5',
+              500: '#F97316',
+              600: '#EA580C',
+              700: '#C2410C',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+    .card {
+      width: 450px;
+      height: 300px;
+      border: 1px solid #ccc;
+      margin: 10px;
+      padding: 10px;
+      position: relative;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+    .qr {
+      width: 60px;
+      height: 60px;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+    .photo {
+      width: 100px;
+      height: 120px;
+      border: 1px solid #aaa;
+      object-fit: cover;
+    }
+    .footer {
+      background-color: #2A3663;
+      color: white;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      height: 30px;
+      line-height: 30px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen">
+    {{-- الشريط الجانبي --}}
+    @include('layouts.sidebar')
+
+    <!-- المحتوى الرئيسي -->
+    <div class="flex-1 p-6 overflow-auto">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
+        <h1 class="text-lg font-bold text-primary-700 flex items-center">
+          <span class="ml-2">🎫</span>
+          بطاقات الطلاب - فلترة حسب الفصل
+        </h1>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
+        <div class="mb-4 flex flex-wrap items-center gap-4">
+          <label for="filterClass" class="font-semibold">اختر الفصل الدراسي:</label>
+          <select id="filterClass" class="border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">جميع الفصول</option>
+          </select>
+
+          <label class="inline-flex items-center ml-6">
+            <input type="checkbox" id="selectAll" class="form-checkbox h-5 w-5 text-primary-600 rounded">
+            <span class="mr-2">تحديد الكل</span>
+          </label>
+
+          <button id="printBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg transition">
+            🖨️ إصدار البطاقات
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-right">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="p-3 text-sm text-gray-500"><input type="checkbox" id="headerCheckbox" class="rounded"></th>
+                <th class="p-3 text-sm text-gray-500">الصورة</th>
+                <th class="p-3 text-sm text-gray-500">الاسم</th>
+                <th class="p-3 text-sm text-gray-500">الفصل الدراسي</th>
+                <th class="p-3 text-sm text-gray-500">الرقم</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody" class="divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- حاوية البطاقات للطباعة (مخفية) -->
+      <div id="cardContainer" style="display:none;"></div>
+    </div>
+  </div>
+
+  <script>
+    // بيانات الطلاب تأتي من السيرفر عبر Laravel Blade
+    const students = @json($students);
+
+    // عناصر DOM
+    const filterClass = document.getElementById('filterClass');
+    const studentsTableBody = document.getElementById('studentsTableBody');
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const headerCheckbox = document.getElementById('headerCheckbox');
+    const printBtn = document.getElementById('printBtn');
+    const cardContainer = document.getElementById('cardContainer');
+
+    // استخراج الفصول الدراسية الفريدة من الطلاب
+    const classes = [...new Set(students.map(s => s.class).filter(c => c && c.trim() !== ''))];
+    classes.forEach(cls => {
+      const option = document.createElement('option');
+      option.value = cls;
+      option.textContent = cls;
+      filterClass.appendChild(option);
+    });
+
+    // دالة رسم QR code بسيط على canvas (بدون مكتبات خارجية)
+    function drawQRCode(data, canvas) {
+      const size = 60;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      ctx.fillStyle = "#000";
+      for (let i = 0; i < size; i += 6) {
+        for (let j = 0; j < size; j += 6) {
+          if ((i + j + data.length * 5) % 13 < 6) {
+            ctx.fillRect(i, j, 4, 4);
+          }
+        }
+      }
+    }
+
+    // عرض الطلاب في الجدول مع الفلترة
+    function displayStudents(filter = '') {
+      studentsTableBody.innerHTML = '';
+      const filtered = filter ? students.filter(s => s.class === filter) : students;
+
+      filtered.forEach(student => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50 transition text-center';
+
+        tr.innerHTML = `
+          <td class="p-3">
+            <input type="checkbox" class="rowCheckbox form-checkbox h-5 w-5 text-primary-600 rounded" data-id="${student.student_id}">
+          </td>
+          <td class="p-3">
+            <img src="/images/${student.photo ?? 'default.png'}" alt="صورة" class="inline-block w-16 h-20 object-cover border rounded">
+          </td>
+          <td class="p-3 text-sm">${student.full_name}</td>
+          <td class="p-3 text-sm">${student.class ?? 'غير محدد'}</td>
+          <td class="p-3 text-sm">${student.student_id}</td>
+        `;
+
+        studentsTableBody.appendChild(tr);
+      });
+      updateSelectAllState();
+    }
+
+    // تحديث حالة تحديد الكل
+    function updateSelectAllState() {
+      const checkboxes = document.querySelectorAll('.rowCheckbox');
+      const checkedBoxes = document.querySelectorAll('.rowCheckbox:checked');
+      headerCheckbox.checked = (checkboxes.length > 0 && checkboxes.length === checkedBoxes.length);
+      selectAllCheckbox.checked = headerCheckbox.checked;
+    }
+
+    // أحداث التحكم بالاختيار
+    filterClass.addEventListener('change', () => displayStudents(filterClass.value));
+    selectAllCheckbox.addEventListener('change', () => {
+      const checkboxes = document.querySelectorAll('.rowCheckbox');
+      checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+      headerCheckbox.checked = selectAllCheckbox.checked;
+    });
+    headerCheckbox.addEventListener('change', () => {
+      const checkboxes = document.querySelectorAll('.rowCheckbox');
+      checkboxes.forEach(cb => cb.checked = headerCheckbox.checked);
+      selectAllCheckbox.checked = headerCheckbox.checked;
+    });
+    studentsTableBody.addEventListener('change', e => {
+      if (e.target.classList.contains('rowCheckbox')) updateSelectAllState();
+    });
+
+    // إنشاء وطباعة البطاقات للطلاب المحددين مع رسم QR داخل نافذة الطباعة
+    function generateCards() {
+      const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+      if (selectedCheckboxes.length === 0) {
+        alert('يرجى اختيار طالب واحد على الأقل لإصدار البطاقة.');
+        return;
+      }
+
+      cardContainer.innerHTML = '';
+
+      selectedCheckboxes.forEach(cb => {
+        const studentId = cb.dataset.id;
+        const student = students.find(s => s.student_id == studentId);
+
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+          <div class="flex">
+            <img src="/images/${student.photo ?? 'default.png'}" alt="Photo" class="photo mr-4">
+            <div>
+              <h2 class="font-bold text-lg text-primary-700">مدرسة المستقبل</h2>
+              <p><strong>الاسم:</strong> ${student.full_name}</p>
+              <p><strong>الصف:</strong> ${student.class ?? 'غير محدد'}</p>
+              <p><strong>الرقم:</strong> ${student.student_id}</p>
+            </div>
+          </div>
+          <canvas class="qr mt-4"></canvas>
+          <div class="footer">www.school.ly</div>
+          <div class="qr-data" style="display:none;">${JSON.stringify(["student", String(student.student_id), String(student.pin_code || '0000')])}</div>
+        `;
+
+        cardContainer.appendChild(card);
+      });
+
+      // افتح نافذة الطباعة وارسم QR codes
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html lang="ar" dir="rtl">
+          <head>
+            <title>طباعة البطاقات</title>
+            <style>
+              body { font-family: 'Tajawal', sans-serif; padding: 20px; }
+              .card {
+                width: 450px;
+                height: 300px;
+                border: 1px solid #ccc;
+                margin: 10px;
+                padding: 10px;
+                position: relative;
+                display: inline-block;
+                box-sizing: border-box;
+              }
+              .qr {
+                width: 60px;
+                height: 60px;
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+              }
+              .photo {
+                width: 100px;
+                height: 120px;
+                border: 1px solid #aaa;
+                object-fit: cover;
+              }
+              .footer {
+                background-color: #2A3663;
+                color: white;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                font-size: 12px;
+                height: 30px;
+                line-height: 30px;
+              }
+              .qr-data {
+                display: none;
+              }
+            </style>
+          </head>
+          <body>
+            ${cardContainer.innerHTML}
+            <script>
+              ${drawQRCode.toString()}
+
+              document.querySelectorAll('.card').forEach(card => {
+                const canvas = card.querySelector('canvas.qr');
+                const qrDataElem = card.querySelector('.qr-data');
+                if (canvas && qrDataElem) {
+                  const qrData = qrDataElem.textContent.trim();
+                  drawQRCode(qrData, canvas);
+                }
+              });
+
+              window.print();
+              window.onafterprint = () => window.close();
+            <\/script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // عرض الطلاب عند تحميل الصفحة
+    displayStudents();
+
+    // حدث زر الطباعة
+    printBtn.addEventListener('click', generateCards);
+  </script>
+</body>
+</html>

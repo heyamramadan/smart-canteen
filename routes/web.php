@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\WalletController;
 use App\Http\Controllers\Auth\PointController;
 use App\Http\Controllers\Auth\OrderController;
 use App\Http\Controllers\Auth\InvoiceController;
+use App\Http\Controllers\Auth\CardController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -71,7 +72,9 @@ Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->na
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
 
-
+//يطاقة
+Route::get('/cards', [CardController::class, 'index'])->name('students.cards');
+Route::get('/students/data', [CardController::class, 'fetch'])->name('students.data');
 
 });
 
