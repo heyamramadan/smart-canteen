@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ParentAuthController;
+use App\Http\Controllers\Api\ParentStudentController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -11,3 +13,4 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('/login-parent', [ParentAuthController::class, 'login']);
+    Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']);
