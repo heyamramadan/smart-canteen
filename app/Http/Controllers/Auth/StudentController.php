@@ -62,21 +62,33 @@ class StudentController extends Controller
     }
 public function search(Request $request)
 {
-    $query = $request->input('query');
+    $searchQuery = $request->input('query');
 
-    $students = Studentmodel::with('parent.user')
-        ->when($query, function($q) use ($query) {
-            $q->where('full_name', 'LIKE', '%' . $query . '%')
-              ->orWhere('father_name', 'LIKE', '%' . $query . '%')
-              ->orWhere('class', 'LIKE', '%' . $query . '%')
-              ->orWhereHas('parent.user', function($q) use ($query) {
-                  $q->where('full_name', 'LIKE', '%' . $query . '%');
+    // الاستعلام مع العلاقات المطلوبة والطلاب المؤرشفين
+    $query = Studentmodel::with(['parent.user'])->withTrashed();
+
+    if (!empty($searchQuery)) {
+        $isIdSearch = is_numeric($searchQuery);
+
+        $query->where(function($q) use ($searchQuery, $isIdSearch) {
+            $q->where('full_name', 'LIKE', '%' . $searchQuery . '%')
+              ->orWhere('father_name', 'LIKE', '%' . $searchQuery . '%')
+              ->orWhere('class', 'LIKE', '%' . $searchQuery . '%')
+              ->orWhereHas('parent.user', function($q) use ($searchQuery) {
+                  $q->where('full_name', 'LIKE', '%' . $searchQuery . '%');
               });
-        })
-        ->get();
+
+            if ($isIdSearch) {
+                $q->orWhere('student_id', $searchQuery);
+            }
+        });
+    }
+
+    $students = $query->get();
 
     return response()->json($students);
 }
+
 // عرض صفحة تعديل بيانات الطالب
 // عرض صفحة تعديل بيانات الطالب
 public function edit(Studentmodel $student)

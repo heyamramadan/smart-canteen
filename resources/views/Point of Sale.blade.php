@@ -6,6 +6,8 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>نظام المقصف الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -44,6 +46,13 @@
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
           <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" autocomplete="off" />
+            <!-- زر تشغيل الكاميرا -->
+  <button onclick="startQRScanner()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded mb-2">
+    تشغيل الكاميرا لمسح QR
+  </button>
+
+  <!-- عرض الفيديو من الكاميرا -->
+  <video id="preview" class="w-full rounded border border-gray-300 mb-4" style="display: none;" playsinline></video>
         </div>
 
         <div id="studentInfoContainer" class="mb-4"></div>
@@ -546,6 +555,72 @@ function updateLimitInfo() {
 
   function showError(message) {
     alert(message);
+  }
+    let scanner;
+
+  function startQRScanner() {
+    const video = document.getElementById('preview');
+    video.style.display = 'block';
+
+    scanner = new Instascan.Scanner({ video: video, mirror: false });
+    scanner.addListener('scan', function (content) {
+      if (content) {
+        // وضع المعرف في حقل البحث
+        studentSearchInput.value = content;
+
+        // إخفاء الفيديو وإيقاف الكاميرا
+        video.style.display = 'none';
+        scanner.stop();
+
+        // تنفيذ البحث
+        triggerSearch(content);
+      }
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        alert('لم يتم العثور على كاميرات.');
+      }
+    }).catch(function (e) {
+      alert('حدث خطأ أثناء الوصول إلى الكاميرا: ' + e);
+    });
+  }
+
+  function triggerSearch(query) {
+    if (!query) return;
+
+    fetch(`/students/search?query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        studentsTableBody.innerHTML = '';
+        if (data.length === 0) {
+          studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 p-2">لم يتم العثور على الطالب</td></tr>`;
+          return;
+        }
+
+        data.forEach(student => {
+          const tr = document.createElement('tr');
+          tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
+          tr.innerHTML = `
+            <td class="p-2 border">${student.full_name}</td>
+            <td class="p-2 border">${student.father_name ?? '—'}</td>
+            <td class="p-2 border">${student.class}</td>
+            <td class="p-2 border">${student.daily_limit ? student.daily_limit.toFixed(2) + ' ر.س' : '—'}</td>
+          `;
+          tr.addEventListener('click', () => {
+            currentStudentId = student.student_id;
+            loadCategoriesAndProducts(currentStudentId);
+            highlightSelectedStudent(tr);
+            invoiceItems = [];
+            renderInvoice();
+          });
+          studentsTableBody.appendChild(tr);
+        });
+      }).catch(() => {
+        studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center p-2 text-red-500">حدث خطأ في جلب البيانات</td></tr>`;
+      });
   }
 </script>
 
