@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Studentmodel;
 use App\Models\BannedProduct;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
@@ -25,8 +26,8 @@ class StudentController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
-           'parent_id' => 'required|exists:parents,parent_id'
-           // 'birth_date' => 'nullable|date',
+           'parent_id' => 'required|exists:parents,parent_id',
+           'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
           //  جلب ولي الأمر المرتبط مع معلومات المستخدم
@@ -35,6 +36,11 @@ class StudentController extends Controller
         //  اسم الأب من اسم المستخدم المرتبط جاستخراجديد
         $fatherName = $parent->user->full_name ?? 'غير معروف';
 
+            // معالجة تحميل الصورة
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('students/images', 'public');
+        $validated['image'] = $imagePath;
+    }
     // دمج البيانات مع اسم الأب
         $studentData = array_merge($validated, [
             'father_name' => $fatherName,
@@ -76,6 +82,7 @@ public function search(Request $request)
 public function edit(Studentmodel $student)
 {
     $parents = ParentModel::with('user')->get();
+     $student->image_url = $student->image ? asset('storage/' . $student->image) : null;
     return view('user.edit_student', compact('student', 'parents'));
 }
 
@@ -86,11 +93,23 @@ public function update(Request $request, Studentmodel $student)
         'full_name' => 'required|string|max:255',
         'class' => 'required|string|max:255',
         'birth_date' => 'nullable|date',
-        'parent_id' => 'required|exists:parents,parent_id'
+        'parent_id' => 'required|exists:parents,parent_id',
+          'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+
     ]);
 
     $parent = ParentModel::with('user')->find($validated['parent_id']);
     $fatherName = $parent->user->full_name ?? 'غير معروف';
+      // معالجة تحميل الصورة
+    if ($request->hasFile('image')) {
+          // حذف الصورة القديمة إذا كانت موجودة
+    if ($student->image && Storage::disk('public')->exists($student->image)) {
+        Storage::disk('public')->delete($student->image);
+    }
+               $imagePath = $request->file('image')->store('students/images', 'public');
+        $validated['image'] = $imagePath;
+    }
+
 
     $student->update(array_merge($validated, [
         'father_name' => $fatherName
