@@ -149,7 +149,7 @@
             <input type="checkbox" class="rowCheckbox form-checkbox h-5 w-5 text-primary-600 rounded" data-id="${student.student_id}">
           </td>
           <td class="p-3">
-            <img src="/images/${student.photo ?? 'default.png'}" alt="صورة" class="inline-block w-16 h-20 object-cover border rounded">
+<img src="/storage/${student.image_path ?? 'default.png'}" alt="صورة" class="inline-block w-16 h-20 object-cover border rounded">
           </td>
           <td class="p-3 text-sm">${student.full_name}</td>
           <td class="p-3 text-sm">${student.class ?? 'غير محدد'}</td>
@@ -207,7 +207,7 @@
 
         card.innerHTML = `
           <div class="flex">
-            <img src="/images/${student.photo ?? 'default.png'}" alt="Photo" class="photo mr-4">
+<img src="/storage/${student.image_path ?? 'default.png'}" alt="Photo" class="photo mr-4">
             <div>
               <h2 class="font-bold text-lg text-primary-700">مدرسة المستقبل</h2>
               <p><strong>الاسم:</strong> ${student.full_name}</p>
