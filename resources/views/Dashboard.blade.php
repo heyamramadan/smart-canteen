@@ -112,6 +112,16 @@
                     </li>
 
                 @endif
+                <li class="p-3 hover:bg-primary-500 rounded-lg transition">
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="w-full text-right flex items-center text-white">
+            <span class="ml-2">🚪</span>
+            تسجيل خروج
+        </button>
+    </form>
+</li>
+
             @endauth
         </ul>
     </div>
