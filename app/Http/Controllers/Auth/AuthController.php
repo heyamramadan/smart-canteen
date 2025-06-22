@@ -45,4 +45,13 @@ class AuthController extends Controller
             'password' => 'كلمة السر غير صحيحة'
         ]);
     }
+    public function logout(Request $request)
+{
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login'); // أو أي صفحة تريد إعادة التوجيه إليها بعد تسجيل الخروج
+}
 }

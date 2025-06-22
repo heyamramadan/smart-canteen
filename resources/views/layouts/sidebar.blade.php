@@ -65,6 +65,7 @@
                         الفواتير
                     </a>
                 </li>
+
             @endif
 
             @if(auth()->user()->role === 'مسؤول')
@@ -76,6 +77,16 @@
                     </a>
                 </li>
             @endif
+   <li class="p-3 hover:bg-primary-500 rounded-lg transition cursor-pointer">
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="flex items-center w-full text-white">
+            <span class="ml-2">🚪</span>
+            تسجيل خروج
+        </button>
+    </form>
+</li>
+
         @endauth
     </ul>
 </div>
