@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -26,23 +28,23 @@ class ProfileController extends Controller
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone_number' => 'required|string|max:20',
-            'role' => 'required|in:employee,admin,supervisor',
+            'role' => 'required|in:موظف,مسؤول', // حسب ما تستخدمه في AuthController
             'password' => ['nullable', 'confirmed', Password::defaults()],
-            'profile_image' => 'nullable|image|max:2048', // 2MB
+            'profile_image' => 'nullable|image|max:2048',
         ]);
 
-        // تحديث البيانات الأساسية
+        // تحديث البيانات
         $user->full_name = $validatedData['full_name'];
         $user->email = $validatedData['email'];
         $user->phone_number = $validatedData['phone_number'];
         $user->role = $validatedData['role'];
 
-        // تحديث كلمة المرور إذا تم إدخالها
+        // إذا تم إدخال كلمة مرور جديدة
         if (!empty($validatedData['password'])) {
-            $user->password = $validatedData['password']; // سيتم تجزئتها تلقائيًا في model
+            $user->password = Hash::make($validatedData['password']);
         }
 
-        // تحديث الصورة الشخصية إذا تم رفعها
+        // تحديث الصورة الشخصية
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image_url) {
                 Storage::disk('public')->delete($user->profile_image_url);
@@ -51,8 +53,8 @@ class ProfileController extends Controller
             $user->profile_image_url = $path;
         }
 
+       
 
- 
         return redirect()->route('profile')->with('success', 'تم تحديث البيانات بنجاح');
     }
 }
