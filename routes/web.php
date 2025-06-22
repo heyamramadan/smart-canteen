@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PointController;
 use App\Http\Controllers\Auth\OrderController;
 use App\Http\Controllers\Auth\InvoiceController;
 use App\Http\Controllers\Auth\CardController;
+use App\Http\Controllers\Auth\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -94,5 +95,6 @@ Route::get('/invoices/{id}/print', [InvoiceController::class, 'print'])->name('i
 Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 
 ///
-Route::view('/profile', 'user.profile')->name('profile');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });

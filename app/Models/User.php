@@ -18,6 +18,7 @@ class User extends Authenticatable
    'full_name',
     'role',
     'phone_number',
+     'profile_image_url',
 ];
 public function parent()
     {
