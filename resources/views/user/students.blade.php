@@ -97,15 +97,15 @@
                         <tbody class="divide-y divide-gray-200">
                             @foreach($students as $student)
                                 <tr class="hover:bg-gray-50 transition {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
-                                    <td class="p-3">
-                                        @if($student->image_path)
-                                            <img src="{{ asset('storage/'.$student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
-                                        @else
-                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span class="text-gray-500 text-xs">لا يوجد</span>
-                                            </div>
-                                        @endif
-                                    </td>
+                                 <td class="p-3">
+    @if($student->image_path && file_exists(public_path('storage/'.$student->image_path)))
+        <img src="{{ asset('storage/'.$student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
+    @else
+        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-500 text-xs">لا يوجد</span>
+        </div>
+    @endif
+</td>
                                     <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->father_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
@@ -483,14 +483,14 @@
                 row.className = `transition ${rowClass}`;
 
                 row.innerHTML = `
-                    <td class="p-3">
-                        ${student.image_path ?
-                            `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
-                            `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                <span class="text-gray-500 text-xs">لا يوجد</span>
-                            </div>`
-                        }
-                    </td>
+                 <td class="p-3">
+    ${student.image_path ?
+        `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
+        `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-500 text-xs">لا يوجد</span>
+        </div>`
+    }
+</td>
                     <td class="p-3 text-sm font-medium">${student.full_name}</td>
                     <td class="p-3 text-sm">${student.father_name}</td>
                     <td class="p-3 text-sm">${student.class}</td>

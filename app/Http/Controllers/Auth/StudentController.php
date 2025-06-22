@@ -101,15 +101,13 @@ public function update(Request $request, Studentmodel $student)
     $parent = ParentModel::with('user')->find($validated['parent_id']);
     $fatherName = $parent->user->full_name ?? 'غير معروف';
       // معالجة تحميل الصورة
-    if ($request->hasFile('image')) {
-          // حذف الصورة القديمة إذا كانت موجودة
-    if ($student->image && Storage::disk('public')->exists($student->image)) {
-        Storage::disk('public')->delete($student->image);
+  if ($request->hasFile('image')) {
+    if ($student->image_path && Storage::disk('public')->exists($student->image_path)) {
+        Storage::disk('public')->delete($student->image_path);
     }
-               $imagePath = $request->file('image')->store('students/images', 'public');
-        $validated['image'] = $imagePath;
-    }
-
+    $imagePath = $request->file('image')->store('students/images', 'public');
+    $validated['image_path'] = $imagePath; // استخدم image_path بدل image
+}
 
     $student->update(array_merge($validated, [
         'father_name' => $fatherName
