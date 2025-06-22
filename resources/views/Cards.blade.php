@@ -72,7 +72,7 @@
       <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
         <h1 class="text-lg font-bold text-primary-700 flex items-center">
           <span class="ml-2">🎫</span>
- بطاقات الطلاب
+          بطاقات الطلاب
         </h1>
       </div>
 
@@ -135,21 +135,6 @@
       filterClass.appendChild(option);
     });
 
-    // دالة رسم QR code بسيط على canvas (بدون مكتبات خارجية)
-    function drawQRCode(data, canvas) {
-      const size = 60;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, size, size);
-      ctx.fillStyle = "#000";
-      for (let i = 0; i < size; i += 6) {
-        for (let j = 0; j < size; j += 6) {
-          if ((i + j + data.length * 5) % 13 < 6) {
-            ctx.fillRect(i, j, 4, 4);
-          }
-        }
-      }
-    }
-
     // عرض الطلاب في الجدول مع الفلترة
     function displayStudents(filter = '') {
       studentsTableBody.innerHTML = '';
@@ -200,7 +185,7 @@
       if (e.target.classList.contains('rowCheckbox')) updateSelectAllState();
     });
 
-    // إنشاء وطباعة البطاقات للطلاب المحددين مع رسم QR داخل نافذة الطباعة
+    // إنشاء وطباعة البطاقات للطلاب المحددين باستخدام QR Code API
     function generateCards() {
       const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
       if (selectedCheckboxes.length === 0) {
@@ -213,6 +198,9 @@
       selectedCheckboxes.forEach(cb => {
         const studentId = cb.dataset.id;
         const student = students.find(s => s.student_id == studentId);
+
+        // إنشاء QR Code باستخدام API مع معرّف الطالب فقط
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(student.student_id)}`;
 
         const card = document.createElement('div');
         card.className = 'card';
@@ -227,15 +215,14 @@
               <p><strong>الرقم:</strong> ${student.student_id}</p>
             </div>
           </div>
-          <canvas class="qr mt-4"></canvas>
+          <img src="${qrCodeUrl}" alt="QR Code" class="qr">
           <div class="footer">www.school.ly</div>
-          <div class="qr-data" style="display:none;">${JSON.stringify(["student", String(student.student_id), String(student.pin_code || '0000')])}</div>
         `;
 
         cardContainer.appendChild(card);
       });
 
-      // افتح نافذة الطباعة وارسم QR codes
+      // افتح نافذة الطباعة
       const printWindow = window.open('', '_blank');
       printWindow.document.write(`
         <html lang="ar" dir="rtl">
@@ -277,27 +264,19 @@
                 height: 30px;
                 line-height: 30px;
               }
-              .qr-data {
-                display: none;
+              @media print {
+                body { padding: 0; }
+                .card { page-break-inside: avoid; margin: 0 0 10px 0; }
               }
             </style>
           </head>
           <body>
             ${cardContainer.innerHTML}
             <script>
-              ${drawQRCode.toString()}
-
-              document.querySelectorAll('.card').forEach(card => {
-                const canvas = card.querySelector('canvas.qr');
-                const qrDataElem = card.querySelector('.qr-data');
-                if (canvas && qrDataElem) {
-                  const qrData = qrDataElem.textContent.trim();
-                  drawQRCode(qrData, canvas);
-                }
-              });
-
-              window.print();
-              window.onafterprint = () => window.close();
+              window.onload = function() {
+                window.print();
+                setTimeout(() => window.close(), 500);
+              };
             <\/script>
           </body>
         </html>
