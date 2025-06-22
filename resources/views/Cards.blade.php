@@ -216,7 +216,6 @@
             </div>
           </div>
           <img src="${qrCodeUrl}" alt="QR Code" class="qr">
-          <div class="footer">www.school.ly</div>
         `;
 
         cardContainer.appendChild(card);
@@ -240,13 +239,14 @@
                 display: inline-block;
                 box-sizing: border-box;
               }
-              .qr {
-                width: 60px;
-                height: 60px;
-                position: absolute;
-                bottom: 10px;
-                right: 10px;
-              }
+             .qr {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+   bottom: 10px;
+  left: 10px;
+}
+
               .photo {
                 width: 100px;
                 height: 120px;
