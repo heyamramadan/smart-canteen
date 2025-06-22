@@ -53,7 +53,7 @@ class ProfileController extends Controller
             $user->profile_image_url = $path;
         }
 
-       
+       //$user->save();
 
         return redirect()->route('profile')->with('success', 'تم تحديث البيانات بنجاح');
     }
