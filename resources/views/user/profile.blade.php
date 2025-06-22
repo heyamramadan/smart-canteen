@@ -124,11 +124,11 @@
                         <!-- الدور/الصلاحية -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
-                            <select name="role" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="employee" {{ $user->role == 'employee' ? 'selected' : '' }}>موظف مقصف</option>
-                                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>مدير النظام</option>
-                                <option value="supervisor" {{ $user->role == 'supervisor' ? 'selected' : '' }}>مشرف</option>
-                            </select>
+                         <select name="role" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+    <option value="موظف" {{ $user->role == 'موظف' ? 'selected' : '' }}>موظف مقصف</option>
+    <option value="مسؤول" {{ $user->role == 'مسؤول' ? 'selected' : '' }}>مدير النظام</option>
+</select>
+
                         </div>
 
                         <!-- كلمة المرور -->

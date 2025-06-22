@@ -28,7 +28,7 @@ class ProfileController extends Controller
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone_number' => 'required|string|max:20',
-            'role' => 'required|in:موظف,مسؤول', // حسب ما تستخدمه في AuthController
+             'role' => 'required|in:مسؤول,موظف',
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'profile_image' => 'nullable|image|max:2048',
         ]);
@@ -53,7 +53,7 @@ class ProfileController extends Controller
             $user->profile_image_url = $path;
         }
 
-       //$user->save();
+       $user->save();
 
         return redirect()->route('profile')->with('success', 'تم تحديث البيانات بنجاح');
     }
