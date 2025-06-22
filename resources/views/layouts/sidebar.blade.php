@@ -1,4 +1,4 @@
-<div class="w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4">
+<div class="fixed h-screen w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4 overflow-y-auto">
     <h2 class="text-xl font-bold mb-8 text-center pt-4">إدارة المقصف</h2>
 
     <ul class="space-y-3">
@@ -44,12 +44,11 @@
                     </a>
                 </li>
                 <li class="p-3 {{ request()->is('cards*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
-    <a href="{{ url('/cards') }}" class="flex items-center">
-        <span class="ml-2">💳</span>
-        إصدار بطاقة إلكترونية
-    </a>
-</li>
-
+                    <a href="{{ url('/cards') }}" class="flex items-center">
+                        <span class="ml-2">💳</span>
+                        إصدار بطاقة إلكترونية
+                    </a>
+                </li>
             @endif
 
             @if(in_array(auth()->user()->role, ['مسؤول', 'موظف']))
@@ -61,11 +60,11 @@
                     </a>
                 </li>
                 <li class="p-3 {{ request()->is('invoices*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
-    <a href="{{ route('invoices.index') }}" class="flex items-center">
-        <span class="ml-2">🧾</span>
-        الفواتير
-    </a>
-</li>
+                    <a href="{{ route('invoices.index') }}" class="flex items-center">
+                        <span class="ml-2">🧾</span>
+                        الفواتير
+                    </a>
+                </li>
             @endif
 
             @if(auth()->user()->role === 'مسؤول')
@@ -76,8 +75,12 @@
                         التقارير
                     </a>
                 </li>
-
             @endif
         @endauth
     </ul>
+</div>
+
+<!-- أضف هامشًا للمحتوى الرئيسي لتعويض الشريط الجانبي الثابت -->
+<div class="ml-64">
+    <!-- محتوى الصفحة الرئيسي هنا -->
 </div>
