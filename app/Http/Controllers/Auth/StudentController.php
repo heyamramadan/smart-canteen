@@ -27,7 +27,7 @@ class StudentController extends Controller
             'full_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
            'parent_id' => 'required|exists:parents,parent_id',
-           'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image_path'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
           //  جلب ولي الأمر المرتبط مع معلومات المستخدم
@@ -39,7 +39,7 @@ class StudentController extends Controller
             // معالجة تحميل الصورة
     if ($request->hasFile('image')) {
         $imagePath = $request->file('image')->store('students/images', 'public');
-        $validated['image'] = $imagePath;
+        $validated['image_path'] = $imagePath;
     }
     // دمج البيانات مع اسم الأب
         $studentData = array_merge($validated, [

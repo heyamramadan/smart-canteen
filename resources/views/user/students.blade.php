@@ -33,6 +33,14 @@
         .animate-fade-in-out {
             animation: fade-in-out 3s ease-in-out forwards;
         }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -77,6 +85,7 @@
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
+                                <th class="p-3 text-right text-sm text-gray-500">الصورة</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الاسم الكامل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">اسم الأب</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الصف الدراسي</th>
@@ -88,6 +97,15 @@
                         <tbody class="divide-y divide-gray-200">
                             @foreach($students as $student)
                                 <tr class="hover:bg-gray-50 transition {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
+                                    <td class="p-3">
+                                        @if($student->image_path)
+                                            <img src="{{ asset('storage/'.$student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
+                                        @else
+                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                <span class="text-gray-500 text-xs">لا يوجد</span>
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->father_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
@@ -97,7 +115,6 @@
                                         @if($student->trashed())
                                             <form method="POST" action="{{ route('students.restore', $student->student_id) }}" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
                                                 @csrf
-                                
                                                 <button type="submit" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
                                                     ♻️ استعادة
                                                 </button>
@@ -109,7 +126,8 @@
                                                 '{{ $student->father_name }}',
                                                 '{{ $student->class }}',
                                                 '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
-                                                '{{ $student->parent_id }}'
+                                                '{{ $student->parent_id }}',
+                                                '{{ $student->image_path }}'
                                             )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                                 ✏️ تعديل
                                             </button>
@@ -127,7 +145,7 @@
 
                             @if($students->isEmpty())
                                 <tr>
-                                    <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
+                                    <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -146,7 +164,7 @@
                 <button onclick="closeAddModal()" class="text-gray-500 hover:text-gray-700">✖</button>
             </div>
             <div class="p-6">
-                <form method="POST" action="{{ route('students.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('students.store') }}" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -195,6 +213,15 @@
                             @enderror
                         </div>
                         <div class="md:col-span-2">
+                            <label class="block text-sm text-gray-600 mb-1">صورة الطالب</label>
+                            <input type="file" name="image" id="add_image" accept="image/*"
+                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+                            <div id="addImagePreview" class="mt-2"></div>
+                            @error('image')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
                             <select name="parent_id" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                                 <option value="">اختر ولي الأمر</option>
@@ -234,7 +261,7 @@
                 <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">✖</button>
             </div>
             <div class="p-6">
-                <form method="POST" id="editStudentForm" class="space-y-4">
+                <form method="POST" id="editStudentForm" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="student_id" id="edit_student_id">
@@ -271,6 +298,12 @@
                             <label class="block text-sm text-gray-600 mb-1">تاريخ الميلاد</label>
                             <input type="date" name="birth_date" id="edit_birth_date"
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm text-gray-600 mb-1">صورة الطالب</label>
+                            <input type="file" name="image" id="edit_image" accept="image/*"
+                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+                            <div id="editImagePreview" class="mt-2"></div>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
@@ -313,13 +346,24 @@
         }
 
         // وظائف تعديل طالب
-        function openEditModal(id, fullName, fatherName, classVal, birthDate, parentId) {
+        function openEditModal(id, fullName, fatherName, classVal, birthDate, parentId, imagePath) {
             document.getElementById('edit_student_id').value = id;
             document.getElementById('edit_full_name').value = fullName;
             document.getElementById('edit_father_name').value = fatherName;
             document.getElementById('edit_class').value = classVal;
             document.getElementById('edit_birth_date').value = birthDate;
             document.getElementById('edit_parent_id').value = parentId;
+
+            // عرض الصورة الحالية إذا كانت موجودة
+            const editImagePreview = document.getElementById('editImagePreview');
+            if (imagePath) {
+                editImagePreview.innerHTML = `
+                    <p class="text-sm text-gray-500 mb-1">الصورة الحالية:</p>
+                    <img src="/storage/${imagePath}" class="image-preview" />
+                `;
+            } else {
+                editImagePreview.innerHTML = '<p class="text-sm text-gray-500">لا توجد صورة حالية</p>';
+            }
 
             // تحديث مسار الفورم
             document.getElementById('editStudentForm').action = '/students/' + id;
@@ -332,6 +376,45 @@
             document.getElementById('editStudentModal').classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
+
+        // معاينة الصورة قبل الرفع - للإضافة
+        document.getElementById('add_image').addEventListener('change', function(e) {
+            const preview = document.getElementById('addImagePreview');
+            preview.innerHTML = '';
+
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'image-preview';
+                    preview.appendChild(img);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // معاينة الصورة قبل الرفع - للتعديل
+        document.getElementById('edit_image').addEventListener('change', function(e) {
+            const preview = document.getElementById('editImagePreview');
+
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    preview.innerHTML = `
+                        <p class="text-sm text-gray-500 mb-1">الصورة الجديدة:</p>
+                        <img src="${event.target.result}" class="image-preview" />
+                    `;
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
 
         // إغلاق المودال عند النقر خارج المحتوى
         document.getElementById('addStudentModal').addEventListener('click', function(e) {
@@ -386,7 +469,7 @@
             if (students.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
+                        <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
                     </tr>
                 `;
                 return;
@@ -400,6 +483,14 @@
                 row.className = `transition ${rowClass}`;
 
                 row.innerHTML = `
+                    <td class="p-3">
+                        ${student.image_path ?
+                            `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
+                            `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-500 text-xs">لا يوجد</span>
+                            </div>`
+                        }
+                    </td>
                     <td class="p-3 text-sm font-medium">${student.full_name}</td>
                     <td class="p-3 text-sm">${student.father_name}</td>
                     <td class="p-3 text-sm">${student.class}</td>
@@ -420,7 +511,8 @@
                                 '${student.father_name}',
                                 '${student.class}',
                                 '${student.birth_date ? student.birth_date : ''}',
-                                '${student.parent_id}'
+                                '${student.parent_id}',
+                                '${student.image_path}'
                             )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                 ✏️ تعديل
                             </button>
