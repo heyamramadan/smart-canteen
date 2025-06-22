@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,13 +11,11 @@ class ParentAuthController extends Controller
 {
     public function login(Request $request)
     {
-    
         $credentials = $request->validate([
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        // جلب المستخدم بدور ولي أمر
         $user = User::where('username', $credentials['username'])
             ->where('role', 'ولي أمر')
             ->first();
@@ -28,10 +26,8 @@ class ParentAuthController extends Controller
             ], 401);
         }
 
-        // حذف التوكنات القديمة (اختياري)
         $user->tokens()->delete();
 
-        // إنشاء توكن جديد
         $token = $user->createToken('parent-token')->plainTextToken;
 
         return response()->json([

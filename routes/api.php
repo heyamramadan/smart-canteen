@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\ParentAuthController;
+use App\Http\Controllers\Api\ParentAuthController;
 use App\Http\Controllers\Api\ParentStudentController;
 
 Route::get('/user', function (Request $request) {
