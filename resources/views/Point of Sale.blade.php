@@ -26,6 +26,15 @@
   </script>
 </head>
 <body class="bg-gray-50">
+    <!-- مودال الكاميرا -->
+<div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg p-4 w-80 shadow-lg text-center relative">
+    <button onclick="closeQRModal()" class="absolute top-2 left-2 text-gray-500 hover:text-red-500 text-lg font-bold">&times;</button>
+    <h2 class="text-lg font-bold text-primary mb-2">مسح رمز QR</h2>
+    <video id="preview" class="w-48 h-48 mx-auto border border-gray-300 rounded" playsinline></video>
+  </div>
+</div>
+
 
 <!-- الهيكل العام -->
 <div class="flex h-screen">
@@ -47,9 +56,9 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
           <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" autocomplete="off" />
             <!-- زر تشغيل الكاميرا -->
-  <button onclick="startQRScanner()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded mb-2">
-    تشغيل الكاميرا لمسح QR
-  </button>
+<button onclick="openQRModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded mb-2">
+  تشغيل الكاميرا لمسح QR
+</button>
 
   <!-- عرض الفيديو من الكاميرا -->
   <video id="preview" class="w-full rounded border border-gray-300 mb-4" style="display: none;" playsinline></video>
@@ -556,24 +565,30 @@ function updateLimitInfo() {
   function showError(message) {
     alert(message);
   }
-    let scanner;
+     let scanner;
+
+  // فتح المودال وبدء الكاميرا
+  function openQRModal() {
+    document.getElementById('qrModal').classList.remove('hidden');
+    startQRScanner();
+  }
+
+  // إغلاق المودال وإيقاف الكاميرا
+  function closeQRModal() {
+    document.getElementById('qrModal').classList.add('hidden');
+    if (scanner) scanner.stop();
+  }
 
   function startQRScanner() {
     const video = document.getElementById('preview');
-    video.style.display = 'block';
 
     scanner = new Instascan.Scanner({ video: video, mirror: false });
     scanner.addListener('scan', function (content) {
       if (content) {
-        // وضع المعرف في حقل البحث
         studentSearchInput.value = content;
-
-        // إخفاء الفيديو وإيقاف الكاميرا
-        video.style.display = 'none';
-        scanner.stop();
-
-        // تنفيذ البحث
-        triggerSearch(content);
+        closeQRModal(); // إغلاق المودال
+        scanner.stop(); // إيقاف الكاميرا
+        triggerSearch(content); // بدء البحث
       }
     });
 
@@ -582,9 +597,11 @@ function updateLimitInfo() {
         scanner.start(cameras[0]);
       } else {
         alert('لم يتم العثور على كاميرات.');
+        closeQRModal();
       }
     }).catch(function (e) {
       alert('حدث خطأ أثناء الوصول إلى الكاميرا: ' + e);
+      closeQRModal();
     });
   }
 
