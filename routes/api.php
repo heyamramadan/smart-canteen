@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ParentAuthController;
 use App\Http\Controllers\Api\ParentStudentController;
 use App\Http\Controllers\Api\ApiWalletController;
 use App\Http\Controllers\Api\ApiBannedProductController;
+use App\Http\Controllers\Api\ProductApiController;
 
 // تسجيل دخول
 Route::post('/login-parent', [ParentAuthController::class, 'login']);
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/wallet', [ApiWalletController::class, 'getWallet']);
     Route::post('/wallet/daily-limit', [ApiWalletController::class, 'updateDailyLimit']);
 
+
+// المنتجات والتصنيفات
+Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
+Route::get('/products', [ProductApiController::class, 'getAllProducts']);
+Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
     // المنتجات الممنوعة
     Route::get('/banned-products', [ApiBannedProductController::class, 'index']);
     Route::post('/banned-products', [ApiBannedProductController::class, 'store']);
