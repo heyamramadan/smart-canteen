@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\OrderController;
 use App\Http\Controllers\Auth\InvoiceController;
 use App\Http\Controllers\Auth\CardController;
 use App\Http\Controllers\Auth\ProfileController;
+ use App\Http\Controllers\Auth\ReportController;
 use Illuminate\Support\Facades\Route;
 
 // الصفحة الرئيسية
@@ -76,8 +77,10 @@ Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet
 //يطاقة
 Route::get('/cards', [CardController::class, 'index'])->name('students.cards');
 Route::get('/students/data', [CardController::class, 'fetch'])->name('students.data');
-
-});
+//تقارير
+    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
+    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('admin.reports.generate');
+    });
 
 
 
@@ -99,5 +102,7 @@ Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('in
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     ///
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
 
 });
