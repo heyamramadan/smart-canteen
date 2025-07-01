@@ -45,7 +45,6 @@
     <div class="flex h-screen">
       @include('layouts.sidebar')
 
-
         <!-- المحتوى الرئيسي -->
         <div class="flex-1 overflow-y-auto">
             <!-- شريط العنوان المحدث -->
@@ -64,22 +63,29 @@
                 <!-- فلترة التقرير المحدثة -->
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <h2 class="text-lg font-semibold text-primary-700 mb-4">فلترة التقرير</h2>
-                    <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <form class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">نوع التقرير</label>
-                            <select class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option>تقرير المبيعات</option>
-                                <option>تقرير المنتجات</option>
-                                <option>تقرير الطلاب</option>
+                            <label class="block text-sm text-gray-600 mb-1">الفترة الزمنية</label>
+                            <select id="timePeriod" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="day">يوم</option>
+                                <option value="week">أسبوع</option>
+                                <option value="month">شهر</option>
+                                <option value="custom">فترة مخصصة</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">من تاريخ</label>
-                            <input type="date" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <div id="customDateRange" class="hidden md:col-span-2 grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">من تاريخ</label>
+                                <input type="date" id="fromDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">إلى تاريخ</label>
+                                <input type="date" id="toDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">إلى تاريخ</label>
-                            <input type="date" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <div id="singleDate" class="hidden">
+                            <label class="block text-sm text-gray-600 mb-1">تاريخ اليوم</label>
+                            <input type="date" id="selectedDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div class="flex items-end">
                             <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition">
@@ -258,7 +264,6 @@
     </div>
 
     <script>
-        // يمكنك إضافة أي JavaScript مخصص هنا
         document.addEventListener('DOMContentLoaded', function() {
             // تعيين التاريخ الافتراضي
             const today = new Date().toISOString().split('T')[0];
@@ -277,6 +282,52 @@
                     this.classList.add('active');
                 });
             });
+
+            // التحكم في عرض حقول التاريخ حسب نوع الفترة
+            const timePeriodSelect = document.getElementById('timePeriod');
+            const customDateRange = document.getElementById('customDateRange');
+            const singleDate = document.getElementById('singleDate');
+
+            function updateDateFields() {
+                const period = timePeriodSelect.value;
+
+                if (period === 'custom') {
+                    customDateRange.classList.remove('hidden');
+                    singleDate.classList.add('hidden');
+                } else {
+                    customDateRange.classList.add('hidden');
+                    singleDate.classList.remove('hidden');
+
+                    // تعيين التاريخ المناسب حسب الفترة المحددة
+                    const dateInput = document.getElementById('selectedDate');
+                    const today = new Date();
+
+                    if (period === 'day') {
+                        dateInput.value = today.toISOString().split('T')[0];
+                    } else if (period === 'week') {
+                        const firstDay = new Date(today.setDate(today.getDate() - today.getDay()));
+                        dateInput.value = firstDay.toISOString().split('T')[0];
+                    } else if (period === 'month') {
+                        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                        dateInput.value = firstDay.toISOString().split('T')[0];
+                    }
+                }
+            }
+
+            // تحديث الحقول عند تغيير الخيار
+            timePeriodSelect.addEventListener('change', updateDateFields);
+
+            // تهيئة الحقول عند التحميل
+            updateDateFields();
+
+            // تعيين التواريخ الافتراضية للحقول المخصصة
+            const fromDate = document.getElementById('fromDate');
+            const toDate = document.getElementById('toDate');
+            const selectedDate = document.getElementById('selectedDate');
+
+            if (!fromDate.value) fromDate.value = today;
+            if (!toDate.value) toDate.value = today;
+            if (!selectedDate.value) selectedDate.value = today;
         });
     </script>
 </body>
