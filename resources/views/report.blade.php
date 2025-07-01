@@ -44,7 +44,7 @@
 <body class="bg-gray-50">
     <div class="flex h-screen">
       @include('layouts.sidebar')
- 
+
 
         <!-- المحتوى الرئيسي -->
         <div class="flex-1 overflow-y-auto">
