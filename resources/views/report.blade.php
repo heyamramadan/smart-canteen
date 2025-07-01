@@ -55,7 +55,7 @@
                         <i class="fas fa-file-alt ml-2"></i>
                         تقارير المبيعات
                     </h1>
-                 
+
                 </div>
             </header>
 

@@ -15,7 +15,7 @@ class ReportController extends Controller
 
     public function index()
     {
-        return view('report');
+        return view(view: 'report');
     }
 
     public function generate(Request $request)
