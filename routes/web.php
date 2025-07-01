@@ -79,7 +79,7 @@ Route::get('/cards', [CardController::class, 'index'])->name('students.cards');
 Route::get('/students/data', [CardController::class, 'fetch'])->name('students.data');
 //تقارير
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
-    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('admin.reports.generate');
+    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('report.generate');
     });
 
 
