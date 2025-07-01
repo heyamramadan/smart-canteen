@@ -55,16 +55,7 @@
                         <i class="fas fa-file-alt ml-2"></i>
                         تقارير المبيعات
                     </h1>
-                    <div class="flex items-center space-x-4 space-x-reverse">
-                        <div class="relative">
-                            <input type="text" placeholder="بحث..." class="pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-                        </div>
-                        <div class="flex items-center space-x-2 space-x-reverse">
-                            <img src="https://via.placeholder.com/40" alt="صورة المستخدم" class="w-8 h-8 rounded-full">
-                            <span class="text-sm font-medium">مسؤول النظام</span>
-                        </div>
-                    </div>
+                 
                 </div>
             </header>
 
