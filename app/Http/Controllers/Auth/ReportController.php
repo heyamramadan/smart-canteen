@@ -8,44 +8,37 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+    // عدد العناصر المعروضة في كل صفحة
+    const ITEMS_PER_PAGE = 15;
+
     public function index()
     {
         // الحصول على البيانات الافتراضية (آخر 30 يوم)
         $endDate = Carbon::now();
         $startDate = Carbon::now()->subDays(30);
 
+        // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
         $orderItems = OrderItem::with(['order.student', 'product'])
             ->whereHas('order', function($q) {
                 $q->completed();
             })
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->paginate(self::ITEMS_PER_PAGE);
 
-        $products = Product::all();
+        // حساب الإحصائيات باستخدام استعلامات منفصلة لأداء أفضل
+        $stats = $this->calculateStats($startDate, $endDate);
 
-        // حساب الإحصائيات
-        $totalSales = $orderItems->sum(function($item) {
-            return $item->quantity * $item->price;
-        });
-
-        $totalOrders = Order::completed()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
-
-        $totalItemsSold = $orderItems->sum('quantity');
-
-        return view('report', compact(
-            'orderItems',
-            'products',
-            'totalSales',
-            'totalOrders',
-            'totalItemsSold',
-            'startDate',
-            'endDate'
-        ));
+        return view('report', array_merge([
+            'orderItems' => $orderItems,
+            'products' => Product::all(),
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ], $stats));
     }
 
     public function generate(Request $request)
@@ -58,6 +51,33 @@ class ReportController extends Controller
         ]);
 
         // تحديد الفترة الزمنية بناءً على الاختيار
+        [$startDate, $endDate] = $this->getDateRange($request);
+
+        // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
+        $orderItems = OrderItem::with(['order.student', 'product'])
+            ->whereHas('order', function($q) {
+                $q->completed();
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->paginate(self::ITEMS_PER_PAGE);
+
+        // حساب الإحصائيات
+        $stats = $this->calculateStats($startDate, $endDate);
+
+        return view('report', array_merge([
+            'orderItems' => $orderItems,
+            'products' => Product::all(),
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ], $stats));
+    }
+
+    /**
+     * حساب الفترة الزمنية بناءً على نوع الفترة المحددة
+     */
+    protected function getDateRange(Request $request): array
+    {
         switch ($request->timePeriod) {
             case 'day':
                 $startDate = Carbon::parse($request->selectedDate)->startOfDay();
@@ -78,37 +98,36 @@ class ReportController extends Controller
                 $startDate = Carbon::parse($request->fromDate)->startOfDay();
                 $endDate = Carbon::parse($request->toDate)->endOfDay();
                 break;
+
+            default:
+                $startDate = Carbon::now()->subDays(30);
+                $endDate = Carbon::now();
         }
 
-        // استعلام للحصول على عناصر الطلبات مع العلاقات
-        $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order', function($q) {
-                $q->completed();
-            })
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
+        return [$startDate, $endDate];
+    }
 
-        $products = Product::all();
+    /**
+     * حساب الإحصائيات للفترة المحددة
+     */
+    protected function calculateStats(Carbon $startDate, Carbon $endDate): array
+    {
+        return [
+            'totalSales' => OrderItem::whereHas('order', function($q) {
+                    $q->completed();
+                })
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->sum(DB::raw('quantity * price')),
 
-        // حساب الإحصائيات
-        $totalSales = $orderItems->sum(function($item) {
-            return $item->quantity * $item->price;
-        });
+            'totalOrders' => Order::completed()
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->count(),
 
-        $totalOrders = Order::completed()
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
-
-        $totalItemsSold = $orderItems->sum('quantity');
-
-        return view('report', compact(
-            'orderItems',
-            'products',
-            'totalSales',
-            'totalOrders',
-            'totalItemsSold',
-            'startDate',
-            'endDate'
-        ));
+            'totalItemsSold' => OrderItem::whereHas('order', function($q) {
+                    $q->completed();
+                })
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->sum('quantity')
+        ];
     }
 }
