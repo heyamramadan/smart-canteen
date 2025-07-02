@@ -150,6 +150,7 @@
 
     @endif
 </div>
+<img src="/images/canteen.jpg" alt="شعار المقصف" class="fixed bottom-0 left-0 mb-4 ml-4 w-48 h-auto z-50" />
 
 </body>
 </html>
