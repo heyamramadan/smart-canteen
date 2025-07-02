@@ -54,7 +54,11 @@
                         <i class="fas fa-file-alt ml-2"></i>
                         تقارير المبيعات
                     </h1>
-
+                    <div class="text-sm text-gray-600">
+                        @if(isset($startDate) && isset($endDate))
+                        الفترة: {{ $startDate->format('Y-m-d') }} إلى {{ $endDate->format('Y-m-d') }}
+                        @endif
+                    </div>
                 </div>
             </header>
 
@@ -63,29 +67,30 @@
                 <!-- فلترة التقرير المحدثة -->
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <h2 class="text-lg font-semibold text-primary-700 mb-4">فلترة التقرير</h2>
-                    <form class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <form method="POST" action="{{ route('report.generate') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        @csrf
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الفترة الزمنية</label>
-                            <select id="timePeriod" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="day">يوم</option>
-                                <option value="week">أسبوع</option>
-                                <option value="month">شهر</option>
-                                <option value="custom">فترة مخصصة</option>
+                            <select name="timePeriod" id="timePeriod" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="day" {{ request('timePeriod') == 'day' ? 'selected' : '' }}>يوم</option>
+                                <option value="week" {{ request('timePeriod') == 'week' ? 'selected' : '' }}>أسبوع</option>
+                                <option value="month" {{ request('timePeriod') == 'month' ? 'selected' : '' }}>شهر</option>
+                                <option value="custom" {{ request('timePeriod') == 'custom' ? 'selected' : '' }}>فترة مخصصة</option>
                             </select>
                         </div>
-                        <div id="customDateRange" class="hidden md:col-span-2 grid grid-cols-2 gap-4">
+                        <div id="customDateRange" class="{{ request('timePeriod') == 'custom' ? 'md:col-span-2 grid grid-cols-2 gap-4' : 'hidden md:col-span-2 grid grid-cols-2 gap-4' }}">
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">من تاريخ</label>
-                                <input type="date" id="fromDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <input type="date" name="fromDate" id="fromDate" value="{{ request('fromDate', $startDate->format('Y-m-d')) }}" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             </div>
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">إلى تاريخ</label>
-                                <input type="date" id="toDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <input type="date" name="toDate" id="toDate" value="{{ request('toDate', $endDate->format('Y-m-d')) }}" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             </div>
                         </div>
-                        <div id="singleDate" class="hidden">
-                            <label class="block text-sm text-gray-600 mb-1">تاريخ اليوم</label>
-                            <input type="date" id="selectedDate" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <div id="singleDate" class="{{ request('timePeriod') != 'custom' ? '' : 'hidden' }}">
+                            <label class="block text-sm text-gray-600 mb-1">التاريخ</label>
+                            <input type="date" name="selectedDate" id="selectedDate" value="{{ request('selectedDate', $startDate->format('Y-m-d')) }}" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div class="flex items-end">
                             <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition">
@@ -101,42 +106,42 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500">إجمالي المبيعات</p>
-                                <p class="text-2xl font-bold text-gray-800">5,420 ر.س</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ number_format($totalSales, 2) }} ر.س</p>
                             </div>
                             <div class="p-3 bg-blue-100 rounded-full text-blue-600">
                                 <i class="fas fa-money-bill-wave text-xl"></i>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <span class="text-sm text-green-600"><i class="fas fa-arrow-up ml-1"></i> 12% عن الشهر الماضي</span>
+                            <span class="text-sm text-green-600"><i class="fas fa-info-circle ml-1"></i> إجمالي المبيعات للفترة</span>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500">عدد الطلبات</p>
-                                <p class="text-2xl font-bold text-gray-800">142</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $totalOrders }}</p>
                             </div>
                             <div class="p-3 bg-green-100 rounded-full text-green-600">
                                 <i class="fas fa-shopping-cart text-xl"></i>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <span class="text-sm text-green-600"><i class="fas fa-arrow-up ml-1"></i> 8% عن الشهر الماضي</span>
+                            <span class="text-sm text-green-600"><i class="fas fa-info-circle ml-1"></i> إجمالي الطلبات للفترة</span>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500">المنتجات المباعة</p>
-                                <p class="text-2xl font-bold text-gray-800">856</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $totalItemsSold }}</p>
                             </div>
                             <div class="p-3 bg-purple-100 rounded-full text-purple-600">
                                 <i class="fas fa-box-open text-xl"></i>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <span class="text-sm text-red-600"><i class="fas fa-arrow-down ml-1"></i> 3% عن الشهر الماضي</span>
+                            <span class="text-sm text-green-600"><i class="fas fa-info-circle ml-1"></i> إجمالي المنتجات المباعة</span>
                         </div>
                     </div>
                 </div>
@@ -163,56 +168,46 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($orderItems as $item)
                                 <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-2023-001</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">أحمد محمد</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">ساندويتش جبن</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5.00 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10.00 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-21 10:30</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-{{ $item->order->order_id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->order->student->name ?? 'غير معروف' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->product->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->quantity }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->price, 2) }} ر.س</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->quantity * $item->price, 2) }} ر.س</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->created_at->format('Y-m-d H:i') }}</td>
                                 </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-2023-002</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">خالد عبدالله</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">عصير برتقال</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3.50 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3.50 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-21 11:15</td>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">لا توجد بيانات متاحة</td>
                                 </tr>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-2023-003</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">سارة علي</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">شوكولاتة</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.00 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">6.00 ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-21 12:45</td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                     <div class="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
                         <div class="text-sm text-gray-500">
-                            عرض 1 إلى 5 من 142 طلب
+                            عرض {{ $orderItems->firstItem() ?? 0 }} إلى {{ $orderItems->lastItem() ?? 0 }} من {{ $orderItems->total() }} طلب
                         </div>
                         <div class="flex space-x-2 space-x-reverse">
-                            <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
+                            @if($orderItems->previousPageUrl())
+                            <a href="{{ $orderItems->previousPageUrl() }}" class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
                                 السابق
-                            </button>
-                            <button class="px-3 py-1 border border-gray-300 rounded-lg text-white bg-primary-500 hover:bg-primary-600 transition">
-                                1
-                            </button>
-                            <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
-                                2
-                            </button>
-                            <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
-                                3
-                            </button>
-                            <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
+                            </a>
+                            @endif
+
+                            @foreach(range(1, $orderItems->lastPage()) as $page)
+                                <a href="{{ $orderItems->url($page) }}" class="px-3 py-1 border border-gray-300 rounded-lg {{ $orderItems->currentPage() == $page ? 'text-white bg-primary-500 hover:bg-primary-600' : 'text-gray-700 bg-white hover:bg-gray-50' }} transition">
+                                    {{ $page }}
+                                </a>
+                            @endforeach
+
+                            @if($orderItems->nextPageUrl())
+                            <a href="{{ $orderItems->nextPageUrl() }}" class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition">
                                 التالي
-                            </button>
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -221,42 +216,23 @@
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-primary-700 mb-4">المخزون المتبقي</h3>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        @foreach($products as $product)
+                        @php
+                            $percentage = $product->quantity > 0 ? min(100, ($product->quantity / 50) * 100) : 0;
+                            $colorClass = $percentage > 50 ? 'bg-blue-500' : ($percentage > 20 ? 'bg-yellow-500' : 'bg-red-500');
+                            $textColor = $percentage > 50 ? 'text-blue-800' : ($percentage > 20 ? 'text-yellow-800' : 'text-red-800');
+                            $bgColor = $percentage > 50 ? 'bg-blue-100' : ($percentage > 20 ? 'bg-yellow-100' : 'bg-red-100');
+                        @endphp
                         <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
                             <div class="flex justify-between items-center">
-                                <span class="font-medium">ساندويتش جبن</span>
-                                <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">12 متبقي</span>
+                                <span class="font-medium">{{ $product->name }}</span>
+                                <span class="text-sm {{ $bgColor }} {{ $textColor }} px-2 py-1 rounded-full">{{ $product->quantity }} متبقي</span>
                             </div>
                             <div class="mt-2 h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-blue-500 rounded-full" style="width: 60%"></div>
+                                <div class="h-2 {{ $colorClass }} rounded-full" style="width: {{ $percentage }}%"></div>
                             </div>
                         </div>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">ساندويتش دجاج</span>
-                                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">8 متبقي</span>
-                            </div>
-                            <div class="mt-2 h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-green-500 rounded-full" style="width: 40%"></div>
-                            </div>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">عصير برتقال</span>
-                                <span class="text-sm bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">5 متبقي</span>
-                            </div>
-                            <div class="mt-2 h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-yellow-500 rounded-full" style="width: 25%"></div>
-                            </div>
-                        </div>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">شوكولاتة</span>
-                                <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">3 متبقي</span>
-                            </div>
-                            <div class="mt-2 h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-red-500 rounded-full" style="width: 15%"></div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </main>
@@ -319,15 +295,6 @@
 
             // تهيئة الحقول عند التحميل
             updateDateFields();
-
-            // تعيين التواريخ الافتراضية للحقول المخصصة
-            const fromDate = document.getElementById('fromDate');
-            const toDate = document.getElementById('toDate');
-            const selectedDate = document.getElementById('selectedDate');
-
-            if (!fromDate.value) fromDate.value = today;
-            if (!toDate.value) toDate.value = today;
-            if (!selectedDate.value) selectedDate.value = today;
         });
     </script>
 </body>

@@ -9,64 +9,106 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-
 class ReportController extends Controller
 {
-
     public function index()
     {
-        return view(view: 'report');
+        // الحصول على البيانات الافتراضية (آخر 30 يوم)
+        $endDate = Carbon::now();
+        $startDate = Carbon::now()->subDays(30);
+
+        $orderItems = OrderItem::with(['order.student', 'product'])
+            ->whereHas('order', function($q) {
+                $q->completed();
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        $products = Product::all();
+
+        // حساب الإحصائيات
+        $totalSales = $orderItems->sum(function($item) {
+            return $item->quantity * $item->price;
+        });
+
+        $totalOrders = Order::completed()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        $totalItemsSold = $orderItems->sum('quantity');
+
+        return view('report', compact(
+            'orderItems',
+            'products',
+            'totalSales',
+            'totalOrders',
+            'totalItemsSold',
+            'startDate',
+            'endDate'
+        ));
     }
 
     public function generate(Request $request)
     {
         $request->validate([
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'product_id' => 'nullable|exists:products,product_id',
-            'report_type' => 'required|in:daily,monthly,custom'
+            'timePeriod' => 'required|in:day,week,month,custom',
+            'fromDate' => 'nullable|required_if:timePeriod,custom|date',
+            'toDate' => 'nullable|required_if:timePeriod,custom|date|after_or_equal:fromDate',
+            'selectedDate' => 'nullable|required_if:timePeriod,day,week,month|date'
         ]);
 
-        $query = OrderItem::with(['order', 'product'])
+        // تحديد الفترة الزمنية بناءً على الاختيار
+        switch ($request->timePeriod) {
+            case 'day':
+                $startDate = Carbon::parse($request->selectedDate)->startOfDay();
+                $endDate = Carbon::parse($request->selectedDate)->endOfDay();
+                break;
+
+            case 'week':
+                $startDate = Carbon::parse($request->selectedDate)->startOfWeek();
+                $endDate = Carbon::parse($request->selectedDate)->endOfWeek();
+                break;
+
+            case 'month':
+                $startDate = Carbon::parse($request->selectedDate)->startOfMonth();
+                $endDate = Carbon::parse($request->selectedDate)->endOfMonth();
+                break;
+
+            case 'custom':
+                $startDate = Carbon::parse($request->fromDate)->startOfDay();
+                $endDate = Carbon::parse($request->toDate)->endOfDay();
+                break;
+        }
+
+        // استعلام للحصول على عناصر الطلبات مع العلاقات
+        $orderItems = OrderItem::with(['order.student', 'product'])
             ->whereHas('order', function($q) {
                 $q->completed();
-            });
+            })
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
 
-        // تطبيق الفلترة حسب النوع
-        switch ($request->report_type) {
-            case 'daily':
-                $query->whereDate('created_at', Carbon::today());
-                break;
-            case 'monthly':
-                $query->whereMonth('created_at', Carbon::now()->month)
-                      ->whereYear('created_at', Carbon::now()->year);
-                break;
-            case 'custom':
-                if ($request->start_date) {
-                    $query->whereDate('created_at', '>=', $request->start_date);
-                }
-                if ($request->end_date) {
-                    $query->whereDate('created_at', '<=', $request->end_date);
-                }
-                break;
-        }
-
-        // فلترة حسب المنتج إذا تم تحديده
-        if ($request->product_id) {
-            $query->where('product_id', $request->product_id);
-        }
-
-        $orderItems = $query->get();
         $products = Product::all();
 
         // حساب الإحصائيات
-        $totalSales = $orderItems->sum('total');
+        $totalSales = $orderItems->sum(function($item) {
+            return $item->quantity * $item->price;
+        });
+
+        $totalOrders = Order::completed()
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
         $totalItemsSold = $orderItems->sum('quantity');
 
-        return view('admin.reports.index', compact('orderItems', 'products', 'totalSales', 'totalItemsSold'));
+        return view('report', compact(
+            'orderItems',
+            'products',
+            'totalSales',
+            'totalOrders',
+            'totalItemsSold',
+            'startDate',
+            'endDate'
+        ));
     }
-
-
-
 }
-
