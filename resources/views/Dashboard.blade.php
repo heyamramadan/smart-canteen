@@ -148,80 +148,6 @@
             </div>
         </div>
 
-        <!-- جدول المستخدمين (للمسؤول فقط) -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-lg font-bold text-primary-700">👥 إدارة المستخدمين</h2>
-                <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition">
-                    + إضافة مستخدم
-                </button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="p-3 text-right text-sm text-gray-500">الحالة</th>
-                            <th class="p-3 text-right text-sm text-gray-500">البريد الإلكتروني</th>
-                            <th class="p-3 text-right text-sm text-gray-500">الصلاحية</th>
-                            <th class="p-3 text-right text-sm text-gray-500">الاسم</th>
-                            <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">✔️ مفعل</span></td>
-                            <td class="p-3 text-sm">mohamed@example.com</td>
-                            <td class="p-3 text-sm"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">ولي أمر</span></td>
-                            <td class="p-3 text-sm font-medium">أحمد علي</td>
-                            <td class="p-3">
-                                <button class="text-primary-500 hover:text-primary-700 mr-2">✏️</button>
-                                <button class="text-red-500 hover:text-red-700">🗑️</button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">✔️ مفعل</span></td>
-                            <td class="p-3 text-sm">fatima@example.com</td>
-                            <td class="p-3 text-sm"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">ولي أمر</span></td>
-                            <td class="p-3 text-sm font-medium">فاطمة محمد</td>
-                            <td class="p-3">
-                                <button class="text-primary-500 hover:text-primary-700 mr-2">✏️</button>
-                                <button class="text-red-500 hover:text-red-700">🗑️</button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-3"><span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs">✖️ غير مفعل</span></td>
-                            <td class="p-3 text-sm">sara@example.com</td>
-                            <td class="p-3 text-sm"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">موظف مقصف</span></td>
-                            <td class="p-3 text-sm font-medium">محمود عبد الله</td>
-                            <td class="p-3">
-                                <button class="text-primary-500 hover:text-primary-700 mr-2">✏️</button>
-                                <button class="text-red-500 hover:text-red-700">🗑️</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @endif
-
-    <!-- قسم المبيعات (للمسؤول والموظف) -->
-    <div class="bg-white rounded-xl shadow-lg mb-8">
-        <div class="p-4 border-b flex justify-between items-center">
-            <h2 class="text-lg font-bold text-primary-700">🧾 المبيعات</h2>
-            @if(auth()->user()->role === 'مسؤول')
-                <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition">
-                    + إضافة عملية بيع
-                </button>
-            @endif
-        </div>
-        <div class="p-4">
-            <!-- محتوى قسم المبيعات هنا -->
-            <p class="text-gray-600">هنا سيتم عرض سجل المبيعات والعمليات اليومية</p>
-            <!-- يمكنك إضافة جدول المبيعات أو أي محتوى آخر هنا -->
-        </div>
-    </div>
-
-    @if(auth()->user()->role === 'مسؤول')
         <!-- بطاقات التقارير (للمسؤول فقط) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
             <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition">
