@@ -25,10 +25,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
         body {
             font-family: 'Tajawal', sans-serif;
+            background-color: white; /* خلفية بيضاء للصفحة كاملة */
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-white"> <!-- تغيير خلفية الجسم إلى أبيض -->
 
 <!-- الشريط الجانبي ثابت على اليمين -->
 <div class="fixed top-0 right-0 h-screen w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4 overflow-y-auto">
@@ -122,35 +123,40 @@
 </div>
 
 <!-- المحتوى الرئيسي مع تعويض هامش يمين الشريط الجانبي -->
-<div class="mr-64 p-6 overflow-auto min-h-screen bg-gray-50">
+<div class="mr-64 p-6 overflow-auto min-h-screen bg-white"> <!-- تغيير الخلفية إلى أبيض -->
     @if(auth()->user()->role === 'مسؤول')
         <!-- بطاقات الإحصائيات للمسؤول -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-primary-500">
+            <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-primary-500"> <!-- تغيير خلفية البطاقة إلى رمادي فاتح للتمييز -->
                 <h3 class="text-gray-500 text-sm">الطلبات</h3>
                 <p class="text-2xl font-bold text-primary-600">120</p>
                 <div class="mt-2 text-primary-500 text-xs">↑ 12% عن الشهر الماضي</div>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
+            <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
                 <h3 class="text-gray-500 text-sm">أولياء الأمور</h3>
                 <p class="text-2xl font-bold text-blue-600">85</p>
                 <div class="mt-2 text-blue-500 text-xs">↑ 5% زيادة</div>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-green-500">
+            <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-green-500">
                 <h3 class="text-gray-500 text-sm">موظفي المقصف</h3>
                 <p class="text-2xl font-bold text-green-600">5</p>
                 <div class="mt-2 text-green-500 text-xs">+2 موظف جديد</div>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-purple-500">
+            <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-purple-500">
                 <h3 class="text-gray-500 text-sm">إجمالي المبيعات</h3>
                 <p class="text-2xl font-bold text-purple-600">3.500 ر.س</p>
                 <div class="mt-2 text-purple-500 text-xs">↑ 20% نمو</div>
             </div>
         </div>
-
     @endif
 </div>
-<img src="/images/canteen.jpg" alt="شعار المقصف" class="fixed bottom-0 left-0 mb-4 ml-4 w-48 h-auto z-50" />
+
+<!-- الصورة المعدلة بحجم أكبر مع خلفية بيضاء -->
+<div class="fixed bottom-0 left-0 mb-6 ml-6 z-50">
+    <div class="bg-white p-4 rounded-lg shadow-xl border border-gray-200">
+        <img src="/images/canteen.jpg" alt="شعار المقصف" class="w-64 h-auto" /> <!-- زيادة حجم الصورة إلى 64 -->
+    </div>
+</div>
 
 </body>
 </html>

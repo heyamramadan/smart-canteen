@@ -152,7 +152,7 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                     <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-primary-700">تفاصيل المبيعات</h3>
-                     
+
                         <button onclick="exportCurrentTableData()" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
                             <i class="fas fa-download ml-1"></i> تصدير
                         </button>
@@ -177,8 +177,8 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->order->student->full_name  ?? 'غير معروف' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->product->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->quantity }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->price, 2) }} ر.س</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->quantity * $item->price, 2) }} ر.س</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->price, 2) }} د.ل</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->quantity * $item->price, 2) }} د.ل</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->created_at->format('Y-m-d H:i') }}</td>
                                 </tr>
                                 @empty
@@ -319,7 +319,7 @@
     // إنشاء محتوى CSV
     const headers = ['رقم الطلب', 'الطالب', 'المنتج', 'الكمية', 'السعر', 'المجموع', 'التاريخ'];
     let csvContent = "\uFEFF" + headers.join(',') + '\n'; // \uFEFF لحل مشكلة الترميز في الإكسل
-    
+
     rows.forEach(row => {
         csvContent += row.join(',') + '\n';
     });
@@ -328,7 +328,7 @@
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const fileName = 'الطلبات_' + new Date().toLocaleDateString('ar-SA') + '.csv';
-    
+
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
     link.click();
