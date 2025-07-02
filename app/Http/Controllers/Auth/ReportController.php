@@ -9,6 +9,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Exports\OrderItemsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ReportController extends Controller
 {
@@ -130,4 +133,18 @@ class ReportController extends Controller
                 ->sum('quantity')
         ];
     }
+
+// في ReportController@export
+public function export(Request $request)
+{
+    $orderItems = OrderItem::with(['order.student', 'product'])
+    ->whereHas('order', fn($q) => $q->completed())
+    ->orderBy('created_at', 'desc')
+    ->get();
+
+return Excel::download(
+    new OrderItemsExport($orderItems),
+    'جميع_الطلبات.xlsx'
+);
+}
 }

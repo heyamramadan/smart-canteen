@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>نظام المقصف - تقارير المبيعات</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -150,7 +152,8 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                     <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-primary-700">تفاصيل المبيعات</h3>
-                        <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                     
+                        <button onclick="exportCurrentTableData()" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
                             <i class="fas fa-download ml-1"></i> تصدير
                         </button>
                     </div>
@@ -296,6 +299,40 @@
             // تهيئة الحقول عند التحميل
             updateDateFields();
         });
+
+        function exportCurrentTableData() {
+    // جمع البيانات من الجدول مباشرة
+    let rows = [];
+    document.querySelectorAll('table tbody tr').forEach(row => {
+        let rowData = [];
+        row.querySelectorAll('td').forEach((cell, index) => {
+            // تجاهل الصف الفارغ (إذا وجد)
+            if (index < 7) { // عدد الأعمدة 7
+                rowData.push(cell.innerText.trim());
+            }
+        });
+        if (rowData.length > 0) {
+            rows.push(rowData);
+        }
+    });
+
+    // إنشاء محتوى CSV
+    const headers = ['رقم الطلب', 'الطالب', 'المنتج', 'الكمية', 'السعر', 'المجموع', 'التاريخ'];
+    let csvContent = "\uFEFF" + headers.join(',') + '\n'; // \uFEFF لحل مشكلة الترميز في الإكسل
+    
+    rows.forEach(row => {
+        csvContent += row.join(',') + '\n';
+    });
+
+    // تنزيل الملف
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const fileName = 'الطلبات_' + new Date().toLocaleDateString('ar-SA') + '.csv';
+    
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+}
     </script>
 </body>
 </html>
