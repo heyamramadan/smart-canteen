@@ -148,36 +148,8 @@
             </div>
         </div>
 
-        <!-- بطاقات التقارير (للمسؤول فقط) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
-            <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold mb-2 text-primary-700">📝 تقرير اليومية</h3>
-                        <p class="text-gray-500 text-sm">آخر تحديث: {{ now()->format('d M Y') }}</p>
-                    </div>
-                    <span class="bg-primary-100 text-primary-800 p-2 rounded-lg">⬇️</span>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold mb-2 text-blue-700">📊 تقرير المعاملات الشهرية</h3>
-                        <p class="text-gray-500 text-sm">آخر تحديث: {{ now()->format('d M Y') }}</p>
-                    </div>
-                    <span class="bg-blue-100 text-blue-800 p-2 rounded-lg">⬇️</span>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold mb-2 text-green-700">🛒 تقرير المنتجات المباعة</h3>
-                        <p class="text-gray-500 text-sm">آخر تحديث: {{ now()->format('d M Y') }}</p>
-                    </div>
-                    <span class="bg-green-100 text-green-800 p-2 rounded-lg">⬇️</span>
-                </div>
-            </div>
-        </div>
+        <!-- تم إزالة بطاقات التقارير حسب طلبك -->
+
     @endif
 </div>
 
