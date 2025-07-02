@@ -171,7 +171,7 @@
                                 @forelse($orderItems as $item)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-{{ $item->order->order_id }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->order->student->name ?? 'غير معروف' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->order->student->full_name  ?? 'غير معروف' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->product->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->quantity }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->price, 2) }} ر.س</td>
