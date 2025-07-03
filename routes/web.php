@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\CardController;
 use App\Http\Controllers\Auth\ProfileController;
  use App\Http\Controllers\Auth\ReportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 // الصفحة الرئيسية
 Route::get('/', function () {
@@ -28,9 +29,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('Dashboard');
-    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
