@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\InvoiceController;
 use App\Http\Controllers\Auth\CardController;
 use App\Http\Controllers\Auth\ProfileController;
  use App\Http\Controllers\Auth\ReportController;
+ use App\Http\Controllers\Auth\DailyReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
@@ -104,6 +105,8 @@ Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('in
     ///
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ✅ التقرير اليومي (Daily Report) للموظف
+    Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
 
 
 });
