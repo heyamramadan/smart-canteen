@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>لوحة تحكم إدارة المقصف</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    {{-- إضافة مكتبة الرسوم البيانية Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -31,12 +33,10 @@
 </head>
 <body class="bg-white"> <!-- تغيير خلفية الجسم إلى أبيض -->
 
-<!-- الشريط الجانبي ثابت على اليمين -->
 <div class="fixed top-0 right-0 h-screen w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4 overflow-y-auto">
     <h2 class="text-xl font-bold mb-8 text-center pt-4">إدارة المقصف</h2>
 
     <ul class="space-y-3">
-        <!-- الملف الشخصي: يظهر للجميع -->
         <li class="p-3 hover:bg-primary-500 rounded-lg transition">
             <a href="{{ url('/profile') }}" class="flex items-center">
                 <span class="ml-2">👤</span>
@@ -46,7 +46,6 @@
 
         @auth
             @if(auth()->user()->role === 'مسؤول')
-                <!-- صلاحيات المسؤول الكاملة -->
                 <li class="p-3 {{ request()->is('index*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/index') }}" class="flex items-center">
                         <span class="ml-2">👥</span>
@@ -85,7 +84,6 @@
                 </li>
             @endif
 
-            <!-- المبيعات: تظهر للمسؤول والموظف -->
             <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                 <a href="{{ url('/point') }}" class="flex items-center">
                     <span class="ml-2">🧾</span>
@@ -100,7 +98,6 @@
             </li>
 
             @if(auth()->user()->role === 'مسؤول')
-                <!-- التقارير تظهر للمسؤول فقط -->
                 <li class="p-3 {{ request()->is('reports*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/reports') }}" class="flex items-center">
                         <span class="ml-2">📊</span>
@@ -122,6 +119,7 @@
     </ul>
 </div>
 
+<<<<<<< HEAD
 <!-- المحتوى الرئيسي مع تعويض هامش يمين الشريط الجانبي -->
 <div class="mr-64 p-6 overflow-auto min-h-screen bg-white"> <!-- تغيير الخلفية إلى أبيض -->
     @if(auth()->user()->role === 'مسؤول')
@@ -133,21 +131,43 @@
                 <div class="mt-2 text-primary-500 text-xs">↑ 12% عن الشهر الماضي</div>
             </div>
             <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
+=======
+<div class="mr-64 p-6 overflow-auto min-h-screen bg-gray-50">
+    @if(auth()->user()->role === 'مسؤول')
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
+                <h3 class="text-gray-500 text-sm">عدد الطلاب</h3>
+                <p class="text-2xl font-bold text-blue-600">{{ $studentCount ?? 0 }}</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-primary-500">
+>>>>>>> cffb45f995897dabdc848be270e9f845c22959ed
                 <h3 class="text-gray-500 text-sm">أولياء الأمور</h3>
-                <p class="text-2xl font-bold text-blue-600">85</p>
-                <div class="mt-2 text-blue-500 text-xs">↑ 5% زيادة</div>
+                <p class="text-2xl font-bold text-primary-600">{{ $parentCount ?? 0 }}</p>
             </div>
             <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-green-500">
                 <h3 class="text-gray-500 text-sm">موظفي المقصف</h3>
-                <p class="text-2xl font-bold text-green-600">5</p>
-                <div class="mt-2 text-green-500 text-xs">+2 موظف جديد</div>
+                <p class="text-2xl font-bold text-green-600">{{ $employeeCount ?? 0 }}</p>
             </div>
             <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-purple-500">
                 <h3 class="text-gray-500 text-sm">إجمالي المبيعات</h3>
-                <p class="text-2xl font-bold text-purple-600">3.500 ر.س</p>
-                <div class="mt-2 text-purple-500 text-xs">↑ 20% نمو</div>
+                {{-- تنسيق الرقم كعملة --}}
+                <p class="text-2xl font-bold text-purple-600">{{ number_format($totalSales ?? 0, 2) }} د.ل</p>
             </div>
         </div>
+<<<<<<< HEAD
+=======
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="font-bold text-lg text-gray-700 mb-4">المنتجات الأكثر مبيعاً</h3>
+                <canvas id="topProductsChart"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="font-bold text-lg text-gray-700 mb-4">الطلاب الأكثر شراءً</h3>
+                <canvas id="topStudentsChart"></canvas>
+            </div>
+        </div>
+>>>>>>> cffb45f995897dabdc848be270e9f845c22959ed
     @endif
 </div>
 
@@ -157,6 +177,64 @@
         <img src="/images/canteen.jpg" alt="شعار المقصف" class="w-64 h-auto" /> <!-- زيادة حجم الصورة إلى 64 -->
     </div>
 </div>
+
+{{-- السكربت الخاص بإنشاء الرسوم البيانية --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- الرسم البياني للمنتجات الأكثر مبيعاً ---
+        const topProductsData = @json($topProducts ?? []);
+        if (topProductsData.length > 0) {
+            const productLabels = topProductsData.map(item => item.product.name);
+            const productQuantities = topProductsData.map(item => item.total_quantity);
+            const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+            new Chart(topProductsCtx, {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'الكمية المباعة',
+                        data: productQuantities,
+                        backgroundColor: 'rgba(249, 115, 22, 0.5)',
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, title: { display: true, text: 'الكمية' } } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'أفضل 5 منتجات مبيعاً' } }
+                }
+            });
+        }
+
+        // --- الرسم البياني للطلاب الأكثر شراءً ---
+        const topStudentsData = @json($topStudents ?? []);
+        if (topStudentsData.length > 0) {
+            const studentLabels = topStudentsData.map(item => item.student.full_name);
+            const studentSpending = topStudentsData.map(item => item.total_spent);
+            const topStudentsCtx = document.getElementById('topStudentsChart').getContext('2d');
+            new Chart(topStudentsCtx, {
+                type: 'bar',
+                data: {
+                    labels: studentLabels,
+                    datasets: [{
+                        label: 'إجمالي الإنفاق (د.ل)',
+                        data: studentSpending,
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // جعل الأعمدة أفقية لتسهيل القراءة
+                    responsive: true,
+                    scales: { x: { beginAtZero: true, title: { display: true, text: 'المبلغ (د.ل)' } } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'أفضل 5 طلاب إنفاقاً' } }
+                }
+            });
+        }
+    });
+</script>
 
 </body>
 </html>
