@@ -96,7 +96,7 @@
                 </div>
 
                 <!-- نموذج تعديل البيانات -->
-                <form id="profileForm" class="space-y-4" method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                <form id="profileForm" class="space-y-4" method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" novalidate>
                     @csrf
                     @method('PUT')
 
@@ -106,6 +106,9 @@
                             <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
                             <input type="text" name="username" value="{{ old('username', $user->username) }}" required
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            @error('username')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- الاسم الكامل -->
@@ -113,6 +116,9 @@
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
                             <input type="text" name="full_name" value="{{ old('full_name', $user->full_name) }}" required
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            @error('full_name')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- البريد الإلكتروني -->
@@ -120,6 +126,9 @@
                             <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
                             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            @error('email')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- رقم الهاتف -->
@@ -127,6 +136,9 @@
                             <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
                             <input type="tel" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" required
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            @error('phone_number')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- الدور/الصلاحية (عرض فقط) -->
@@ -140,45 +152,41 @@
                                     @case('مسؤول')
                                        مسؤول
                                         @break
-                                    @case('ولي أمر')
-                                        ولي أمر
-                                        @break
-
-                                @endswitch
+                                    @endswitch
                             </p>
                             <input type="hidden" name="role" value="{{ $user->role }}">
                         </div>
 
-                        <!-- كلمة المرور -->
+                        <!-- كلمة المرور الحالية -->
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">كلمة المرور الحالية</label>
+                            <div class="relative">
+                                <input type="password" name="current_password"
+                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="current-password" placeholder="أدخل كلمة المرور الحالية إذا كنت تريد التغيير">
+                                <button type="button" onclick="togglePassword(this)"
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
+                                    👁️
+                                </button>
+                            </div>
+                            @error('current_password')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- كلمة المرور الجديدة -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
                             <div class="relative">
-                                <input type="password" name="password"
-                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="new-password">
+                                <input type="password" name="new_password"
+                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="new-password" placeholder="اتركها فارغة إذا لم تريد التغيير">
                                 <button type="button" onclick="togglePassword(this)"
                                         class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
                                     👁️
                                 </button>
                             </div>
-                        </div>
-
-                        <!-- تأكيد كلمة المرور -->
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور</label>
-                            <div class="relative">
-                                <input type="password" name="password_confirmation"
-                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="new-password">
-                                <button type="button" onclick="togglePassword(this)"
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-                                    👁️
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- رفع الصورة -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm text-gray-600 mb-1">تغيير الصورة الشخصية</label>
-                            <input type="file" name="profile_image" accept="image/*" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                            @error('new_password')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -191,6 +199,12 @@
                         </button>
                     </div>
                 </form>
+
+                @if(session('success'))
+                    <div class="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                        {{ session('success') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
