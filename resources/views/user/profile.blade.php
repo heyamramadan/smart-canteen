@@ -38,7 +38,7 @@
 <body class="bg-gray-50">
 
 <div class="flex h-screen">
-       @include('layouts.sidebar')
+    @include('layouts.sidebar')
     <!-- محتوى الملف الشخصي -->
     <div class="flex-1 p-6 overflow-auto">
         <!-- عنوان الصفحة -->
@@ -78,14 +78,14 @@
                         <p class="mt-3">
                             <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                                 @switch($user->role)
-                                    @case('employee')
+                                    @case('موظف')
                                         موظف مقصف
                                         @break
-                                    @case('admin')
+                                    @case('مسؤول')
                                         مدير النظام
                                         @break
-                                    @case('supervisor')
-                                        مشرف
+                                    @case('ولي أمر')
+                                        ولي أمر
                                         @break
                                     @default
                                         مستخدم
@@ -134,14 +134,14 @@
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
                             <p class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-700 select-none cursor-not-allowed">
                                 @switch($user->role)
-                                    @case('employee')
+                                    @case('موظف')
                                         موظف مقصف
                                         @break
-                                    @case('admin')
+                                    @case('مسؤول')
                                         مدير النظام
                                         @break
-                                    @case('supervisor')
-                                        مشرف
+                                    @case('ولي أمر')
+                                        ولي أمر
                                         @break
                                     @default
                                         مستخدم
