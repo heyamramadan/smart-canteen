@@ -50,7 +50,15 @@
                     </a>
                 </li>
             @endif
-
+  @if(auth()->user()->role === 'موظف')
+                <!-- رابط التقرير اليومية يظهر فقط للموظف -->
+                <li class="p-3 {{ request()->is('daily-report*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+                    <a href="{{ url('/daily-report') }}" class="flex items-center">
+                        <span class="ml-2">📅</span>
+                        التقرير اليومية
+                    </a>
+                </li>
+            @endif
             @if(in_array(auth()->user()->role, ['مسؤول', 'موظف']))
                 <!-- المبيعات: تظهر للمسؤول والموظف -->
                 <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
