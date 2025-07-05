@@ -132,7 +132,7 @@
                         <!-- الدور/الصلاحية (عرض فقط) -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
-                            <p class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-700 select-none">
+                            <p class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-700 select-none cursor-not-allowed">
                                 @switch($user->role)
                                     @case('employee')
                                         موظف مقصف
