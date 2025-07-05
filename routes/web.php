@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\CardController;
 use App\Http\Controllers\Auth\ProfileController;
  use App\Http\Controllers\Auth\ReportController;
  use App\Http\Controllers\Auth\DailyReportController;
+  use App\Http\Controllers\Auth\TransactionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
@@ -82,6 +83,7 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
     Route::get('/report/export', [ReportController::class, 'export'])->name('report.export');
     Route::post('/reports/generate', [ReportController::class, 'generate'])->name('report.generate');
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
     });
 
 
