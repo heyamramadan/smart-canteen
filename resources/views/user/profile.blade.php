@@ -207,7 +207,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-3 space-x-reverse mt-6">
-                      
+
                         <button type="submit" class="px-6 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition">
                             حفظ التغييرات
                         </button>
@@ -231,10 +231,10 @@
         const input = button.previousElementSibling;
         if (input.type === 'password') {
             input.type = 'text';
-            button.textContent = '🙈';
+            button.textContent = '🔓';
         } else {
             input.type = 'password';
-            button.textContent = '👁️';
+            button.textContent = '🔒';
         }
     }
 
