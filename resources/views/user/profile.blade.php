@@ -84,11 +84,7 @@
                                     @case('مسؤول')
                                         مدير النظام
                                         @break
-                                    @case('ولي أمر')
-                                        ولي أمر
-                                        @break
-                                    @default
-                                        مستخدم
+                                   
                                 @endswitch
                             </span>
                         </p>
