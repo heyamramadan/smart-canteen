@@ -39,14 +39,16 @@
     <h2 class="text-xl font-bold mb-8 text-center pt-4">إدارة المقصف</h2>
 
     <ul class="space-y-3">
-        <li class="p-3 hover:bg-primary-500 rounded-lg transition">
-            <a href="{{ url('/profile') }}" class="flex items-center">
-                <span class="ml-2">👤</span> الملف الشخصي
-            </a>
-        </li>
-
         @auth
+            {{-- يظهر للجميع --}}
+            <li class="p-3 hover:bg-primary-500 rounded-lg transition">
+                <a href="{{ url('/profile') }}" class="flex items-center">
+                    <span class="ml-2">👤</span> الملف الشخصي
+                </a>
+            </li>
+
             @if(auth()->user()->role === 'مسؤول')
+                {{-- صلاحيات المسؤول --}}
                 <li class="p-3 {{ request()->is('index*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/index') }}" class="flex items-center">
                         <span class="ml-2">👥</span> إدارة المستخدمين
@@ -77,8 +79,14 @@
                         <span class="ml-2">💳</span> إصدار بطاقة إلكترونية
                     </a>
                 </li>
+                <li class="p-3 {{ request()->is('reports*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+                    <a href="{{ url('/reports') }}" class="flex items-center">
+                        <span class="ml-2">📊</span> التقارير
+                    </a>
+                </li>
             @endif
 
+            {{-- للموظف والمسؤول --}}
             <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                 <a href="{{ url('/point') }}" class="flex items-center">
                     <span class="ml-2">🧾</span> المبيعات
@@ -90,14 +98,7 @@
                 </a>
             </li>
 
-            @if(auth()->user()->role === 'مسؤول')
-                <li class="p-3 {{ request()->is('reports*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
-                    <a href="{{ url('/reports') }}" class="flex items-center">
-                        <span class="ml-2">📊</span> التقارير
-                    </a>
-                </li>
-            @endif
-
+            {{-- تسجيل خروج --}}
             <li class="p-3 hover:bg-primary-500 rounded-lg transition cursor-pointer">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -112,7 +113,7 @@
 
 <!-- المحتوى الرئيسي -->
 <div class="mr-64 p-6 overflow-auto min-h-screen bg-white">
-    @if(auth()->user()->role === 'مسؤول')
+    @if(auth()->user()->role === 'مسؤول' || auth()->user()->role === 'موظف')
         <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
             <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-primary-500">
                 <h3 class="text-gray-500 text-sm">الطلبات</h3>
@@ -146,9 +147,7 @@
     @endif
 </div>
 
-
-
-<!-- السكربت الخاص بالرسوم البيانية -->
+<!-- الرسوم البيانية -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const topProductsData = @json($topProducts ?? []);

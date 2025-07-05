@@ -30,7 +30,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -89,6 +89,7 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
 // ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
+        Route::get('/dashboard', action: [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/point', [OrderController::class, 'create'])->name('point');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
