@@ -10,9 +10,12 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $datalogin = $request->validate([
+                $datalogin = $request->validate([
             "username" => ['required', 'string'],
             "password" => ['required', 'string']
+        ], [
+            'username.required' => 'يرجى إدخال اسم المستخدم',
+            'password.required' => 'يرجى إدخال كلمة المرور',
         ]);
 
         if (Auth::attempt($datalogin)) {
