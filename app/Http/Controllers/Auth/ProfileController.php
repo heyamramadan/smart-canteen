@@ -32,7 +32,7 @@ class ProfileController extends Controller
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
             'profile_image' => 'nullable|image|max:2048',
             'current_password' => 'nullable|string',
-            'new_password' => ['nullable', Password::min(8)],
+            'new_password' => ['nullable', Password::min(6)],
         ], [
             'username.required' => 'حقل اسم المستخدم مطلوب.',
             'username.unique' => 'اسم المستخدم مستخدم من قبل.',
