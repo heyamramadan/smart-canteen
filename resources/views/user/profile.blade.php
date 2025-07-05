@@ -33,6 +33,26 @@
             border-radius: 50%;
             border: 4px solid #FFEDD5;
         }
+
+        /* رسالة التحديث في المنتصف */
+        #successMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #DCFCE7; /* أخضر فاتح */
+            color: #166534; /* أخضر غامق */
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-weight: 600;
+            font-size: 1.125rem;
+            display: none; /* مخفي افتراضياً */
+            z-index: 1000;
+            text-align: center;
+            max-width: 90%;
+            direction: rtl;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -84,7 +104,7 @@
                                     @case('مسؤول')
                                         مدير النظام
                                         @break
-                                   
+
                                 @endswitch
                             </span>
                         </p>
@@ -195,16 +215,17 @@
                         </button>
                     </div>
                 </form>
-
-                @if(session('success'))
-                    <div class="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">
-                        {{ session('success') }}
-                    </div>
-                @endif
             </div>
         </div>
     </div>
 </div>
+
+<!-- رسالة التحديث تظهر في المنتصف -->
+@if(session('success'))
+    <div id="successMessage">
+        {{ session('success') }}
+    </div>
+@endif
 
 <script>
     // عرض/إخفاء كلمة المرور
@@ -218,6 +239,19 @@
             button.textContent = '👁️';
         }
     }
+
+    // عرض رسالة النجاح ثم إخفائها بعد 4 دقائق
+    document.addEventListener('DOMContentLoaded', () => {
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'block';
+
+            // إخفاء الرسالة بعد 4 دقائق (240000 مللي ثانية)
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 4000);
+        }
+    });
 </script>
 
 </body>
