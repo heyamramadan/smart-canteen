@@ -93,7 +93,7 @@
                     <div class="text-center md:text-right">
                         <h3 class="text-xl font-semibold text-gray-800">{{ $user->full_name }}</h3>
                         <p class="text-gray-600">اسم المستخدم: {{ $user->username }}</p>
-                        <p class="text-gray-600">{{ $user->email }}</p>
+
                         <p class="text-gray-600">{{ $user->phone_number }}</p>
                         <p class="mt-3">
                             <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
@@ -102,7 +102,7 @@
                                         موظف مقصف
                                         @break
                                     @case('مسؤول')
-                                        مدير النظام
+                                       مسؤول
                                         @break
 
                                 @endswitch
@@ -207,9 +207,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-3 space-x-reverse mt-6">
-                        <button type="reset" class="px-6 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition">
-                            إلغاء التغييرات
-                        </button>
+                      
                         <button type="submit" class="px-6 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition">
                             حفظ التغييرات
                         </button>
@@ -246,7 +244,7 @@
         if (successMessage) {
             successMessage.style.display = 'block';
 
-           
+
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 4000);
