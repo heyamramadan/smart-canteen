@@ -40,10 +40,10 @@ class AuthController extends Controller
             ]);
         }
 
-        return back()->withErrors([
-            'username' => 'اسم المستخدم خطأ',
-            'password' => 'كلمة السر غير صحيحة'
-        ]);
+      return back()->withErrors([
+    'login_error' => 'اسم المستخدم أو كلمة المرور غير صحيحة'
+]);
+
     }
     public function logout(Request $request)
 {
