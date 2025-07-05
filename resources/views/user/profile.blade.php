@@ -138,13 +138,12 @@
                                         موظف مقصف
                                         @break
                                     @case('مسؤول')
-                                        مدير النظام
+                                       مسؤول
                                         @break
                                     @case('ولي أمر')
                                         ولي أمر
                                         @break
-                                    @default
-                                        مستخدم
+
                                 @endswitch
                             </p>
                             <input type="hidden" name="role" value="{{ $user->role }}">
