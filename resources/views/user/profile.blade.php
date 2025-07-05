@@ -246,7 +246,7 @@
         if (successMessage) {
             successMessage.style.display = 'block';
 
-            // إخفاء الرسالة بعد 4 دقائق (240000 مللي ثانية)
+           
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 4000);
