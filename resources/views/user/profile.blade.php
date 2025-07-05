@@ -72,6 +72,7 @@
                     <!-- معلومات المستخدم الأساسية -->
                     <div class="text-center md:text-right">
                         <h3 class="text-xl font-semibold text-gray-800">{{ $user->full_name }}</h3>
+                        <p class="text-gray-600">اسم المستخدم: {{ $user->username }}</p>
                         <p class="text-gray-600">{{ $user->email }}</p>
                         <p class="text-gray-600">{{ $user->phone_number }}</p>
                         <p class="mt-3">
@@ -100,6 +101,13 @@
                     @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- اسم المستخدم -->
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
+                            <input type="text" name="username" value="{{ old('username', $user->username) }}" required
+                                   class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+
                         <!-- الاسم الكامل -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
@@ -121,14 +129,25 @@
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
 
-                        <!-- الدور/الصلاحية -->
+                        <!-- الدور/الصلاحية (عرض فقط) -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
-                         <select name="role" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-    <option value="موظف" {{ $user->role == 'موظف' ? 'selected' : '' }}>موظف مقصف</option>
-    <option value="مسؤول" {{ $user->role == 'مسؤول' ? 'selected' : '' }}>مدير النظام</option>
-</select>
-
+                            <p class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-700 select-none">
+                                @switch($user->role)
+                                    @case('employee')
+                                        موظف مقصف
+                                        @break
+                                    @case('admin')
+                                        مدير النظام
+                                        @break
+                                    @case('supervisor')
+                                        مشرف
+                                        @break
+                                    @default
+                                        مستخدم
+                                @endswitch
+                            </p>
+                            <input type="hidden" name="role" value="{{ $user->role }}">
                         </div>
 
                         <!-- كلمة المرور -->
