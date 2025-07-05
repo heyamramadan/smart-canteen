@@ -28,7 +28,7 @@ class ProfileController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone_number' => 'required|string|max:20',
+           'phone_number' => 'nullable|string|max:20',
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
             'profile_image' => 'nullable|image|max:2048',
             'current_password' => 'nullable|string',
@@ -40,10 +40,9 @@ class ProfileController extends Controller
             'email.required' => 'حقل البريد الإلكتروني مطلوب.',
             'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
             'email.unique' => 'البريد الإلكتروني مستخدم من قبل.',
-            'phone_number.required' => 'حقل رقم الهاتف مطلوب.',
             'profile_image.image' => 'يجب أن تكون الصورة ملف صورة صالح.',
             'profile_image.max' => 'حجم الصورة يجب أن لا يتجاوز 2 ميغابايت.',
-            'new_password.min' => 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل.',
+            'new_password.min' => 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.',
         ]);
 
         // تحديث البيانات الأساسية
