@@ -36,11 +36,7 @@ class AuthController extends Controller
                 return redirect()->intended('/dashboard');
             }
 
-            // احتياطاً: إذا لم يكن الدور معروف
-            Auth::logout();
-            return back()->withErrors([
-                'username' => 'دور المستخدم غير معرف'
-            ]);
+          
         }
 
       return back()->withErrors([
