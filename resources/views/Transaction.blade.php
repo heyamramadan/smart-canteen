@@ -91,17 +91,18 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         @forelse ($transactions as $transaction)
-          @php
-            $parentUser = $transaction->wallet->parent->user ?? null;
-            $student = $transaction->wallet->parent->students->first();
-$balanceBefore = $transaction->type === 'إيداع'
-    ? ($transaction->amount ? $transaction->wallet->balance - $transaction->amount : $transaction->wallet->balance)
-    : ($transaction->amount ? $transaction->wallet->balance + $transaction->amount : $transaction->wallet->balance);
+        @php
+    $parent = $transaction->wallet->parent ?? null;
+    $parentUser = $parent?->user;
+    $student = $parent?->students?->first();
+    $balanceBefore = $transaction->type === 'إيداع'
+        ? ($transaction->amount ? $transaction->wallet->balance - $transaction->amount : $transaction->wallet->balance)
+        : ($transaction->amount ? $transaction->wallet->balance + $transaction->amount : $transaction->wallet->balance);
+@endphp
 
-          @endphp
           <tr class="hover:bg-gray-50 transition">
             <td class="p-3 text-sm">#TRX-{{ $transaction->transaction_id }}</td>
-            <td class="p-3 text-sm">{{ $parentUser?->name ?? 'غير معروف' }}</td>
+            <td class="p-3 text-sm">{{ $parentUser?->full_name ?? $parentUser?->name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student?->full_name ?? 'غير مرتبط' }}</td>
             <td class="p-3">
               <span class="px-3 py-1 rounded-full text-xs
