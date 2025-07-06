@@ -108,7 +108,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500">إجمالي المبيعات</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ number_format($totalSales, 2) }} ر.س</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ number_format($totalSales, 2) }} د.ل</p>
                             </div>
                             <div class="p-3 bg-blue-100 rounded-full text-blue-600">
                                 <i class="fas fa-money-bill-wave text-xl"></i>
