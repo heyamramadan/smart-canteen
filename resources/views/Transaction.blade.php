@@ -73,72 +73,71 @@
       </div>
     </div>
 
-    <!-- جدول المعاملات -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-      <div class="overflow-x-auto">
-        <table class="w-full text-right">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="p-3 text-sm text-gray-500">رقم</th>
-              <th class="p-3 text-sm text-gray-500">ولي الأمر</th>
-              <th class="p-3 text-sm text-gray-500">الطالب</th>
-              <th class="p-3 text-sm text-gray-500">النوع</th>
-              <th class="p-3 text-sm text-gray-500">المبلغ</th>
-              <th class="p-3 text-sm text-gray-500">قبل</th>
-              <th class="p-3 text-sm text-gray-500">بعد</th>
-              <th class="p-3 text-sm text-gray-500">التاريخ</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <!-- صف إيداع -->
-            <tr class="hover:bg-gray-50 transition">
-              <td class="p-3 text-sm">#TRX-1001</td>
-              <td class="p-3 text-sm">أحمد محمد</td>
-              <td class="p-3 text-sm">محمد أحمد</td>
-              <td class="p-3">
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">إيداع</span>
-              </td>
-              <td class="p-3 text-green-600 font-medium">+50.00 ر.س</td>
-              <td class="p-3">120.00 ر.س</td>
-              <td class="p-3">170.00 ر.س</td>
-              <td class="p-3">05/07/2025 10:30 ص</td>
+   <!-- جدول المعاملات -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+  <div class="overflow-x-auto">
+    <table class="w-full text-right">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="p-3 text-sm text-gray-500">رقم</th>
+          <th class="p-3 text-sm text-gray-500">ولي الأمر</th>
+          <th class="p-3 text-sm text-gray-500">الطالب</th>
+          <th class="p-3 text-sm text-gray-500">النوع</th>
+          <th class="p-3 text-sm text-gray-500">المبلغ</th>
+          <th class="p-3 text-sm text-gray-500">قبل</th>
+          <th class="p-3 text-sm text-gray-500">بعد</th>
+          <th class="p-3 text-sm text-gray-500">التاريخ</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @forelse ($transactions as $transaction)
+          @php
+            $parentUser = $transaction->wallet->parent->user ?? null;
+            $student = $transaction->wallet->parent->students->first();
+$balanceBefore = $transaction->type === 'إيداع'
+    ? ($transaction->amount ? $transaction->wallet->balance - $transaction->amount : $transaction->wallet->balance)
+    : ($transaction->amount ? $transaction->wallet->balance + $transaction->amount : $transaction->wallet->balance);
 
-            </tr>
-
-            <!-- صف سحب -->
-            <tr class="hover:bg-gray-50 transition">
-              <td class="p-3 text-sm">#TRX-1002</td>
-              <td class="p-3 text-sm">علي حسن</td>
-              <td class="p-3 text-sm">حسن علي</td>
-              <td class="p-3">
-                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs">سحب</span>
-              </td>
-              <td class="p-3 text-red-600 font-medium">-15.00 ر.س</td>
-              <td class="p-3">85.00 ر.س</td>
-              <td class="p-3">70.00 ر.س</td>
-              <td class="p-3">05/07/2025 11:45 ص</td>
-            </tr>
-
-            <!-- صف إضافي مثال -->
-            <!-- ... -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- التذييل -->
-    <div class="flex justify-between items-center text-sm text-gray-600">
-      <div>
-        عرض <span class="font-bold">1</span> إلى <span class="font-bold">4</span> من <span class="font-bold">4</span> معاملات
-      </div>
-      <div class="flex space-x-2 space-x-reverse">
-        <button class="px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-500" disabled>السابق</button>
-        <button class="px-4 py-2 rounded-lg bg-primary-500 text-white">1</button>
-        <button class="px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-500" disabled>التالي</button>
-      </div>
-    </div>
+          @endphp
+          <tr class="hover:bg-gray-50 transition">
+            <td class="p-3 text-sm">#TRX-{{ $transaction->transaction_id }}</td>
+            <td class="p-3 text-sm">{{ $parentUser?->name ?? 'غير معروف' }}</td>
+            <td class="p-3 text-sm">{{ $student?->full_name ?? 'غير مرتبط' }}</td>
+            <td class="p-3">
+              <span class="px-3 py-1 rounded-full text-xs
+                {{ $transaction->type === 'إيداع' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                {{ $transaction->type }}
+              </span>
+            </td>
+            <td class="p-3 font-medium {{ $transaction->type === 'إيداع' ? 'text-green-600' : 'text-red-600' }}">
+              {{ $transaction->type === 'إيداع' ? '+' : '-' }}{{ number_format($transaction->amount, 2) }} ر.س
+            </td>
+            <td class="p-3">{{ number_format($balanceBefore, 2) }} ر.س</td>
+            <td class="p-3">{{ number_format($transaction->wallet->balance, 2) }} ر.س</td>
+            <td class="p-3">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y h:i A') }}</td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="8" class="text-center p-6 text-gray-400">لا توجد معاملات</td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
   </div>
 </div>
+
+<!-- التذييل مع الصفحات -->
+<div class="flex justify-between items-center text-sm text-gray-600">
+  <div>
+    عرض <span class="font-bold">{{ $transactions->firstItem() }}</span>
+    إلى <span class="font-bold">{{ $transactions->lastItem() }}</span>
+    من <span class="font-bold">{{ $transactions->total() }}</span> معاملات
+  </div>
+  <div class="flex space-x-2 space-x-reverse">
+    {{ $transactions->links('pagination::tailwind') }}
+  </div>
+</div>
+
 
 </body>
 </html>
