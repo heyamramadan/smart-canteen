@@ -31,26 +31,24 @@
 </head>
 <body class="bg-gray-50">
 
-<div class="flex h-screen">
-  <!-- ✅ الشريط الجانبي -->
+<div class="flex min-h-screen">
   @include('layouts.sidebar')
 
-  <!-- ✅ المحتوى الرئيسي -->
   <div class="flex-1 overflow-y-auto p-6">
     <!-- رأس الصفحة -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6 flex justify-between items-center">
       <h2 class="text-lg font-bold text-primary-700 flex items-center">
         <i class="fas fa-calendar-day ml-2"></i> التقرير اليومي للمبيعات
       </h2>
-      <div class="text-gray-600 font-medium" id="current-date">التاريخ: 2025-07-04</div>
+      <div class="text-gray-600 font-medium" id="current-date">التاريخ: {{ $selectedDate }}</div>
     </div>
 
     <!-- فلترة حسب التاريخ -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6 flex justify-between items-center">
-      <form class="flex items-center gap-4" onsubmit="updateDate(event)">
+      <form method="GET" class="flex items-center gap-4">
         <label for="date" class="text-sm font-medium text-gray-600">اختر اليوم:</label>
-        <input type="date" id="date"
-               value="2025-07-04"
+        <input type="date" id="date" name="date"
+               value="{{ $selectedDate }}"
                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
         <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm">
           تطبيق
@@ -64,21 +62,21 @@
         <div class="text-blue-600 text-3xl"><i class="fas fa-money-bill-wave"></i></div>
         <div>
           <h3 class="text-gray-500">إجمالي المبيعات</h3>
-          <p class="text-xl font-bold">15,250.00 د.ل</p>
+          <p class="text-xl font-bold">{{ number_format($totalSales, 2) }} د.ل</p>
         </div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4 rtl:space-x-reverse">
         <div class="text-green-600 text-3xl"><i class="fas fa-shopping-cart"></i></div>
         <div>
           <h3 class="text-gray-500">عدد الطلبات</h3>
-          <p class="text-xl font-bold">120</p>
+          <p class="text-xl font-bold">{{ $totalOrders }}</p>
         </div>
       </div>
       <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4 rtl:space-x-reverse">
         <div class="text-purple-600 text-3xl"><i class="fas fa-box-open"></i></div>
         <div>
           <h3 class="text-gray-500">المنتجات المباعة</h3>
-          <p class="text-xl font-bold">450</p>
+          <p class="text-xl font-bold">{{ $totalItemsSold }}</p>
         </div>
       </div>
     </div>
@@ -105,24 +103,21 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr class="hover:bg-gray-50 transition">
-              <td class="p-3 text-sm text-gray-700 font-medium">#ORD-101</td>
-              <td class="p-3 text-sm text-gray-700">محمد أحمد</td>
-              <td class="p-3 text-sm text-gray-700">عصير برتقال</td>
-              <td class="p-3 text-sm text-gray-700">2</td>
-              <td class="p-3 text-sm text-gray-700">5.00 د.ل</td>
-              <td class="p-3 text-sm text-gray-700">10.00 د.ل</td>
-              <td class="p-3 text-sm text-gray-700">2025-07-04 09:30</td>
-            </tr>
-            <tr class="hover:bg-gray-50 transition">
-              <td class="p-3 text-sm text-gray-700 font-medium">#ORD-102</td>
-              <td class="p-3 text-sm text-gray-700">سارة علي</td>
-              <td class="p-3 text-sm text-gray-700">سندويش دجاج</td>
-              <td class="p-3 text-sm text-gray-700">1</td>
-              <td class="p-3 text-sm text-gray-700">12.50 د.ل</td>
-              <td class="p-3 text-sm text-gray-700">12.50 د.ل</td>
-              <td class="p-3 text-sm text-gray-700">2025-07-04 10:15</td>
-            </tr>
+            @forelse($orderItems as $item)
+              <tr class="hover:bg-gray-50 transition">
+                <td class="p-3 text-sm text-gray-700 font-medium">#ORD-{{ $item->order_id }}</td>
+                <td class="p-3 text-sm text-gray-700">{{ $item->order->student->user->name ?? '-' }}</td>
+                <td class="p-3 text-sm text-gray-700">{{ $item->product->name ?? '-' }}</td>
+                <td class="p-3 text-sm text-gray-700">{{ $item->quantity }}</td>
+                <td class="p-3 text-sm text-gray-700">{{ number_format($item->price, 2) }} د.ل</td>
+                <td class="p-3 text-sm text-gray-700">{{ number_format($item->quantity * $item->price, 2) }} د.ل</td>
+                <td class="p-3 text-sm text-gray-700">{{ $item->created_at->format('Y-m-d H:i') }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="7" class="p-4 text-center text-gray-500">لا توجد بيانات.</td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
       </div>
@@ -132,37 +127,24 @@
     <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
       <h3 class="text-lg font-semibold text-primary-700 mb-4">المخزون المتبقي</h3>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-          <div class="flex justify-between items-center">
-            <span class="font-medium">عصير برتقال</span>
-            <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">40 متبقي</span>
+        @foreach($remainingStock as $product)
+          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-center">
+              <span class="font-medium">{{ $product->name }}</span>
+              <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{{ $product->quantity }} متبقي</span>
+            </div>
+            <div class="mt-2 h-2 bg-gray-200 rounded-full">
+<div class="h-2 bg-blue-500 rounded-full" style="width: {{ min(100, ($product->quantity / 100) * 100) }}%"></div>
+
+            </div>
           </div>
-          <div class="mt-2 h-2 bg-gray-200 rounded-full">
-            <div class="h-2 bg-blue-500 rounded-full" style="width: 80%"></div>
-          </div>
-        </div>
-        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-          <div class="flex justify-between items-center">
-            <span class="font-medium">سندويش دجاج</span>
-            <span class="text-sm bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">15 متبقي</span>
-          </div>
-          <div class="mt-2 h-2 bg-gray-200 rounded-full">
-            <div class="h-2 bg-yellow-500 rounded-full" style="width: 30%"></div>
-          </div>
-        </div>
+        @endforeach
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-  function updateDate(event) {
-    event.preventDefault();
-    const selectedDate = document.getElementById("date").value;
-    document.getElementById("current-date").innerText = "التاريخ: " + selectedDate;
-  }
-
   function exportTableToCSV() {
     let csvContent = "\uFEFF";
     const headers = ['رقم الفاتورة', 'الطالب', 'المنتج', 'الكمية', 'السعر', 'المجموع', 'التاريخ'];
