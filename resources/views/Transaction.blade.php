@@ -152,13 +152,22 @@
   </div>
 </div>
 <script>
-  document.getElementById('search').addEventListener('input', function () {
-    const query = this.value;
+  const searchInput = document.getElementById('search');
+  const results = document.getElementById('results');
+  const originalUrl = window.location.href.split('?')[0]; // رابط الصفحة بدون الاستعلامات
+
+  searchInput.addEventListener('input', function () {
+    const query = this.value.trim();
+
+    if (query === '') {
+      // ✅ إذا حُذف محتوى البحث، نرجع للصفحة الأصلية (إعادة تحميل كامل)
+      window.location.href = originalUrl;
+      return;
+    }
 
     fetch(`/transactions/search?query=${encodeURIComponent(query)}`)
       .then(response => response.json())
       .then(data => {
-        const results = document.getElementById('results');
         if (data.length === 0) {
           results.innerHTML = `
             <tr>
