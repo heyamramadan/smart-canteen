@@ -87,7 +87,6 @@
               <th class="p-3 text-sm text-gray-500">قبل</th>
               <th class="p-3 text-sm text-gray-500">بعد</th>
               <th class="p-3 text-sm text-gray-500">التاريخ</th>
-              <th class="p-3 text-sm text-gray-500">ملاحظة</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
@@ -103,7 +102,7 @@
               <td class="p-3">120.00 ر.س</td>
               <td class="p-3">170.00 ر.س</td>
               <td class="p-3">05/07/2025 10:30 ص</td>
-              <td class="p-3">شحن محفظة</td>
+
             </tr>
 
             <!-- صف سحب -->
@@ -118,7 +117,6 @@
               <td class="p-3">85.00 ر.س</td>
               <td class="p-3">70.00 ر.س</td>
               <td class="p-3">05/07/2025 11:45 ص</td>
-              <td class="p-3">شراء وجبة غداء</td>
             </tr>
 
             <!-- صف إضافي مثال -->
