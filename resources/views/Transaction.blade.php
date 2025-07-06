@@ -113,8 +113,8 @@
             <td class="p-3 font-medium {{ $transaction->type === 'إيداع' ? 'text-green-600' : 'text-red-600' }}">
               {{ $transaction->type === 'إيداع' ? '+' : '-' }}{{ number_format($transaction->amount, 2) }} ر.س
             </td>
-            <td class="p-3">{{ number_format($balanceBefore, 2) }} ر.س</td>
-            <td class="p-3">{{ number_format($transaction->wallet->balance, 2) }} ر.س</td>
+            <td class="p-3">{{ number_format($balanceBefore, 2) }} د.ل</td>
+            <td class="p-3">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
             <td class="p-3">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y h:i A') }}</td>
           </tr>
         @empty
