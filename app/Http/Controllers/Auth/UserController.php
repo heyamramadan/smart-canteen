@@ -59,7 +59,6 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
             $query->where(function($q) use ($searchQuery, $isIdSearch) {
                 $q->where('username', 'LIKE', '%' . $searchQuery . '%')
                   ->orWhere('full_name', 'LIKE', '%' . $searchQuery . '%')
-                  ->orWhere('email', 'LIKE', '%' . $searchQuery . '%')
                   ->orWhere('role', 'LIKE', '%' . $searchQuery . '%');
 
                 if ($isIdSearch) {
