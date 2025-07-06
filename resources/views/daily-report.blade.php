@@ -125,20 +125,42 @@
 
     <!-- المخزون المتبقي -->
     <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
-      <h3 class="text-lg font-semibold text-primary-700 mb-4">المخزون المتبقي</h3>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        @foreach($remainingStock as $product)
-          <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-            <div class="flex justify-between items-center">
-              <span class="font-medium">{{ $product->name }}</span>
-              <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{{ $product->quantity }} متبقي</span>
-            </div>
-            <div class="mt-2 h-2 bg-gray-200 rounded-full">
-<div class="h-2 bg-blue-500 rounded-full" style="width: {{ min(100, ($product->quantity / 100) * 100) }}%"></div>
+     <!-- المخزون المتبقي -->
+<div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+  <h3 class="text-lg font-semibold text-primary-700 mb-4">المخزون المتبقي</h3>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    @foreach($remainingStock as $product)
+      @php
+        $maxStock = 50; // قيمة المخزون المثالي لتحديد النسبة (يمكنك تعديلها)
+        $percentage = $product->quantity > 0 ? min(100, ($product->quantity / $maxStock) * 100) : 0;
 
-            </div>
-          </div>
-        @endforeach
+        if ($percentage > 50) {
+          $colorClass = 'bg-blue-500';
+          $textColor = 'text-blue-800';
+          $bgColor = 'bg-blue-100';
+        } elseif ($percentage > 20) {
+          $colorClass = 'bg-yellow-500';
+          $textColor = 'text-yellow-800';
+          $bgColor = 'bg-yellow-100';
+        } else {
+          $colorClass = 'bg-red-500';
+          $textColor = 'text-red-800';
+          $bgColor = 'bg-red-100';
+        }
+      @endphp
+      <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+        <div class="flex justify-between items-center">
+          <span class="font-medium">{{ $product->name }}</span>
+          <span class="text-sm {{ $bgColor }} {{ $textColor }} px-2 py-1 rounded-full">{{ $product->quantity }} متبقي</span>
+        </div>
+        <div class="mt-2 h-2 bg-gray-200 rounded-full">
+          <div class="h-2 {{ $colorClass }} rounded-full" style="width: {{ $percentage }}%"></div>
+        </div>
+      </div>
+    @endforeach
+  </div>
+</div>
+
       </div>
     </div>
   </div>
