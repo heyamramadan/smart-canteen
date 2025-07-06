@@ -81,7 +81,7 @@ if (!Auth::check() || !in_array(Auth::user()->role, ['مسؤول', 'موظف']))
             WalletTransaction::create([
                 'wallet_id' => $wallet->wallet_id,
                 'amount' => $validated['total_amount'],
-                'type' => 'withdraw',
+                'type' => 'سحب',
                 'reference' => 'Order #' . $order->order_id,
                 'created_at' => now()
             ]);
