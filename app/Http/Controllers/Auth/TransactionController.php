@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+    // عرض سجل المعاملات مع الفلاتر
     public function index(Request $request)
     {
         $query = WalletTransaction::with([
@@ -45,5 +46,40 @@ class TransactionController extends Controller
         $transactions = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('Transaction', compact('transactions'));
+    }
+
+    // دالة البحث عبر AJAX مثل الطلاب
+    public function search(Request $request)
+    {
+        $search = $request->input('query');
+
+        $query = WalletTransaction::with([
+            'wallet.parent.user',
+            'wallet.parent.students'
+        ]);
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('wallet.parent.user', function ($q2) use ($search) {
+                    $q2->where('full_name', 'like', "%{$search}%");
+                })->orWhereHas('wallet.parent.students', function ($q3) use ($search) {
+                    $q3->where('full_name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->take(20)->get();
+
+        // نرجع JSON فقط للبيانات المطلوبة لتخفيف حجم البيانات
+        return response()->json($transactions->map(function ($tx) {
+            return [
+                'id' => $tx->id,
+                'amount' => $tx->amount,
+                'type' => $tx->type,
+                'created_at' => $tx->created_at->format('Y-m-d H:i'),
+                'parent_name' => $tx->wallet->parent->user->full_name ?? 'ولي غير معروف',
+                'student_names' => $tx->wallet->parent->students->pluck('full_name')->implode(', '),
+            ];
+        }));
     }
 }

@@ -48,6 +48,7 @@
   <div class="relative">
     <input
       type="text"
+        id="search"
       name="search"
       value="{{ request('search') }}"
       placeholder="ابحث باسم ولي الأمر أو الطالب"
@@ -80,7 +81,7 @@
 </form>
 
 
- 
+
       </div>
     </div>
 
@@ -100,7 +101,8 @@
           <th class="p-3 text-sm text-gray-500">التاريخ</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-200">
+    <tbody id="results" class="divide-y divide-gray-200">
+
         @forelse ($transactions as $transaction)
         @php
     $parent = $transaction->wallet->parent ?? null;
@@ -149,6 +151,49 @@
     {{ $transactions->links('pagination::tailwind') }}
   </div>
 </div>
+<script>
+  document.getElementById('search').addEventListener('input', function () {
+    const query = this.value;
+
+    fetch(`/transactions/search?query=${encodeURIComponent(query)}`)
+      .then(response => response.json())
+      .then(data => {
+        const results = document.getElementById('results');
+        if (data.length === 0) {
+          results.innerHTML = `
+            <tr>
+              <td colspan="8" class="text-center p-6 text-gray-400">لا توجد نتائج</td>
+            </tr>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(transaction => {
+          const typeClass = transaction.type === 'إيداع'
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800';
+          const amountColor = transaction.type === 'إيداع'
+            ? 'text-green-600'
+            : 'text-red-600';
+          const sign = transaction.type === 'إيداع' ? '+' : '-';
+
+          html += `
+            <tr class="hover:bg-gray-50 transition">
+              <td class="p-3 text-sm">#TRX-${transaction.id}</td>
+              <td class="p-3 text-sm">${transaction.parent_name}</td>
+              <td class="p-3 text-sm">${transaction.student_names || 'غير مرتبط'}</td>
+              <td class="p-3"><span class="px-3 py-1 rounded-full text-xs ${typeClass}">${transaction.type}</span></td>
+              <td class="p-3 font-medium ${amountColor}">${sign}${parseFloat(transaction.amount).toFixed(2)} ر.س</td>
+              <td class="p-3">-</td>
+              <td class="p-3">-</td>
+              <td class="p-3">${transaction.created_at}</td>
+            </tr>`;
+        });
+
+        results.innerHTML = html;
+      });
+  });
+</script>
 
 
 </body>
