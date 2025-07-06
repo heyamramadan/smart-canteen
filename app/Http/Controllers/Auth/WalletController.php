@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 
 class WalletController extends Controller
@@ -14,6 +15,7 @@ class WalletController extends Controller
         $parents = User::whereHas('parent')
                        ->with(['parent.wallet'])
                        ->get();
+
         return view('wallet', compact('parents'));
     }
 
@@ -22,25 +24,30 @@ class WalletController extends Controller
         $request->validate([
             'parent_id' => 'required|exists:parents,parent_id',
             'amount' => 'required|numeric|min:1',
-            'daily_limit' => 'nullable|numeric|min:0' // إضافة حقل سقف الشراء
+            'daily_limit' => 'nullable|numeric|min:0' // سقف الشراء اختياري
         ]);
 
-        $wallet = Wallet::where('parent_id', $request->parent_id)->first();
+        // جلب المحفظة أو إنشاء جديدة بدون حفظ
+        $wallet = Wallet::firstOrNew(['parent_id' => $request->parent_id]);
 
-        if (!$wallet) {
-            $wallet = Wallet::create([
-                'parent_id' => $request->parent_id,
-                'balance' => 0,
-                'daily_limit' => $request->daily_limit ?? 0 // تعيين القيمة الافتراضية
-            ]);
-        } else {
-            // تحديث سقف الشراء إذا تم إدخاله
-            if ($request->has('daily_limit')) {
-                $wallet->daily_limit = $request->daily_limit;
-            }
-            $wallet->balance += $request->amount;
-            $wallet->save();
+        // تحديث الرصيد الحالي
+        $wallet->balance = ($wallet->balance ?? 0) + $request->amount;
+
+        // تحديث سقف الشراء إن وجد
+        if ($request->has('daily_limit')) {
+            $wallet->daily_limit = $request->daily_limit;
         }
+
+        $wallet->save(); // حفظ المحفظة (جديدة أو محدثة)
+
+        // تسجيل معاملة الإيداع
+        WalletTransaction::create([
+            'wallet_id' => $wallet->wallet_id,
+            'amount' => $request->amount,
+            'type' => 'إيداع',
+            'reference' => 'شحن رصيد بواسطة لوحة التحكم',
+            'created_at' => now(),
+        ]);
 
         return response()->json(['message' => 'تم شحن الرصيد بنجاح']);
     }
