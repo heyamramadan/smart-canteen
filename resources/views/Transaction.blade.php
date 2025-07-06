@@ -153,55 +153,76 @@
 </div>
 <script>
   const searchInput = document.getElementById('search');
-  const results = document.getElementById('results');
-  const originalUrl = window.location.href.split('?')[0]; // رابط الصفحة بدون الاستعلامات
+const results = document.getElementById('results');
+const form = searchInput.closest('form');
 
-  searchInput.addEventListener('input', function () {
-    const query = this.value.trim();
+searchInput.addEventListener('input', function () {
+  const query = this.value.trim();
 
-    if (query === '') {
-      // ✅ إذا حُذف محتوى البحث، نرجع للصفحة الأصلية (إعادة تحميل كامل)
-      window.location.href = originalUrl;
-      return;
-    }
+  if (query === '') {
+    // إعادة تحميل الصفحة مع بقية الفلاتر إذا كانت موجودة في الرابط
+    // بدلاً من حذف الفلاتر، نعيد توجيه المستخدم مع باقي استعلامات الفلترة
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('search'); // حذف نص البحث فقط
+    window.location.href = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    return;
+  }
 
-    fetch(`/transactions/search?query=${encodeURIComponent(query)}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.length === 0) {
-          results.innerHTML = `
-            <tr>
-              <td colspan="8" class="text-center p-6 text-gray-400">لا توجد نتائج</td>
-            </tr>`;
-          return;
-        }
+  // اجمع باقي الفلاتر (type, date) لتضمينها في طلب البحث المباشر
+  const urlParams = new URLSearchParams();
+  urlParams.append('query', query);
 
-        let html = '';
-        data.forEach(transaction => {
-          const typeClass = transaction.type === 'إيداع'
-            ? 'bg-green-100 text-green-800'
-            : 'bg-red-100 text-red-800';
-          const amountColor = transaction.type === 'إيداع'
-            ? 'text-green-600'
-            : 'text-red-600';
-          const sign = transaction.type === 'إيداع' ? '+' : '-';
+  // أضف فلتر النوع والتاريخ من الـ form إذا موجودة
+  const type = form.querySelector('select[name="type"]').value;
+  if (type) urlParams.append('type', type);
 
-          html += `
-            <tr class="hover:bg-gray-50 transition">
-              <td class="p-3 text-sm">#TRX-${transaction.id}</td>
-              <td class="p-3 text-sm">${transaction.parent_name}</td>
-              <td class="p-3 text-sm">${transaction.student_names || 'غير مرتبط'}</td>
-              <td class="p-3"><span class="px-3 py-1 rounded-full text-xs ${typeClass}">${transaction.type}</span></td>
-              <td class="p-3 font-medium ${amountColor}">${sign}${parseFloat(transaction.amount).toFixed(2)} ر.س</td>
-              <td class="p-3">-</td>
-              <td class="p-3">-</td>
-              <td class="p-3">${transaction.created_at}</td>
-            </tr>`;
-        });
+  const date = form.querySelector('select[name="date"]').value;
+  if (date) urlParams.append('date', date);
 
-        results.innerHTML = html;
+  fetch(`/transactions/search?${urlParams.toString()}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.length === 0) {
+        results.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center p-6 text-gray-400">لا توجد نتائج</td>
+          </tr>`;
+        return;
+      }
+
+      let html = '';
+      data.forEach(transaction => {
+        const typeClass = transaction.type === 'إيداع'
+          ? 'bg-green-100 text-green-800'
+          : 'bg-red-100 text-red-800';
+        const amountColor = transaction.type === 'إيداع'
+          ? 'text-green-600'
+          : 'text-red-600';
+        const sign = transaction.type === 'إيداع' ? '+' : '-';
+
+        html += `
+          <tr class="hover:bg-gray-50 transition">
+            <td class="p-3 text-sm">#TRX-${transaction.id}</td>
+            <td class="p-3 text-sm">${transaction.parent_name}</td>
+            <td class="p-3 text-sm">${transaction.student_names || 'غير مرتبط'}</td>
+            <td class="p-3"><span class="px-3 py-1 rounded-full text-xs ${typeClass}">${transaction.type}</span></td>
+            <td class="p-3 font-medium ${amountColor}">${sign}${parseFloat(transaction.amount).toFixed(2)} ر.س</td>
+            <td class="p-3">-</td>
+            <td class="p-3">-</td>
+            <td class="p-3">${transaction.created_at}</td>
+          </tr>`;
       });
-  });
+
+      results.innerHTML = html;
+    })
+    .catch(() => {
+      results.innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center p-6 text-red-400">حدث خطأ أثناء جلب النتائج</td>
+        </tr>`;
+    });
+});
+
 </script>
 
 
