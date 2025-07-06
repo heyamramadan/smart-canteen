@@ -45,7 +45,7 @@ class WalletController extends Controller
             'wallet_id' => $wallet->wallet_id,
             'amount' => $request->amount,
             'type' => 'إيداع',
-            'reference' => 'شحن رصيد بواسطة لوحة التحكم',
+            'reference' => 'تم ايداع قيمة',
             'created_at' => now(),
         ]);
 
