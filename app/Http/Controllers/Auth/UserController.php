@@ -47,6 +47,31 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
     $users = User::withTrashed()->get();
     return view('user.index', compact('users'));
 }
+    public function search(Request $request)
+    {
+        $searchQuery = $request->input('query');
+
+        $query = User::withTrashed();
+
+        if (!empty($searchQuery)) {
+            $isIdSearch = is_numeric($searchQuery);
+
+            $query->where(function($q) use ($searchQuery, $isIdSearch) {
+                $q->where('username', 'LIKE', '%' . $searchQuery . '%')
+                  ->orWhere('full_name', 'LIKE', '%' . $searchQuery . '%')
+                  ->orWhere('email', 'LIKE', '%' . $searchQuery . '%')
+                  ->orWhere('role', 'LIKE', '%' . $searchQuery . '%');
+
+                if ($isIdSearch) {
+                    $q->orWhere('id', $searchQuery);
+                }
+            });
+        }
+
+        $users = $query->get();
+
+        return response()->json($users);
+    }
 
     //ارشفة
 public function destroy($id)
