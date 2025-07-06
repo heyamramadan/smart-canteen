@@ -170,7 +170,7 @@ searchInput.addEventListener('input', function () {
 
   // اجمع باقي الفلاتر (type, date) لتضمينها في طلب البحث المباشر
   const urlParams = new URLSearchParams();
-  urlParams.append('query', query);
+  urlParams.append('search', query);
 
   // أضف فلتر النوع والتاريخ من الـ form إذا موجودة
   const type = form.querySelector('select[name="type"]').value;

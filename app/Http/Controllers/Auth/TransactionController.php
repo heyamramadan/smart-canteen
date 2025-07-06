@@ -49,53 +49,61 @@ class TransactionController extends Controller
     }
 
     // دالة البحث عبر AJAX مثل الطلاب
-   public function search(Request $request)
-{
-    $search = $request->input('query');
-    $type = $request->input('type');
-    $date = $request->input('date');
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        $type = $request->input('type');
+        $date = $request->input('date');
 
-    $query = WalletTransaction::with([
-        'wallet.parent.user',
-        'wallet.parent.students'
-    ]);
+        $query = WalletTransaction::with([
+            'wallet.parent.user',
+            'wallet.parent.students'
+        ]);
 
-    if (!empty($search)) {
-        $query->where(function ($q) use ($search) {
-            $q->whereHas('wallet.parent.user', function ($q2) use ($search) {
-                $q2->where('full_name', 'like', "%{$search}%");
-            })->orWhereHas('wallet.parent.students', function ($q3) use ($search) {
-                $q3->where('full_name', 'like', "%{$search}%");
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('wallet.parent.user', function ($q2) use ($search) {
+                    $q2->where('full_name', 'like', "%{$search}%");
+                })->orWhereHas('wallet.parent.students', function ($q3) use ($search) {
+                    $q3->where('full_name', 'like', "%{$search}%");
+                });
             });
-        });
+        }
+
+        if (!empty($type) && in_array($type, ['إيداع', 'سحب'])) {
+            $query->where('type', $type);
+        }
+
+        if (!empty($date)) {
+            match ($date) {
+                'اليوم' => $query->whereDate('created_at', now()->toDateString()),
+                'أسبوع' => $query->whereBetween('created_at', [now()->subDays(7), now()]),
+                'شهر'   => $query->whereMonth('created_at', now()->month),
+                default => null,
+            };
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->take(20)->get();
+
+        return response()->json($transactions->map(function ($tx) {
+            $parentUser = $tx->wallet->parent->user ?? null;
+            $students = $tx->wallet->parent->students ?? collect();
+
+            $balanceBefore = $tx->type === 'إيداع'
+                ? ($tx->amount ? $tx->wallet->balance - $tx->amount : $tx->wallet->balance)
+                : ($tx->amount ? $tx->wallet->balance + $tx->amount : $tx->wallet->balance);
+
+            return [
+                'id' => $tx->id,
+                'transaction_id' => $tx->transaction_id,
+                'amount' => $tx->amount,
+                'type' => $tx->type,
+                'created_at' => $tx->created_at->format('d/m/Y h:i A'),  // نفس تنسيق الصفحة
+                'parent_name' => $parentUser?->full_name ?? $parentUser?->name ?? 'ولي غير معروف',
+                'student_names' => $students->pluck('full_name')->implode(', '),
+                'balance_before' => number_format($balanceBefore, 2),
+                'balance_after' => number_format($tx->wallet->balance, 2),
+            ];
+        }));
     }
-
-    if (!empty($type) && in_array($type, ['إيداع', 'سحب'])) {
-        $query->where('type', $type);
-    }
-
-    if (!empty($date)) {
-        match ($date) {
-            'اليوم' => $query->whereDate('created_at', now()->toDateString()),
-            'أسبوع' => $query->whereBetween('created_at', [now()->subDays(7), now()]),
-            'شهر'   => $query->whereMonth('created_at', now()->month),
-            default => null,
-        };
-    }
-
-    $transactions = $query->orderBy('created_at', 'desc')->take(20)->get();
-
-    return response()->json($transactions->map(function ($tx) {
-        return [
-            'id' => $tx->id,
-            'amount' => $tx->amount,
-            'type' => $tx->type,
-            'created_at' => $tx->created_at->format('Y-m-d H:i'),
-            'parent_name' => $tx->wallet->parent->user->full_name ?? 'ولي غير معروف',
-            'student_names' => $tx->wallet->parent->students->pluck('full_name')->implode(', '),
-        ];
-    }));
 }
-
-    }
-
