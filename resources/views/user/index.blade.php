@@ -130,46 +130,60 @@
                 <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">✖</button>
             </div>
             <div class="p-6">
-                <form method="POST" id="editUserForm">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="user_id" id="edit_user_id" />
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-        <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
-        <input type="text" name="username" id="edit_username" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-    </div>
-    <div>
-        <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
-        <input type="email" name="email" id="edit_email" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+           <form method="POST" id="editUserForm">
+    @csrf
+    @method('PUT')
+    <input type="hidden" name="user_id" id="edit_user_id" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
+            <input type="text" name="username" id="edit_username" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
+            <input type="email" name="email" id="edit_email" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
+            <input type="text" name="full_name" id="edit_full_name" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">الدور</label>
+            <select name="role" id="edit_role" class="w-full border border-orange-300 rounded-lg px-4 py-2">
+                <option value="مسؤول">مسؤول</option>
+                <option value="موظف">موظف</option>
+                <option value="ولي أمر">ولي أمر</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
+            <input type="text" name="phone_number" id="edit_phone_number" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">كلمة المرور الحالية</label>
+            <input type="password" name="current_password" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
+            <input type="password" name="new_password" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
+        <div>
+            <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور الجديدة</label>
+            <input type="password" name="new_password_confirmation" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+        </div>
     </div>
 
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
-                            <input type="text" name="full_name" id="edit_full_name" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">الدور</label>
-                            <select name="role" id="edit_role" class="w-full border border-orange-300 rounded-lg px-4 py-2">
-                                <option value="مسؤول">مسؤول</option>
-                                <option value="موظف">موظف</option>
-                                <option value="ولي أمر">ولي أمر</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
-                            <input type="text" name="phone_number" id="edit_phone_number" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
-                    </div>
-                    <div class="pt-4 flex justify-end space-x-3 space-x-reverse">
-                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
-                            إلغاء
-                        </button>
-                        <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
-                            حفظ التغييرات
-                        </button>
-                    </div>
-                </form>
+    <div class="pt-6 flex justify-end space-x-3 space-x-reverse">
+        <button type="button" onclick="closeEditModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+            إلغاء
+        </button>
+        <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
+            حفظ التغييرات
+        </button>
+    </div>
+</form>
+
             </div>
         </div>
     </div>

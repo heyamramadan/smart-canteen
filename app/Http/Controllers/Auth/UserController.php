@@ -130,8 +130,11 @@ public function update(Request $request, User $user)
         'full_name' => 'required|string|max:255',
         'role' => 'required|in:مسؤول,موظف,ولي أمر',
         'phone_number' => 'nullable|string|max:20',
+        'current_password' => 'nullable|string',
+        'new_password' => 'nullable|string|min:6|confirmed',
     ]);
 
+    // تحديث البيانات العامة
     $user->update([
         'username' => $request->username,
         'email' => $request->email,
@@ -140,9 +143,19 @@ public function update(Request $request, User $user)
         'phone_number' => $request->phone_number,
     ]);
 
+    // تحديث كلمة المرور (إذا تم إدخال الجديدة)
+    if ($request->filled('new_password')) {
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة.']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+    }
+
     return redirect()->route('users.index')->with('success', 'تم تحديث بيانات المستخدم بنجاح.');
 }
-
 
 }
 
