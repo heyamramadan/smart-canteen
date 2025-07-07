@@ -21,7 +21,7 @@ class InvoiceController extends Controller
             });
         })
         ->latest()
-        ->paginate(10);
+        ->paginate(perPage: 10);
 
     return view('invoices', compact('invoices'));
 }

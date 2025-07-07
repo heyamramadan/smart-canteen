@@ -171,31 +171,97 @@
         document.body.classList.remove('overflow-hidden');
         document.getElementById('invoiceDetails').innerHTML = '';
     }
-  function printInvoiceDirect(invoice) {
-    // بناء محتوى الفاتورة للطباعة
+ function printInvoiceDirect(invoice) {
     let html = `
-        <div style="direction: rtl; font-family: 'Tajawal', sans-serif; padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">🧾 فاتورة شراء</h2>
-            <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
-            <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
-            <p><strong>اسم الأب:</strong> ${invoice.student?.father_name || '—'}</p>
-            <p><strong>الفصل:</strong> ${invoice.student?.class || '—'}</p>
-            <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
-            <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
-            <hr style="margin: 15px 0;">
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>فاتورة شراء</title>
+            <style>
+                body {
+                    font-family: 'Tajawal', sans-serif;
+                    margin: 40px;
+                    color: #333;
+                    line-height: 1.6;
+                }
+                .invoice-box {
+                    max-width: 800px;
+                    margin: auto;
+                    padding: 30px;
+                    border: 1px solid #eee;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                }
+                h2 {
+                    text-align: center;
+                    color: #EA580C;
+                    margin-bottom: 20px;
+                }
+                .details {
+                    margin-bottom: 20px;
+                }
+                .details p {
+                    margin: 4px 0;
+                }
+                .items {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .items th, .items td {
+                    padding: 10px;
+                    text-align: right;
+                    border-bottom: 1px solid #ddd;
+                }
+                .items th {
+                    background-color: #F97316;
+                    color: white;
+                }
+                .total {
+                    text-align: left;
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin-top: 20px;
+                    color: #C2410C;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="invoice-box">
+                <h2>🧾 فاتورة شراء</h2>
+
+                <div class="details">
+                    <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
+                    <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
+                    <p><strong>اسم الأب:</strong> ${invoice.student?.father_name || '—'}</p>
+                    <p><strong>الفصل:</strong> ${invoice.student?.class || '—'}</p>
+                    <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
+                </div>
+
+                <table class="items">
+                    <thead>
+                        <tr>
+                            <th>الصنف</th>
+                            <th>الكمية</th>
+                            <th>السعر الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${invoice.order_items.map(item => `
+                            <tr>
+                                <td>${item.product?.name || '—'}</td>
+                                <td>${item.quantity}</td>
+                                <td>${(item.price * item.quantity).toFixed(2)} د.ل</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+
+                <p class="total">الإجمالي: ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
+            </div>
+        </body>
+        </html>
     `;
 
-    if (invoice.order_items && invoice.order_items.length > 0) {
-        html += `<h4 style="font-weight: bold; margin-bottom: 10px;">الأصناف:</h4><ul>`;
-        invoice.order_items.forEach(item => {
-            html += `<li>${item.product?.name || '—'} × ${item.quantity} = ${(item.price * item.quantity).toFixed(2)} د.ل</li>`;
-        });
-        html += '</ul>';
-    }
-
-    html += '</div>';
-
-    // فتح نافذة طباعة جديدة
     const printWindow = window.open('', '', 'width=800,height=600');
     printWindow.document.write(html);
     printWindow.document.close();
