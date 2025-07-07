@@ -43,7 +43,7 @@ class TransactionController extends Controller
             };
         }
 
-        $transactions = $query->orderBy('created_at', 'desc')->paginate(10);
+        $transactions = $query->orderBy('created_at', 'asc')->paginate(10);
 
         return view('Transaction', compact('transactions'));
     }
@@ -83,7 +83,8 @@ class TransactionController extends Controller
             };
         }
 
-        $transactions = $query->orderBy('created_at', 'desc')->take(20)->get();
+     $transactions = $query->orderBy('created_at', 'asc')->take(20)->get();
+
 
         return response()->json($transactions->map(function ($tx) {
             $parentUser = $tx->wallet->parent->user ?? null;
