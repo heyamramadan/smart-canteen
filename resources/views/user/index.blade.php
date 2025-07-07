@@ -134,15 +134,16 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="user_id" id="edit_user_id" />
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
-                            <input type="email" name="email" id="edit_email" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
-                            <input type="text" name="username" id="edit_username" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
+        <input type="text" name="username" id="edit_username" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+    </div>
+    <div>
+        <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
+        <input type="email" name="email" id="edit_email" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+    </div>
+
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
                             <input type="text" name="full_name" id="edit_full_name" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
@@ -187,16 +188,17 @@
                 <form method="POST" action="{{ route('users.store') }}" class="space-y-4">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                            @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
-                            <input type="text" name="username" value="{{ old('username') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                            @error('username') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-                        </div>
+                       <div>
+    <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
+    <input type="text" name="username" value="{{ old('username') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+    @error('username') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+</div>
+<div>
+    <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
+    <input type="email" name="email" value="{{ old('email') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+    @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+</div>
+
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
                             <input type="text" name="full_name" value="{{ old('full_name') }}" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
