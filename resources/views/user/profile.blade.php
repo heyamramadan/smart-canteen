@@ -181,7 +181,7 @@
                                        class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="current-password" placeholder="أدخل كلمة المرور الحالية إذا كنت تريد التغيير">
                                 <button type="button" onclick="togglePassword(this)"
                                         class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-                                    👁️
+                                   🔒
                                 </button>
                             </div>
                             @error('current_password')
@@ -189,22 +189,42 @@
                             @enderror
                         </div>
 
-                        <!-- كلمة المرور الجديدة -->
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
-                            <div class="relative">
-                                <input type="password" name="new_password"
-                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="new-password" placeholder="اتركها فارغة إذا لم تريد التغيير">
-                                <button type="button" onclick="togglePassword(this)"
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-                                    👁️
-                                </button>
-                            </div>
-                            @error('new_password')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+          <!-- كلمة المرور الجديدة -->
+<div>
+    <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
+    <div class="relative">
+        <input type="password" name="new_password"
+               class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+               autocomplete="new-password" placeholder="اتركها فارغة إذا لم تريد التغيير">
+        <button type="button" onclick="togglePassword(this)"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
+            🔒
+        </button>
+    </div>
+    @error('new_password')
+    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
+<!-- تأكيد كلمة المرور الجديدة -->
+<div>
+    <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور الجديدة</label>
+    <div class="relative">
+        <input type="password" name="new_password_confirmation"
+               class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+               autocomplete="new-password" placeholder="أعد إدخال كلمة المرور الجديدة">
+        <button type="button" onclick="togglePassword(this)"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
+            🔒
+        </button>
+    </div>
+    @error('new_password_confirmation')
+    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
+                </div>
                     </div>
+
 
                     <div class="flex justify-end space-x-3 space-x-reverse mt-6">
 

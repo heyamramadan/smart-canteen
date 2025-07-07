@@ -32,7 +32,7 @@ class ProfileController extends Controller
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
             'profile_image' => 'nullable|image|max:2048',
             'current_password' => 'nullable|string',
-            'new_password' => ['nullable', Password::min(6)],
+            'new_password' => ['nullable', Password::min(6),'confirmed'],
         ], [
             'username.required' => 'حقل اسم المستخدم مطلوب.',
             'username.unique' => 'اسم المستخدم مستخدم من قبل.',
@@ -43,6 +43,8 @@ class ProfileController extends Controller
             'profile_image.image' => 'يجب أن تكون الصورة ملف صورة صالح.',
             'profile_image.max' => 'حجم الصورة يجب أن لا يتجاوز 2 ميغابايت.',
             'new_password.min' => 'كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل.',
+            'new_password.confirmed' => 'تأكيد كلمة المرور الجديدة غير متطابق.',
+
         ]);
 
         // تحديث البيانات الأساسية
