@@ -89,7 +89,6 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الاسم الكامل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">اسم الأب</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الصف الدراسي</th>
-                                <th class="p-3 text-right text-sm text-gray-500">تاريخ الميلاد</th>
                                 <th class="p-3 text-right text-sm text-gray-500">تاريخ التسجيل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
@@ -109,7 +108,6 @@
                                     <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->father_name }}</td>
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
-                                    <td class="p-3 text-sm">{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : 'غير محدد' }}</td>
                                     <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
                                     <td class="p-3 flex items-center">
                                         @if($student->trashed())
@@ -204,14 +202,6 @@
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">تاريخ الميلاد</label>
-                            <input type="date" name="birth_date" value="{{ old('birth_date') }}"
-                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                            @error('birth_date')
-                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">صورة الطالب</label>
                             <input type="file" name="image" id="add_image" accept="image/*"
@@ -294,11 +284,6 @@
                                 <option value="الثالث ثانوي">الثالث ثانوي</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-1">تاريخ الميلاد</label>
-                            <input type="date" name="birth_date" id="edit_birth_date"
-                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">صورة الطالب</label>
                             <input type="file" name="image" id="edit_image" accept="image/*"
@@ -351,7 +336,6 @@
             document.getElementById('edit_full_name').value = fullName;
             document.getElementById('edit_father_name').value = fatherName;
             document.getElementById('edit_class').value = classVal;
-            document.getElementById('edit_birth_date').value = birthDate;
             document.getElementById('edit_parent_id').value = parentId;
 
             // عرض الصورة الحالية إذا كانت موجودة
@@ -494,7 +478,6 @@
                     <td class="p-3 text-sm font-medium">${student.full_name}</td>
                     <td class="p-3 text-sm">${student.father_name}</td>
                     <td class="p-3 text-sm">${student.class}</td>
-                    <td class="p-3 text-sm">${student.birth_date ? student.birth_date : 'غير محدد'}</td>
                     <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
                     <td class="p-3 flex items-center">
                         ${isArchived ? `
