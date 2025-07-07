@@ -82,27 +82,6 @@
             </tbody>
           </table>
         </div>
-
-        <!-- الطلبات السابقة -->
-        <div class="border-t pt-4">
-          <h3 class="font-semibold text-primary mb-2">طلبات سابقة</h3>
-          <div class="space-y-2">
-            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-              <div class="flex justify-between">
-                <span>12/05/2023</span>
-                <span class="font-medium">45.00 ر.س</span>
-              </div>
-              <div class="text-xs text-gray-500">2 منتجات</div>
-            </div>
-            <div class="p-2 border rounded hover:bg-gray-50 cursor-pointer">
-              <div class="flex justify-between">
-                <span>10/05/2023</span>
-                <span class="font-medium">32.50 ر.س</span>
-              </div>
-              <div class="text-xs text-gray-500">3 منتجات</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- المنتجات -->
