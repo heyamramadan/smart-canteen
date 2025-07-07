@@ -83,8 +83,7 @@ class TransactionController extends Controller
             };
         }
 
-     $transactions = $query->orderBy('created_at', 'asc')->take(20)->get();
-
+        $transactions = $query->orderBy('created_at', 'asc')->take(20)->get();
 
         return response()->json($transactions->map(function ($tx) {
             $parentUser = $tx->wallet->parent->user ?? null;
