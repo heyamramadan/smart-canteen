@@ -34,14 +34,21 @@ class TransactionController extends Controller
         }
 
         // 🔍 فلترة حسب التاريخ
-        if ($request->filled('date')) {
-            match ($request->date) {
-                'اليوم' => $query->whereDate('created_at', now()->toDateString()),
-                'أسبوع' => $query->whereBetween('created_at', [now()->subDays(7), now()]),
-                'شهر'   => $query->whereMonth('created_at', now()->month),
-                default => null
-            };
+     // ✅ فلترة حسب التاريخ: يوم / شهر / سنة
+if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
+    $query->where(function ($q) use ($request) {
+        if ($request->filled('day')) {
+            $q->whereDay('created_at', $request->day);
         }
+        if ($request->filled('month')) {
+            $q->whereMonth('created_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $q->whereYear('created_at', $request->year);
+        }
+    });
+}
+
 
         $transactions = $query->orderBy('created_at', 'asc')->paginate(10);
 
@@ -74,14 +81,20 @@ class TransactionController extends Controller
             $query->where('type', $type);
         }
 
-        if (!empty($date)) {
-            match ($date) {
-                'اليوم' => $query->whereDate('created_at', now()->toDateString()),
-                'أسبوع' => $query->whereBetween('created_at', [now()->subDays(7), now()]),
-                'شهر'   => $query->whereMonth('created_at', now()->month),
-                default => null,
-            };
+     if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
+    $query->where(function ($q) use ($request) {
+        if ($request->filled('day')) {
+            $q->whereDay('created_at', $request->day);
         }
+        if ($request->filled('month')) {
+            $q->whereMonth('created_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $q->whereYear('created_at', $request->year);
+        }
+    });
+}
+
 
         $transactions = $query->orderBy('created_at', 'asc')->take(20)->get();
 
