@@ -33,7 +33,7 @@
         <div class="flex-1 p-6 overflow-auto">
             <div class="bg-white rounded-xl shadow-lg mb-6 p-4">
                 <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                    <span class="ml-2">💳</span> شحن رصيد أولياء الأمور
+                    <span class="ml-2">💰</span> شحن رصيد أولياء الأمور
                 </h2>
             </div>
 
