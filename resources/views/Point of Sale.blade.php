@@ -14,24 +14,130 @@
         extend: {
           colors: {
             primary: {
+              50: '#FFF7ED',
               100: '#FFEDD5',
+              200: '#FED7AA',
+              300: '#FDBA74',
+              400: '#FB923C',
               500: '#F97316',
               600: '#EA580C',
               700: '#C2410C',
+              800: '#9A3412',
+              900: '#7C2D12',
+            },
+            secondary: {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+              400: '#94A3B8',
+              500: '#64748B',
+              600: '#475569',
+              700: '#334155',
+              800: '#1E293B',
+              900: '#0F172A',
             }
+          },
+          boxShadow: {
+            'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            'button': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          },
+          borderRadius: {
+            'xl': '12px',
+            '2xl': '16px',
           }
         }
       }
     }
   </script>
+  <style>
+    /* تحسينات عامة */
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    /* تحسين الجداول */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: #F8FAFC;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    tr:hover {
+      background-color: #F8FAFC;
+    }
+
+    /* تحسين الأزرار */
+    button {
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* تحسين كروت العناصر */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* تحسين حقول الإدخال */
+    input {
+      transition: all 0.2s ease;
+      border: 1px solid #CBD5E1;
+    }
+
+    input:focus {
+      border-color: #F97316;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    }
+
+    /* تحسين شريط التمرير */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+  </style>
 </head>
 <body class="bg-gray-50">
     <!-- مودال الكاميرا -->
 <div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-lg p-4 w-80 shadow-lg text-center relative">
-    <button onclick="closeQRModal()" class="absolute top-2 left-2 text-gray-500 hover:text-red-500 text-lg font-bold">&times;</button>
-    <h2 class="text-lg font-bold text-primary mb-2">مسح رمز QR</h2>
-    <video id="preview" class="w-48 h-48 mx-auto border border-gray-300 rounded" playsinline></video>
+  <div class="bg-white rounded-xl p-6 w-96 shadow-xl text-center relative">
+    <button onclick="closeQRModal()" class="absolute top-4 left-4 text-gray-500 hover:text-red-500 text-xl font-bold transition-colors">&times;</button>
+    <h2 class="text-xl font-bold text-primary-700 mb-4">مسح رمز QR</h2>
+    <video id="preview" class="w-64 h-64 mx-auto border-2 border-primary-100 rounded-lg" playsinline></video>
+    <p class="text-gray-600 mt-4">قم بتوجيه الكاميرا نحو رمز QR الخاص بالطالب</p>
   </div>
 </div>
 
@@ -41,121 +147,134 @@
   <!-- الشريط الجانبي -->
   @include('layouts.sidebar')
 
-  <!-- المحتوى الرئيسي -->
+   <!-- المحتوى الرئيسي مع إمكانية التمرير -->
   <div class="flex-1 flex flex-col overflow-hidden">
 
-    <!-- الصف العلوي: بيانات الطالب والمنتجات -->
-    <div class="flex flex-col md:flex-row h-1/2">
-
+   <!-- قسم علوي ثابت (الطلاب والمنتجات) -->
+    <div class="flex flex-col lg:flex-row h-[55vh] min-h-[400px] p-4 gap-4">
       <!-- بيانات الطالب -->
-      <div class="w-full md:w-1/2 bg-white p-4 border-l overflow-y-auto">
-        <h2 class="text-xl font-bold text-primary mb-6 text-center">بيانات الطالب</h2>
+
+      <div class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-sm flex flex-col overflow-hidden">
+        <h2 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">بيانات الطالب</h2>
 
         <!-- حقل البحث -->
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">بحث عن طالب</label>
-          <input type="text" id="studentSearchInput" class="w-full p-2 border rounded mb-4" placeholder="ادخل اسم الطالب" autocomplete="off" />
-            <!-- زر تشغيل الكاميرا -->
-<button onclick="openQRModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded mb-2">
-  تشغيل الكاميرا لمسح QR
-</button>
-
-  <!-- عرض الفيديو من الكاميرا -->
-  <video id="preview" class="w-full rounded border border-gray-300 mb-4" style="display: none;" playsinline></video>
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">بحث عن طالب</label>
+          <div class="flex gap-2">
+            <input type="text" id="studentSearchInput" class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-400" placeholder="ادخل اسم الطالب" autocomplete="off" />
+            <button onclick="openQRModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-3 rounded-lg shadow-button flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              مسح QR
+            </button>
+          </div>
         </div>
 
-        <div id="studentInfoContainer" class="mb-4"></div>
+        <div id="studentInfoContainer" class="mb-6"></div>
 
         <!-- نتائج البحث -->
-        <div class="overflow-x-auto mb-6">
-          <table class="w-full text-sm text-right border border-primary-100 rounded" id="studentsTable">
-            <thead class="bg-primary-100 text-primary-700">
-              <tr>
-                <th class="p-2 border">اسم الطالب</th>
-                <th class="p-2 border">اسم الأب</th>
-                <th class="p-2 border">الصف</th>
-                <th class="p-2 border">سقف الشراء</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- النتائج ستُملأ بواسطة JavaScript -->
-            </tbody>
-          </table>
+        <div class="flex-1 overflow-hidden flex flex-col">
+          <h3 class="font-semibold text-gray-700 mb-3">نتائج البحث</h3>
+          <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
+            <div class="overflow-y-auto h-full">
+              <table class="w-full text-right" id="studentsTable">
+                <thead class="bg-gray-50 text-gray-600 sticky top-0">
+                  <tr>
+                    <th class="p-3 border-b">اسم الطالب</th>
+                    <th class="p-3 border-b">اسم الأب</th>
+                    <th class="p-3 border-b">الصف</th>
+                    <th class="p-3 border-b">سقف الشراء</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <!-- النتائج ستُملأ بواسطة JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- المنتجات -->
-      <div class="w-full md:w-1/2 bg-white p-4 overflow-y-auto border-r flex flex-col">
-        <h2 class="text-xl font-bold text-primary mb-6 text-center">المنتجات</h2>
+      <div class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-sm flex flex-col overflow-hidden">
+
+        <h2 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">المنتجات</h2>
 
         <!-- التصنيفات -->
-        <div class="mb-4">
-          <h3 class="font-semibold text-primary mb-2">التصنيفات</h3>
-          <div id="categoriesContainer" class="flex flex-wrap gap-4">
+        <div class="mb-6">
+          <h3 class="font-semibold text-gray-700 mb-3">التصنيفات</h3>
+          <div id="categoriesContainer" class="flex flex-wrap gap-2">
             <!-- التصنيفات ديناميكية تظهر هنا -->
             <span class="text-gray-400">يرجى اختيار طالب أولاً</span>
           </div>
         </div>
 
         <!-- المنتجات المتاحة -->
-        <div class="flex-1 overflow-y-auto">
-          <h3 class="font-semibold text-primary mb-2">المنتجات المتاحة</h3>
-          <table class="w-full border text-right">
-            <thead>
-              <tr class="bg-primary-100">
-                <th class="p-2 border">المنتج</th>
-                <th class="p-2 border">السعر</th>
-                <th class="p-2 border">الكمية المتوفرة</th>
-                <th class="p-2 border">الإجراء</th>
-              </tr>
-            </thead>
-            <tbody id="productTable">
-              <!-- المنتجات ديناميكية تظهر هنا -->
-            </tbody>
-          </table>
+        <div class="flex-1 overflow-hidden flex flex-col">
+          <h3 class="font-semibold text-gray-700 mb-3">المنتجات المتاحة</h3>
+          <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
+            <div class="overflow-y-auto h-full">
+              <table class="w-full text-right">
+                <thead class="bg-gray-50 text-gray-600 sticky top-0">
+                  <tr>
+                    <th class="p-3 border-b">المنتج</th>
+                    <th class="p-3 border-b">السعر</th>
+                    <th class="p-3 border-b">الكمية</th>
+                    <th class="p-3 border-b">الإجراء</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="productTable">
+                  <!-- المنتجات ديناميكية تظهر هنا -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- فاتورة البيع -->
-    <div class="flex-1 p-4 bg-white border-t overflow-y-auto">
-      <div class="max-w-4xl mx-auto">
+ <!-- فاتورة البيع مع إمكانية التمرير -->
+    <div class="flex-1 overflow-y-auto bg-gray-50 p-4 border-t border-gray-200">
+      <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-sm">
+        <!-- عنوان الفاتورة -->
+        <h1 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">فاتورة البيع</h1>
 
-        <!-- عنوان -->
-        <h1 class="text-xl font-bold text-primary mb-4">فاتورة البيع</h1>
-
-        <!-- جدول الفاتورة -->
-        <div class="mb-4 overflow-x-auto">
-          <table class="w-full border text-sm text-right" id="invoiceTable">
-            <thead class="bg-primary-100 text-primary-700">
+        <!-- جدول الفاتورة مع ارتفاع ثابت وتمرير -->
+        <div class="mb-6 overflow-hidden border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
+          <table class="w-full text-right" id="invoiceTable">
+            <thead class="bg-gray-50 text-gray-600">
               <tr>
-                <th class="p-2 border">المنتج</th>
-                <th class="p-2 border">الكمية</th>
-                <th class="p-2 border">سعر القطعة</th>
-                <th class="p-2 border">الإجمالي</th>
-                <th class="p-2 border">الإجراء</th>
+                <th class="p-3 border-b">المنتج</th>
+                <th class="p-3 border-b">الكمية</th>
+                <th class="p-3 border-b">سعر القطعة</th>
+                <th class="p-3 border-b">الإجمالي</th>
+                <th class="p-3 border-b">الإجراء</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200">
               <!-- الصفوف تتم إضافتها هنا ديناميكياً -->
             </tbody>
           </table>
         </div>
 
         <!-- الإجمالي -->
-        <div class="bg-primary-50 text-black p-4 rounded-lg mb-4">
-          <div class="flex justify-between font-bold text-lg">
-            <span>إجمالي الفاتورة</span>
-            <span id="totalAmount">0.00 ر.س</span>
-          </div>
-          <div id="limitInfo" class="text-right text-sm mt-2 hidden">
-            <span id="remainingLimitText"></span>
+        <div class="bg-primary-50 text-primary-900 p-4 rounded-lg mb-6 border border-primary-100">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="font-bold text-lg">إجمالي الفاتورة</span>
+              <div id="limitInfo" class="text-sm mt-1 hidden">
+                <span id="remainingLimitText"></span>
+              </div>
+            </div>
+            <span id="totalAmount" class="font-bold text-2xl">0.00 ر.س</span>
           </div>
         </div>
 
         <!-- زر التأكيد -->
         <div class="text-center">
-          <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg text-lg font-bold" onclick="confirmSale()">
+          <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-md hover:shadow-lg transition-all" onclick="confirmSale()">
             تأكيد عملية البيع
           </button>
         </div>
@@ -622,4 +741,3 @@ function updateLimitInfo() {
 
 </body>
 </html>
-
