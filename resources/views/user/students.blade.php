@@ -41,6 +41,12 @@
             border-radius: 8px;
             border: 1px solid #ddd;
         }
+        .modal-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
     </style>
 </head>
 <body class="bg-gray-50">
@@ -111,12 +117,13 @@
                                     <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
                                     <td class="p-3 flex items-center">
                                         @if($student->trashed())
-                                            <form method="POST" action="{{ route('students.restore', $student->student_id) }}" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
-                                                @csrf
-                                                <button type="submit" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
-                                                    ♻️ استعادة
-                                                </button>
-                                            </form>
+                                            <form method="POST" action="{{ route('students.restore', $student->student_id) }}" class="restoreForm">
+    @csrf
+    <button type="button" onclick="confirmRestore(this)" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
+        ♻️ استعادة
+    </button>
+</form>
+
                                         @else
                                             <button onclick="openEditModal(
                                                 '{{ $student->student_id }}',
@@ -129,13 +136,14 @@
                                             )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                                 ✏️ تعديل
                                             </button>
-                                            <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                                    🗑️ أرشفة
-                                                </button>
-                                            </form>
+                                       <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" class="archiveForm">
+    @csrf
+    @method('DELETE')
+    <button type="button" onclick="confirmArchive(this)" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+        🗑️ أرشفة
+    </button>
+</form>
+
                                         @endif
                                     </td>
                                 </tr>
@@ -317,6 +325,17 @@
             </div>
         </div>
     </div>
+<!-- مودال التأكيد -->
+<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 text-center">
+        <h3 id="confirmModalTitle" class="text-lg font-bold mb-4 text-gray-700">هل أنت متأكد؟</h3>
+        <p id="confirmModalMessage" class="text-sm text-gray-600 mb-6">سيتم تنفيذ هذا الإجراء.</p>
+        <div class="flex justify-center gap-4">
+            <button id="confirmYesBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">نعم</button>
+            <button onclick="closeConfirmModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">إلغاء</button>
+        </div>
+    </div>
+</div>
 
     <script>
         // وظائف إضافة طالب
@@ -513,6 +532,36 @@
                 tbody.appendChild(row);
             });
         }
+        let confirmAction = null;
+
+function showConfirmModal(message, onConfirm) {
+    document.getElementById('confirmModalTitle').textContent = 'تأكيد الإجراء';
+    document.getElementById('confirmModalMessage').textContent = message;
+    document.getElementById('confirmModal').classList.remove('hidden');
+    confirmAction = onConfirm;
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.add('hidden');
+    confirmAction = null;
+}
+
+document.getElementById('confirmYesBtn').addEventListener('click', () => {
+    if (typeof confirmAction === 'function') {
+        confirmAction();
+    }
+    closeConfirmModal();
+});
+function confirmArchive(button) {
+    const form = button.closest('form');
+    showConfirmModal('هل أنت متأكد من أرشفة هذا الطالب؟', () => form.submit());
+}
+
+function confirmRestore(button) {
+    const form = button.closest('form');
+    showConfirmModal('هل تريد استعادة هذا الطالب؟', () => form.submit());
+}
+
     </script>
 </body>
 </html>
