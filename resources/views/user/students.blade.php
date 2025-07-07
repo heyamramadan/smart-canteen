@@ -41,11 +41,13 @@
             border-radius: 8px;
             border: 1px solid #ddd;
         }
-        .modal-center {
+ .modal-center {
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 
     </style>
 </head>
@@ -325,17 +327,23 @@
             </div>
         </div>
     </div>
+
 <!-- مودال التأكيد -->
 <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 text-center">
-        <h3 id="confirmModalTitle" class="text-lg font-bold mb-4 text-gray-700">هل أنت متأكد؟</h3>
+    <div class="bg-white border border-gray-200 text-gray-700 rounded-xl shadow-lg w-full max-w-md p-6 text-center modal-center absolute">
+        <h3 id="confirmModalTitle" class="text-lg font-bold mb-4">تأكيد الإجراء</h3>
         <p id="confirmModalMessage" class="text-sm text-gray-600 mb-6">سيتم تنفيذ هذا الإجراء.</p>
         <div class="flex justify-center gap-4">
-            <button id="confirmYesBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">نعم</button>
-            <button onclick="closeConfirmModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg">إلغاء</button>
+            <button id="confirmYesBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition">
+                نعم
+            </button>
+            <button onclick="closeConfirmModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition">
+                إلغاء
+            </button>
         </div>
     </div>
 </div>
+
 
     <script>
         // وظائف إضافة طالب
@@ -532,11 +540,12 @@
                 tbody.appendChild(row);
             });
         }
-        let confirmAction = null;
+     let confirmAction = null;
 
-function showConfirmModal(message, onConfirm) {
-    document.getElementById('confirmModalTitle').textContent = 'تأكيد الإجراء';
+function showConfirmModal(title, message, onConfirm, confirmText = 'نعم') {
+    document.getElementById('confirmModalTitle').textContent = title;
     document.getElementById('confirmModalMessage').textContent = message;
+    document.getElementById('confirmYesBtn').textContent = confirmText; // ← النص المتغير للزر
     document.getElementById('confirmModal').classList.remove('hidden');
     confirmAction = onConfirm;
 }
@@ -552,15 +561,18 @@ document.getElementById('confirmYesBtn').addEventListener('click', () => {
     }
     closeConfirmModal();
 });
+
 function confirmArchive(button) {
     const form = button.closest('form');
-    showConfirmModal('هل أنت متأكد من أرشفة هذا الطالب؟', () => form.submit());
+    showConfirmModal('تأكيد الأرشفة', 'هل أنت متأكد من أرشفة هذا الطالب؟', () => form.submit(), 'أرشفة');
 }
 
 function confirmRestore(button) {
     const form = button.closest('form');
-    showConfirmModal('هل تريد استعادة هذا الطالب؟', () => form.submit());
+    showConfirmModal('تأكيد الاستعادة', 'هل تريد استعادة هذا الطالب؟', () => form.submit(), 'استعادة');
 }
+
+
 
     </script>
 </body>
