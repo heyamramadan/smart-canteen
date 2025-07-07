@@ -159,9 +159,20 @@
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
                             <input type="text" name="phone_number" id="edit_phone_number" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                            
                         </div>
                     </div>
+                 <div>
+    <label class="block text-sm text-gray-600 mb-1">كلمة المرور الحالية</label>
+    <input type="password" name="current_password" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+</div>
+<div>
+    <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
+    <input type="password" name="new_password" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+</div>
+<div>
+    <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور الجديدة</label>
+    <input type="password" name="new_password_confirmation" class="w-full border border-orange-300 rounded-lg px-4 py-2" />
+</div>
 
 
                     <div class="pt-4 flex justify-end space-x-3 space-x-reverse">
