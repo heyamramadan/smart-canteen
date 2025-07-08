@@ -39,7 +39,7 @@
     <!-- شريط العنوان والبحث -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
       <h2 class="text-lg font-bold text-primary-700 flex items-center">
-        <span class="ml-2">💳</span> سجل المعاملات
+        <span class="ml-2">💸</span> سجل المعاملات
       </h2>
 
       <div class="flex items-center space-x-4 space-x-reverse">
@@ -119,7 +119,7 @@
 @endphp
 
           <tr class="hover:bg-gray-50 transition">
-            <td class="p-3 text-sm">#TRX-{{ $transaction->transaction_id }}</td>
+         <td class="p-3 text-sm">{{ $transactions->firstItem() + $loop->index }}</td>
             <td class="p-3 text-sm">{{ $parentUser?->full_name ?? $parentUser?->name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student?->full_name ?? 'غير مرتبط' }}</td>
             <td class="p-3">
