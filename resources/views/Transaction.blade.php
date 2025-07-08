@@ -43,12 +43,12 @@
       </h2>
 
       <div class="flex items-center space-x-4 space-x-reverse">
-  <form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap space-x-reverse">
-  <!-- 🔍 البحث -->
+ <!-- ✅ نموذج البحث فقط -->
+<form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap space-x-reverse">
   <div class="relative">
     <input
       type="text"
-        id="search"
+      id="search"
       name="search"
       value="{{ request('search') }}"
       placeholder="ابحث باسم ولي الأمر أو الطالب"
@@ -58,32 +58,34 @@
       🔍
     </button>
   </div>
+</form>
 
-  <!-- ✅ فلتر النوع -->
+<!-- ✅ نموذج الفلاتر (النوع + التاريخ) -->
+<form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap space-x-reverse">
+
   <select name="type" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
     <option value="">كل الأنواع</option>
     <option value="إيداع" {{ request('type') === 'إيداع' ? 'selected' : '' }}>إيداع</option>
     <option value="سحب" {{ request('type') === 'سحب' ? 'selected' : '' }}>سحب</option>
   </select>
 
-  <!-- ✅ التاريخ المخصص -->
-<div class="flex gap-2 items-center">
-  <input type="number" name="day" placeholder="اليوم" min="1" max="31"
-         value="{{ request('day') }}"
-         class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-  <input type="number" name="month" placeholder="الشهر" min="1" max="12"
-         value="{{ request('month') }}"
-         class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-  <input type="number" name="year" placeholder="السنة" min="2000" max="2100"
-         value="{{ request('year') }}"
-         class="w-24 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-</div>
+  <div class="flex gap-2 items-center">
+    <input type="number" name="day" placeholder="اليوم" min="1" max="31"
+           value="{{ request('day') }}"
+           class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+    <input type="number" name="month" placeholder="الشهر" min="1" max="12"
+           value="{{ request('month') }}"
+           class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+    <input type="number" name="year" placeholder="السنة" min="2000" max="2100"
+           value="{{ request('year') }}"
+           class="w-24 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+  </div>
 
-  <!-- ✅ زر التصفية -->
   <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
     تصفية
   </button>
 </form>
+
 
 
 
