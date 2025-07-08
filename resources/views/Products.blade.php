@@ -58,16 +58,14 @@
             <div class="flex items-center space-x-4 space-x-reverse">
                 <!-- حقل البحث -->
                 <form method="GET" action="{{ route('products.index') }}" class="relative">
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="ابحث عن منتج..."
-                        class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    />
-                    <button type="submit" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-                        🔍
-                    </button>
+                  <input
+    type="text"
+    id="liveSearch"
+    name="search"
+    placeholder="ابحث عن منتج..."
+    class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+/>
+
                 </form>
 
                 <!-- زر إضافة منتج -->
@@ -79,6 +77,7 @@
         </div>
 
         <!-- جدول المنتجات -->
+        <div id="productTableContainer">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full text-right">
@@ -134,6 +133,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
     </div>
 </div>
@@ -268,6 +268,31 @@
         document.getElementById('formMethod').value = 'POST';
         document.getElementById('productCategory').value = '';
     }
+ 
+    let debounceTimer;
+
+    document.getElementById('liveSearch').addEventListener('input', function () {
+        clearTimeout(debounceTimer); // إلغاء أي مؤقت سابق
+        const query = this.value;
+
+        // تأخير التنفيذ قليلاً لتحسين الأداء
+        debounceTimer = setTimeout(() => {
+            fetch(`{{ route('products.index') }}?search=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' // لتحديد أنه طلب AJAX
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newTable = doc.querySelector('#productTableContainer');
+                document.getElementById('productTableContainer').innerHTML = newTable.innerHTML;
+            });
+        }, 300); // 300 ميلي ثانية تأخير
+    });
+
+
 </script>
 
 </body>
