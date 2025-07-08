@@ -179,15 +179,16 @@
           <h3 class="font-semibold text-gray-700 mb-3">نتائج البحث</h3>
           <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
             <div class="overflow-y-auto h-full">
-              <table class="w-full text-right" id="studentsTable">
-                <thead class="bg-gray-50 text-gray-600 sticky top-0">
-                  <tr>
-                    <th class="p-3 border-b">اسم الطالب</th>
-                    <th class="p-3 border-b">اسم الأب</th>
-                    <th class="p-3 border-b">الصف</th>
-                    <th class="p-3 border-b">سقف الشراء</th>
-                  </tr>
-                </thead>
+          <table class="w-full text-right min-w-full" id="studentsTable">
+  <thead class="bg-gray-50 text-gray-600 sticky top-0">
+    <tr>
+      <th class="p-3 border-b whitespace-nowrap w-1/4">اسم الطالب</th>
+      <th class="p-3 border-b whitespace-nowrap w-1/4">اسم الأب</th>
+      <th class="p-3 border-b whitespace-nowrap w-1/4">الصف</th>
+      <th class="p-3 border-b whitespace-nowrap w-1/4">سقف الشراء</th>
+    </tr>
+  </thead>
+
                 <tbody class="divide-y divide-gray-200">
                   <!-- النتائج ستُملأ بواسطة JavaScript -->
                 </tbody>
@@ -321,12 +322,13 @@
         data.forEach(student => {
           const tr = document.createElement('tr');
           tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
-          tr.innerHTML = `
-            <td class="p-2 border">${student.full_name}</td>
-            <td class="p-2 border">${student.father_name ?? '—'}</td>
-            <td class="p-2 border">${student.class}</td>
-            <td class="p-2 border">${student.daily_limit ? student.daily_limit.toFixed(2) + ' ر.س' : '—'}</td>
-          `;
+      tr.innerHTML = `
+  <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
+  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
+  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
+  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' ر.س' : '—'}</td>
+`;
+
           tr.addEventListener('click', () => {
             currentStudentId = student.student_id;
             loadCategoriesAndProducts(currentStudentId);
