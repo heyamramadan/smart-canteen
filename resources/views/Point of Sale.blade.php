@@ -174,12 +174,13 @@
 
         <div id="studentInfoContainer" class="mb-6"></div>
 
-        <!-- نتائج البحث -->
-        <div class="flex-1 overflow-hidden flex flex-col">
-          <h3 class="font-semibold text-gray-700 mb-3">نتائج البحث</h3>
-          <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
-            <div class="overflow-y-auto h-full">
-          <table class="w-full text-right min-w-full" id="studentsTable">
+   <!-- نتائج البحث -->
+<div class="flex-1 overflow-hidden flex flex-col mt-[-12px]">
+<h3 class="font-semibold text-gray-700 mb-2">نتائج البحث</h3>
+  <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
+    <div class="overflow-y-auto h-full">
+      <table class="w-full text-right min-w-full" id="studentsTable">
+
   <thead class="bg-gray-50 text-gray-600 sticky top-0">
     <tr>
       <th class="p-3 border-b whitespace-nowrap w-1/4">اسم الطالب</th>
