@@ -46,6 +46,11 @@
                     <span class="ml-2">👨‍💼 </span> الملف الشخصي
                 </a>
             </li>
+<li class="p-3 {{ request()->is('dashboard') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/dashboard') }}" class="flex items-center">
+        <span class="ml-2">🏠</span>  الصفحة الرئيسية
+    </a>
+</li>
 
             @if(auth()->user()->role === 'مسؤول')
                 {{-- صلاحيات المسؤول --}}
