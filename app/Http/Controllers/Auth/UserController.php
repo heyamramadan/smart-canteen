@@ -44,7 +44,7 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
 //عرض
    public function index()
 {
-    $users = User::withTrashed()->get();
+   $users = User::withTrashed()->paginate(10); 
     return view('user.index', compact('users'));
 }
     public function search(Request $request)
