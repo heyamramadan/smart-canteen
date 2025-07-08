@@ -119,7 +119,7 @@
 @endphp
 
           <tr class="hover:bg-gray-50 transition">
-         <td class="p-3 text-sm">{{ $transactions->firstItem() + $loop->index }}</td>
+            <td class="p-3 text-sm">{{ $loop->iteration }}</td>
             <td class="p-3 text-sm">{{ $parentUser?->full_name ?? $parentUser?->name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student?->full_name ?? 'غير مرتبط' }}</td>
             <td class="p-3">
