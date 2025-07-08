@@ -113,6 +113,15 @@
       <div id="cardContainer" style="display:none;"></div>
     </div>
   </div>
+<!-- مودال رسالة الخطأ -->
+<div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center">
+    <p id="errorMessage" class="text-red-600 text-lg mb-4"></p>
+    <button id="closeModalBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded">
+      إغلاق
+    </button>
+  </div>
+</div>
 
   <script>
     // بيانات الطلاب تأتي من السيرفر عبر Laravel Blade
@@ -189,8 +198,8 @@
     function generateCards() {
       const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
       if (selectedCheckboxes.length === 0) {
-        alert('يرجى اختيار طالب واحد على الأقل لإصدار البطاقة.');
-        return;
+           showErrorModal('يرجى اختيار طالب واحد على الأقل لإصدار البطاقة.');
+    return;
       }
 
       cardContainer.innerHTML = '';
@@ -289,6 +298,19 @@
 
     // حدث زر الطباعة
     printBtn.addEventListener('click', generateCards);
+    const errorModal = document.getElementById('errorModal');
+const errorMessage = document.getElementById('errorMessage');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+function showErrorModal(message) {
+  errorMessage.textContent = message;
+  errorModal.classList.remove('hidden');
+}
+
+closeModalBtn.addEventListener('click', () => {
+  errorModal.classList.add('hidden');
+});
+
   </script>
 </body>
 </html>
