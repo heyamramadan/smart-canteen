@@ -64,7 +64,7 @@
         <!-- عنوان الصفحة -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                <span class="ml-2">👤</span>
+                <span class="ml-2">👨‍💼</span>
                 الملف الشخصي
             </h2>
         </div>

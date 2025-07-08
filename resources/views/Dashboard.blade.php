@@ -43,7 +43,7 @@
             {{-- يظهر للجميع --}}
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
                 <a href="{{ url('/profile') }}" class="flex items-center">
-                    <span class="ml-2">👤</span> الملف الشخصي
+                    <span class="ml-2">👨‍💼 </span> الملف الشخصي
                 </a>
             </li>
 
@@ -109,7 +109,7 @@
             </li>
             <li class="p-3 {{ request()->is('invoices*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                 <a href="{{ url('/invoices') }}" class="flex items-center">
-                    <span class="ml-2">📄</span> الفواتير
+                    <span class="ml-2">📃</span> الفواتير
                 </a>
             </li>
 
