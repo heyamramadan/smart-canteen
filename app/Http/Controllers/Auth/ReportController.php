@@ -30,7 +30,7 @@ class ReportController extends Controller
                 $q->completed();
             })
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
 
         // حساب الإحصائيات باستخدام استعلامات منفصلة لأداء أفضل
@@ -62,7 +62,7 @@ class ReportController extends Controller
                 $q->completed();
             })
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
 
         // حساب الإحصائيات
@@ -139,7 +139,7 @@ public function export(Request $request)
 {
     $orderItems = OrderItem::with(['order.student', 'product'])
     ->whereHas('order', fn($q) => $q->completed())
-    ->orderBy('created_at', 'desc')
+    ->orderBy('created_at', 'asc')
     ->get();
 
 return Excel::download(
