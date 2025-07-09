@@ -76,10 +76,10 @@
                     <!-- صورة المستخدم -->
                     <div class="relative">
                         <img
-                            src="{{ $user->profile_image_url ? asset('storage/' . $user->profile_image_url) : 'https://via.placeholder.com/150' }}"
-                            alt="صورة المستخدم"
-                            class="profile-image"
-                        >
+                        src="{{ $user->profile_image_url ? asset('storage/' . $user->profile_image_url) : 'https://via.placeholder.com/150' }}"
+                        alt="صورة المستخدم"
+                        class="profile-image"
+                    >
                         <button onclick="document.getElementById('profileImageInput').click()"
                                 class="absolute bottom-0 right-0 bg-primary-500 text-white p-2 rounded-full hover:bg-primary-600 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -246,6 +246,43 @@
 @endif
 
 <script>
+
+document.getElementById('profileImageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.querySelector('.profile-image').src = e.target.result;
+            
+            // إنشاء FormData من النموذج كاملاً
+            const form = document.getElementById('profileForm');
+            const formData = new FormData(form);
+            
+            // استبدال ملف الصورة في الـ FormData
+            formData.set('profile_image', file);
+            
+            fetch('{{ route("profile.update") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+});
     // عرض/إخفاء كلمة المرور
     function togglePassword(button) {
         const input = button.previousElementSibling;
