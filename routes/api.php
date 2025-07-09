@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ParentStudentController;
 use App\Http\Controllers\Api\ApiWalletController;
 use App\Http\Controllers\Api\ApiBannedProductController;
 use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\OrderApiController;
 
 // تسجيل دخول
 Route::post('/login-parent', [ParentAuthController::class, 'login']);
@@ -35,5 +36,6 @@ Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']
     Route::get('/banned-products', [ApiBannedProductController::class, 'index']);
     Route::post('/banned-products', [ApiBannedProductController::class, 'store']);
     Route::delete('/banned-products/{ban_id}', [ApiBannedProductController::class, 'destroy']);
-
+    ///طلب
+Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
 });
