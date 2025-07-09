@@ -56,7 +56,7 @@ class StudentController extends Controller
   // دالة عرض قائمة الطلاب
     public function index()
     {
-        $students = Studentmodel::withTrashed()->get();
+           $students = Studentmodel::withTrashed()->paginate(10);
         $parents = ParentModel::with('user')->get();
         return view('user.students', compact('students', 'parents'));
     }

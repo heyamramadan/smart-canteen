@@ -158,6 +158,10 @@
                             @endif
                         </tbody>
                     </table>
+                    <div class="px-4 py-2">
+    {{ $students->links() }}
+</div>
+
                 </div>
             </div>
         </div>
