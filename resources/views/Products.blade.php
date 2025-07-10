@@ -114,12 +114,13 @@
                             </td>
                             <td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 flex items-center space-x-1 space-x-reverse">
-                                <button
-                                    onclick="openEditProductModal(@json($product))"
-                                    class="text-primary-500 hover:text-primary-700 p-1 rounded hover:bg-primary-100 transition"
-                                >
-                                    ✏️ تعديل
-                                </button>
+                            <button
+    class="text-primary-500 hover:text-primary-700 p-1 rounded hover:bg-primary-100 transition edit-btn"
+    data-product='@json($product)'
+>
+    ✏️ تعديل
+</button>
+
                                 <form action="{{ route('products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
                                     @csrf
                                     @method('DELETE')
@@ -268,7 +269,7 @@
         document.getElementById('formMethod').value = 'POST';
         document.getElementById('productCategory').value = '';
     }
- 
+
     let debounceTimer;
 
     document.getElementById('liveSearch').addEventListener('input', function () {
@@ -292,6 +293,12 @@
         }, 300); // 300 ميلي ثانية تأخير
     });
 
+document.querySelectorAll('.edit-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const product = JSON.parse(this.dataset.product);
+        openEditProductModal(product);
+    });
+});
 
 </script>
 
