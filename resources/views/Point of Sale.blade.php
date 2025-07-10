@@ -270,7 +270,7 @@
                 <span id="remainingLimitText"></span>
               </div>
             </div>
-            <span id="totalAmount" class="font-bold text-2xl">0.00 ر.س</span>
+            <span id="totalAmount" class="font-bold text-2xl">0.00د.ل</span>
           </div>
         </div>
 
@@ -327,7 +327,7 @@
   <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
   <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
   <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
-  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' ر.س' : '—'}</td>
+  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
 `;
 
           tr.addEventListener('click', () => {
@@ -389,7 +389,7 @@ function updateStudentInfo(student) {
 
     // التحقق من وجود daily_limit وتنسيقه بشكل آمن
     const dailyLimitDisplay = student.daily_limit !== undefined && student.daily_limit !== null ?
-        parseFloat(student.daily_limit).toFixed(2) + ' ر.س' :
+        parseFloat(student.daily_limit).toFixed(2) + ' د.ل' :
         'غير محدد';
 
     studentInfoContainer.innerHTML = `
@@ -501,7 +501,7 @@ function updateLimitInfo() {
       tr.className = isDisabled ? 'opacity-50' : '';
       tr.innerHTML = `
         <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.name}</td>
-        <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.price.toFixed(2)} ر.س</td>
+        <td class="p-2 border ${isDisabled ? 'text-gray-400' : ''}">${product.price.toFixed(2)}د.ل</td>
         <td class="p-2 border text-center ${isDisabled ? 'text-red-500' : ''}">
           ${isDisabled ? 'غير متوفر' : product.quantity}
         </td>
@@ -586,8 +586,8 @@ function updateLimitInfo() {
           <span class="mx-2">${item.quantity}</span>
           <button onclick="updateQuantity(${i}, 1)" class="bg-primary-500 text-white px-2 rounded">+</button>
         </td>
-        <td class="p-2 border text-center">${item.price.toFixed(2)} ر.س</td>
-        <td class="p-2 border text-center">${itemTotal.toFixed(2)} ر.س</td>
+        <td class="p-2 border text-center">${item.price.toFixed(2)} د.ل</td>
+        <td class="p-2 border text-center">${itemTotal.toFixed(2)}د.ل</td>
         <td class="p-2 border text-center">
           <button onclick="removeItem(${i})" class="text-red-600 font-bold">إزالة</button>
         </td>
