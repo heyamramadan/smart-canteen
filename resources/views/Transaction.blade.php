@@ -113,7 +113,8 @@
                 </td>
                 <td class="p-3 text-sm font-bold text-gray-800">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
                 <td class="p-3 text-sm text-gray-500">{{ $transaction->reference }}</td>
-                <td class="p-3 text-sm text-gray-500">{{ $transaction->created_at->format('d/m/Y h:i A') }}</td>
+                <td class="p-3 text-sm text-gray-500">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y h:i A') }}
+</td>
               </tr>
             @empty
               <tr>
