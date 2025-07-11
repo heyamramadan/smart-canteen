@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\ParentModel;
+use App\Models\Wallet; // <-- إضافة موديل المحفظة
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * عرض جميع المستخدمين مع إمكانية عرض المؤرشفين.
+     */
+    public function index()
+    {
+        $users = User::withTrashed()->latest()->paginate(10); // order by latest
+        return view('user.index', compact('users'));
+    }
 
-    // تخزين بيانات المستخدم الجديدة
+    /**
+     * تخزين مستخدم جديد.
+     */
     public function store(Request $request)
     {
-        // التحقق من صحة البيانات
         $request->validate([
             'username' => 'required|unique:users,username|max:255',
             'email' => 'required|email|unique:users,email',
@@ -24,7 +33,6 @@ class UserController extends Controller
             'phone_number' => 'nullable|string|max:20',
         ]);
 
-        // إنشاء المستخدم
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
@@ -33,34 +41,131 @@ class UserController extends Controller
             'role' => $request->role,
             'phone_number' => $request->phone_number,
         ]);
-        // إذا كان "ولي أمر"، أضف إلى جدول parents
+
+        // ✅ تعديل: إذا كان المستخدم "ولي أمر"، قم بإنشاء محفظة له مباشرة.
         if ($user->role === 'ولي أمر') {
-            ParentModel::create([
+            Wallet::create([
                 'user_id' => $user->id,
+                'balance' => 0,       // رصيد ابتدائي
+                'daily_limit' => 20, // حد يومي افتراضي
             ]);
         }
-return redirect()->route('users.index')->with('success', 'تم إنشاء المستخدم بنجاح');
+
+        return redirect()->route('users.index')->with('success', 'تم إنشاء المستخدم بنجاح.');
     }
-//عرض
-   public function index()
-{
-   $users = User::withTrashed()->paginate(10); 
-    return view('user.index', compact('users'));
-}
+
+    /**
+     * أرشفة (حذف ناعم) للمستخدم.
+     */
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        // ✅ تعديل: لم نعد نستخدم جدول parents. نصل للطلاب والمحفظة مباشرة.
+        if ($user->role === 'ولي أمر') {
+            // أرشفة جميع الطلاب التابعين له مباشرة
+            foreach ($user->students as $student) {
+                $student->delete(); // soft delete
+            }
+
+            // أرشفة محفظة ولي الأمر
+            if ($user->wallet) {
+                $user->wallet->delete(); // soft delete
+            }
+        }
+
+        // أرشفة المستخدم نفسه
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم وتوابعه بنجاح.');
+    }
+
+    /**
+     * استعادة مستخدم مؤرشف.
+     */
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+
+        // ✅ تعديل: استعادة العلاقات المباشرة بدون المرور بجدول parents.
+        if ($user->role === 'ولي أمر') {
+            // استعادة الطلاب المرتبطين به
+            // نستخدم withTrashed() لجلب الطلاب المؤرشفين مع ولي الأمر
+            foreach ($user->students()->withTrashed()->get() as $student) {
+                $student->restore();
+            }
+
+            // استعادة محفظة ولي الأمر
+            if ($user->wallet()->withTrashed()->first()) {
+                $user->wallet()->withTrashed()->first()->restore();
+            }
+        }
+
+        // استعادة المستخدم نفسه
+        $user->restore();
+
+        return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وتوابعه بنجاح.');
+    }
+
+    /**
+     * تحديث بيانات المستخدم.
+     */
+    public function update(Request $request, $id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+
+        $request->validate([
+            'username' => 'required|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'full_name' => 'required|string|max:255',
+            'role' => 'required|in:مسؤول,موظف,ولي أمر',
+            'phone_number' => 'nullable|string|max:20',
+            'current_password' => 'nullable|string',
+            'new_password' => 'nullable|string|min:6|confirmed',
+        ]);
+        
+        // حفظ الدور القديم للمقارنة
+        $oldRole = $user->role;
+
+        // تحديث البيانات العامة
+        $user->update($request->only('username', 'email', 'full_name', 'role', 'phone_number'));
+
+        // ✅ تعديل: تحقق إذا تم تغيير الدور إلى "ولي أمر"
+        // ولم يكن ولي أمر من قبل، وليس لديه محفظة
+        if ($user->role === 'ولي أمر' && $oldRole !== 'ولي أمر' && !$user->wallet) {
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0,
+                'daily_limit' => 20,
+            ]);
+        }
+
+        // تحديث كلمة المرور (إذا تم إدخال الجديدة)
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة.']);
+            }
+            $user->update(['password' => Hash::make($request->new_password)]);
+        }
+
+        return redirect()->route('users.index')->with('success', 'تم تحديث بيانات المستخدم بنجاح.');
+    }
+
+    /**
+     * البحث عن مستخدمين.
+     * (لا تحتاج هذه الدالة لأي تعديل)
+     */
     public function search(Request $request)
     {
         $searchQuery = $request->input('query');
-
         $query = User::withTrashed();
 
         if (!empty($searchQuery)) {
             $isIdSearch = is_numeric($searchQuery);
-
             $query->where(function($q) use ($searchQuery, $isIdSearch) {
                 $q->where('username', 'LIKE', '%' . $searchQuery . '%')
                   ->orWhere('full_name', 'LIKE', '%' . $searchQuery . '%')
                   ->orWhere('role', 'LIKE', '%' . $searchQuery . '%');
-
                 if ($isIdSearch) {
                     $q->orWhere('id', $searchQuery);
                 }
@@ -68,94 +173,6 @@ return redirect()->route('users.index')->with('success', 'تم إنشاء الم
         }
 
         $users = $query->get();
-
         return response()->json($users);
     }
-
-    //ارشفة
-public function destroy($id)
-{
-    $user = User::findOrFail($id);
-
-    // إذا كان ولي أمر، نحتاج لأرشفة الطلاب المرتبطين به
-    if ($user->role === 'ولي أمر') {
-        $parent = $user->parent;
-
-        if ($parent) {
-            // أرشفة جميع الطلاب التابعين له
-            foreach ($parent->students as $student) {
-                $student->delete(); // soft delete
-            }
-
-            // أرشفة سجل parent
-            $parent->delete();
-        }
-    }
-
-    // أرشفة المستخدم نفسه
-    $user->delete();
-
-    return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم وطلابه بنجاح.');
 }
-
-//استعادة
-public function restore($id)
-{
-    $user = User::withTrashed()->findOrFail($id);
-
-    if ($user->role === 'ولي أمر') {
-        $parent = $user->parent()->withTrashed()->first();
-
-        if ($parent) {
-            // استرجاع سجل parent
-            $parent->restore();
-
-            // استرجاع الطلاب المرتبطين به
-            foreach ($parent->students()->withTrashed()->get() as $student) {
-                $student->restore();
-            }
-        }
-    }
-
-    $user->restore();
-
-    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وطلابه بنجاح.');
-}
-
-public function update(Request $request, User $user)
-{
-    $request->validate([
-        'username' => 'required|max:255|unique:users,username,' . $user->id,
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'full_name' => 'required|string|max:255',
-        'role' => 'required|in:مسؤول,موظف,ولي أمر',
-        'phone_number' => 'nullable|string|max:20',
-        'current_password' => 'nullable|string',
-        'new_password' => 'nullable|string|min:6|confirmed',
-    ]);
-
-    // تحديث البيانات العامة
-    $user->update([
-        'username' => $request->username,
-        'email' => $request->email,
-        'full_name' => $request->full_name,
-        'role' => $request->role,
-        'phone_number' => $request->phone_number,
-    ]);
-
-    // تحديث كلمة المرور (إذا تم إدخال الجديدة)
-    if ($request->filled('new_password')) {
-        if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة.']);
-        }
-
-        $user->update([
-            'password' => Hash::make($request->new_password),
-        ]);
-    }
-
-    return redirect()->route('users.index')->with('success', 'تم تحديث بيانات المستخدم بنجاح.');
-}
-
-}
-

@@ -10,42 +10,56 @@ use Illuminate\Http\Request;
 
 class WalletController extends Controller
 {
+    /**
+     * عرض جميع أولياء الأمور ومحافظهم.
+     */
     public function index()
     {
-        $parents = User::whereHas('parent')
-                       ->with(['parent.wallet'])
+        // ✅ تعديل: جلب المستخدمين الذين دورهم "ولي أمر" مباشرة مع محافظهم.
+        $parents = User::where('role', 'ولي أمر')
+                       ->with('wallet') // تحميل علاقة المحفظة مباشرة
                        ->get();
 
-        return view('wallet', compact('parents'));
+        // تم تغيير اسم المتغير في الواجهة من parents إلى users ليكون أكثر وضوحاً
+        return view('wallet', ['users' => $parents]);
+
+      
     }
 
+    /**
+     * شحن رصيد وتحديث حد الإنفاق اليومي لولي الأمر.
+     */
     public function charge(Request $request)
     {
+        // ✅ تعديل: التحقق من user_id بدلاً من parent_id
         $request->validate([
-            'parent_id' => 'required|exists:parents,parent_id',
+            'user_id' => 'required|exists:users,id', // التأكد من أن المستخدم موجود في جدول users
             'amount' => 'required|numeric|min:1',
-            'daily_limit' => 'nullable|numeric|min:0' // سقف الشراء اختياري
+            'daily_limit' => 'nullable|numeric|min:0'
         ]);
 
-        // جلب المحفظة أو إنشاء جديدة بدون حفظ
-        $wallet = Wallet::firstOrNew(['parent_id' => $request->parent_id]);
+        // ✅ تعديل: البحث عن المحفظة باستخدام user_id
+        $wallet = Wallet::firstOrCreate(
+            ['user_id' => $request->user_id], // الشرط للبحث أو الإنشاء
+            ['balance' => 0, 'daily_limit' => 20] // قيم افتراضية عند الإنشاء
+        );
 
         // تحديث الرصيد الحالي
-        $wallet->balance = ($wallet->balance ?? 0) + $request->amount;
+        $wallet->balance += $request->amount;
 
-        // تحديث سقف الشراء إن وجد
-        if ($request->has('daily_limit')) {
+        // تحديث سقف الشراء اليومي إذا تم إرساله في الطلب
+        if ($request->filled('daily_limit')) {
             $wallet->daily_limit = $request->daily_limit;
         }
 
-        $wallet->save(); // حفظ المحفظة (جديدة أو محدثة)
+        $wallet->save(); // حفظ التغييرات
 
         // تسجيل معاملة الإيداع
         WalletTransaction::create([
             'wallet_id' => $wallet->wallet_id,
             'amount' => $request->amount,
             'type' => 'إيداع',
-            'reference' => 'تم ايداع قيمة',
+            'reference' => 'شحن رصيد من لوحة التحكم',
             'created_at' => now(),
         ]);
 

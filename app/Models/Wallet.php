@@ -11,14 +11,14 @@ class Wallet extends Model
     protected $primaryKey = 'wallet_id';
 
     protected $fillable = [
-        'parent_id',
+        'user_id', // تم تغيير parent_id إلى user_id
         'balance',
          'daily_limit',
     ];
 
     // العلاقة: المحفظة تنتمي إلى ولي الأمر
-    public function parent()
+    public function user()
     {
-        return $this->belongsTo(ParentModel::class, 'parent_id', 'parent_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

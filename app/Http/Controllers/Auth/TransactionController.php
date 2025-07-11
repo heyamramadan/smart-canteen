@@ -8,114 +8,105 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    // عرض سجل المعاملات مع الفلاتر
+    /**
+     * عرض سجل المعاملات مع الفلاتر.
+     */
     public function index(Request $request)
     {
-        $query = WalletTransaction::with([
-            'wallet.parent.user',
-            'wallet.parent.students'
-        ]);
+        // ✅ تعديل: تحميل العلاقات المباشرة (المستخدم وطلاب المستخدم)
+        $query = WalletTransaction::with(['wallet.user.students']);
 
         // 🔍 البحث باسم ولي الأمر أو الطالب
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('wallet.parent.user', function ($q2) use ($search) {
-                    $q2->where('full_name', 'like', "%{$search}%");
-                })->orWhereHas('wallet.parent.students', function ($q3) use ($search) {
-                    $q3->where('full_name', 'like', "%{$search}%");
+                // ✅ تعديل: البحث في اسم المستخدم (ولي الأمر) مباشرة
+                $q->whereHas('wallet.user', function ($userQuery) use ($search) {
+                    $userQuery->where('full_name', 'like', "%{$search}%");
+                })
+                // ✅ تعديل: البحث في أسماء الطلاب المرتبطين بولي الأمر
+                ->orWhereHas('wallet.user.students', function ($studentQuery) use ($search) {
+                    $studentQuery->where('full_name', 'like', "%{$search}%");
                 });
             });
         }
 
-        // 🔍 فلترة حسب النوع
+        // 🔍 فلترة حسب النوع (لا تغيير هنا)
         if ($request->filled('type') && in_array($request->type, ['إيداع', 'سحب'])) {
             $query->where('type', $request->type);
         }
 
-        // 🔍 فلترة حسب التاريخ
-     // ✅ فلترة حسب التاريخ: يوم / شهر / سنة
-if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
-    $query->where(function ($q) use ($request) {
-        if ($request->filled('day')) {
-            $q->whereDay('created_at', $request->day);
+        // 🔍 فلترة حسب التاريخ (لا تغيير هنا)
+        if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
+            $query->where(function ($q) use ($request) {
+                if ($request->filled('day')) $q->whereDay('created_at', $request->day);
+                if ($request->filled('month')) $q->whereMonth('created_at', $request->month);
+                if ($request->filled('year')) $q->whereYear('created_at', $request->year);
+            });
         }
-        if ($request->filled('month')) {
-            $q->whereMonth('created_at', $request->month);
-        }
-        if ($request->filled('year')) {
-            $q->whereYear('created_at', $request->year);
-        }
-    });
-}
 
-
-        $transactions = $query->orderBy('created_at', 'asc')->paginate(10);
+        $transactions = $query->latest('created_at')->paginate(10);
 
         return view('Transaction', compact('transactions'));
     }
 
-    // دالة البحث عبر AJAX مثل الطلاب
+    /**
+     * دالة البحث عبر AJAX.
+     */
     public function search(Request $request)
     {
-        $search = $request->input('search');
-        $type = $request->input('type');
-        $date = $request->input('date');
+        // ✅ تعديل: تحديث العلاقات المحملة
+        $query = WalletTransaction::with(['wallet.user.students']);
 
-        $query = WalletTransaction::with([
-            'wallet.parent.user',
-            'wallet.parent.students'
-        ]);
-
-        if (!empty($search)) {
+        // تطبيق الفلاتر بنفس منطق دالة index
+        if ($request->filled('search')) {
+            $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('wallet.parent.user', function ($q2) use ($search) {
-                    $q2->where('full_name', 'like', "%{$search}%");
-                })->orWhereHas('wallet.parent.students', function ($q3) use ($search) {
-                    $q3->where('full_name', 'like', "%{$search}%");
+                $q->whereHas('wallet.user', function ($userQuery) use ($search) {
+                    $userQuery->where('full_name', 'like', "%{$search}%");
+                })->orWhereHas('wallet.user.students', function ($studentQuery) use ($search) {
+                    $studentQuery->where('full_name', 'like', "%{$search}%");
                 });
             });
         }
 
-        if (!empty($type) && in_array($type, ['إيداع', 'سحب'])) {
-            $query->where('type', $type);
+        if ($request->filled('type') && in_array($request->type, ['إيداع', 'سحب'])) {
+            $query->where('type', $request->type);
         }
 
-     if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
-    $query->where(function ($q) use ($request) {
-        if ($request->filled('day')) {
-            $q->whereDay('created_at', $request->day);
+        if ($request->filled('day') || $request->filled('month') || $request->filled('year')) {
+            $query->where(function ($q) use ($request) {
+                if ($request->filled('day')) $q->whereDay('created_at', $request->day);
+                if ($request->filled('month')) $q->whereMonth('created_at', $request->month);
+                if ($request->filled('year')) $q->whereYear('created_at', $request->year);
+            });
         }
-        if ($request->filled('month')) {
-            $q->whereMonth('created_at', $request->month);
-        }
-        if ($request->filled('year')) {
-            $q->whereYear('created_at', $request->year);
-        }
-    });
-}
 
+        $transactions = $query->latest('created_at')->take(20)->get();
 
-        $transactions = $query->orderBy('created_at', 'asc')->take(20)->get();
-
+        // ✅ تعديل: تحديث طريقة الوصول للبيانات لتناسب العلاقات الجديدة
         return response()->json($transactions->map(function ($tx) {
-            $parentUser = $tx->wallet->parent->user ?? null;
-            $students = $tx->wallet->parent->students ?? collect();
+            $user = $tx->wallet->user ?? null;
+            $students = $user ? $user->students : collect();
 
-            $balanceBefore = $tx->type === 'إيداع'
-                ? ($tx->amount ? $tx->wallet->balance - $tx->amount : $tx->wallet->balance)
-                : ($tx->amount ? $tx->wallet->balance + $tx->amount : $tx->wallet->balance);
+            // منطق حساب الرصيد قبل العملية (لا تغيير هنا)
+            $balanceBefore = $tx->wallet->balance;
+            if ($tx->type === 'إيداع') {
+                $balanceBefore -= $tx->amount;
+            } else {
+                $balanceBefore += abs($tx->amount); // استخدام القيمة المطلقة للتأكد من الجمع الصحيح
+            }
 
             return [
-                'id' => $tx->id,
-                'transaction_id' => $tx->transaction_id,
-                'amount' => $tx->amount,
+                'id' => $tx->transaction_id, // استخدام المفتاح الأساسي للجدول
+                'amount' => number_format(abs($tx->amount), 2), // عرض القيمة موجبة دائماً
                 'type' => $tx->type,
-                'created_at' => $tx->created_at->format('d/m/Y h:i A'),  // نفس تنسيق الصفحة
-                'parent_name' => $parentUser?->full_name ?? $parentUser?->name ?? 'ولي غير معروف',
-                'student_names' => $students->pluck('full_name')->implode(', '),
+                'created_at' => $tx->created_at->format('d/m/Y h:i A'),
+                'parent_name' => $user->full_name ?? 'ولي أمر محذوف',
+                'student_names' => $students->pluck('full_name')->implode(', ') ?: 'لا يوجد طلاب',
                 'balance_before' => number_format($balanceBefore, 2),
                 'balance_after' => number_format($tx->wallet->balance, 2),
+                'reference' => $tx->reference,
             ];
         }));
     }

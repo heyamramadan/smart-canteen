@@ -17,7 +17,7 @@ class DashboardController extends Controller
     {
         // 1. جلب الإحصائيات الرقمية
         $studentCount = studentmodel::count();
-        $parentCount = ParentModel::count();
+        $parentCount = User::where('role', 'ولي أمر')->count();
         $employeeCount = User::where('role', 'موظف')->count();
         // جلب إجمالي المبيعات للطلبات المكتملة فقط
         $totalSales = Order::where('status', Order::STATUS_COMPLETED)->sum('total_amount');

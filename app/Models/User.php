@@ -20,10 +20,33 @@ class User extends Authenticatable
     'phone_number',
      'profile_image_url',
 ];
-public function parent()
-    {
-        return $this->hasOne(ParentModel::class, 'user_id', 'id');
-    }
+// public function parent()
+//     {
+//         return $this->hasOne(User::where('role', 'ولي أمر')->class, 'user_id', 'id');
+//     }
+
+
+public function students()
+{
+    // يربط هذا المستخدم بجدول الطلاب عبر user_id
+    return $this->hasMany(studentmodel::class, 'user_id', 'id');
+}
+
+/**
+ * العلاقة: المستخدم (ولي الأمر) لديه محفظة واحدة
+ */
+public function wallet()
+{
+    return $this->hasOne(Wallet::class, 'user_id', 'id');
+}
+
+/**
+ * العلاقة: المستخدم (ولي الأمر) يمكنه حظر عدة منتجات
+ */
+public function bannedProducts()
+{
+    return $this->hasMany(BannedProduct::class, 'user_id', 'id');
+}
 
     /**
      * The attributes that should be hidden for serialization.

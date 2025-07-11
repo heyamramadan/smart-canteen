@@ -102,7 +102,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            @foreach($students as $student)
+                            @forelse($students as $student)
                                 <tr class="hover:bg-gray-50 transition {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
                                  <td class="p-3">
     @if($student->image_path && file_exists(public_path('storage/'.$student->image_path)))
@@ -114,7 +114,7 @@
     @endif
 </td>
                                     <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
-                                    <td class="p-3 text-sm">{{ $student->father_name }}</td>
+                                    <td class="p-3 text-sm">{{ $student->user->full_name ?? 'ولي أمر محذوف' }}</td>
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
                                     <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
                                     <td class="p-3 flex items-center">
@@ -132,8 +132,9 @@
                                                 '{{ $student->full_name }}',
                                                 '{{ $student->father_name }}',
                                                 '{{ $student->class }}',
+                                                '{{ $student->user_id }}',
                                                 '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
-                                                '{{ $student->parent_id }}',
+                                                
                                                 '{{ $student->image_path }}'
                                             )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                                 ✏️ تعديل
@@ -227,17 +228,19 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
-                            <select name="parent_id" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
-                                <option value="">اختر ولي الأمر</option>
-                                @foreach($parents as $parent)
-                                    <option value="{{ $parent->parent_id }}" {{ old('parent_id') == $parent->parent_id ? 'selected' : '' }}>
-                                        {{ $parent->user->full_name ?? 'ولي أمر #' . $parent->parent_id }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('parent_id')
-                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                       <!-- ✅ تعديل: تغيير اسم الحقل إلى user_id والمرور على parentUsers -->
+                       <select name="user_id" required class="w-full border rounded-lg px-4 py-2">
+                        <option value="">اختر ولي الأمر</option>
+                        @foreach($parentUsers as $parent)
+                            <option value="{{ $parent->id }}" {{ old('user_id') == $parent->id ? 'selected' : '' }}>
+                                {{ $parent->full_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <!-- ✅ تعديل: التحقق من الخطأ في حقل user_id -->
+                    @error('user_id')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                @enderror
                         </div>
                     </div>
 
@@ -306,14 +309,18 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
-                            <select name="parent_id" id="edit_parent_id" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
-                                <option value="">اختر ولي الأمر</option>
-                                @foreach($parents as $parent)
-                                    <option value="{{ $parent->parent_id }}">
-                                        {{ $parent->user->full_name ?? 'ولي أمر #' . $parent->parent_id }}
-                                    </option>
-                                @endforeach
-                            </select>
+                          <!-- ✅ تعديل: تغيير اسم الحقل إلى user_id والمرور على parentUsers -->
+                          <select name="user_id" id="edit_user_id" required class="w-full border rounded-lg px-4 py-2">
+                            <option value="">اختر ولي الأمر</option>
+                            @foreach($parentUsers as $parent)
+                                <option value="{{ $parent->id }}">
+                                    {{ $parent->full_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('user_id')
+                            <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                         </div>
                     </div>
 
@@ -367,7 +374,7 @@
             document.getElementById('edit_full_name').value = fullName;
             document.getElementById('edit_father_name').value = fatherName;
             document.getElementById('edit_class').value = classVal;
-            document.getElementById('edit_parent_id').value = parentId;
+            document.getElementById('edit_user_id').value = parentId;
 
             // عرض الصورة الحالية إذا كانت موجودة
             const editImagePreview = document.getElementById('editImagePreview');
@@ -525,7 +532,7 @@
                                 '${student.father_name}',
                                 '${student.class}',
                                 '${student.birth_date ? student.birth_date : ''}',
-                                '${student.parent_id}',
+                                '${student.user_id}',
                                 '${student.image_path}'
                             )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
                                 ✏️ تعديل

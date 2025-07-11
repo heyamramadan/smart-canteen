@@ -15,7 +15,7 @@ class ParentStudentController extends Controller
         $user = $request->user();
 
         // إيجاد بيانات ولي الأمر المرتبط بالمستخدم الحالي
-        $parent = ParentModel::where('user_id', $user->id)
+        $parent = User::where('role', 'ولي أمر')->where('user_id', $user->id)
             ->with('students') // تحميل الطلاب المرتبطين
             ->first();
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>شحن رصيد أولياء الأمور - لوحة تحكم المقصف</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -41,8 +42,7 @@
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-md font-semibold text-gray-700">قائمة أولياء الأمور</h3>
                     <div class="flex items-center gap-2">
-                        <input type="text" id="parentFilter" placeholder="ابحث عن ولي أمر..." class="border rounded-lg px-3 py-1 text-sm w-64">
-                        <button onclick="filterParents()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm">بحث</button>
+                        <input type="text" id="parentFilter" onkeyup="filterParents()" placeholder="ابحث عن ولي أمر..." class="border rounded-lg px-3 py-1 text-sm w-64">
                     </div>
                 </div>
 
@@ -59,19 +59,28 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y">
-                            @foreach ($parents as $index => $parent)
+                            {{-- ✅ تعديل: استخدام متغير users$ الذي تم إرساله من المتحكم --}}
+                            @forelse ($users as $index => $user)
                             <tr class="hover:bg-gray-50">
                                 <td class="p-3">{{ $index + 1 }}</td>
-                                <td class="p-3">{{ $parent->full_name }}</td>
-                                <td class="p-3">{{ $parent->email }}</td>
-                                <td class="p-3">{{ $parent->phone_number }}</td>
-                                <td class="p-3 font-medium">{{ number_format($parent->parent->wallet->balance ?? 0, 2) }}د.ل</td>
-
+                                {{-- ✅ تعديل: الوصول للبيانات مباشرة من متغير user$ --}}
+                                <td class="p-3">{{ $user->full_name }}</td>
+                                <td class="p-3">{{ $user->email }}</td>
+                                <td class="p-3">{{ $user->phone_number ?? 'غير متوفر' }}</td>
+                                {{-- ✅ تعديل: الوصول للرصيد من علاقة المحفظة المباشرة --}}
+                                <td class="p-3 font-medium">{{ number_format($user->wallet->balance ?? 0, 2) }} د.ل</td>
                                 <td class="p-3">
-                                    <button onclick="showChargeModal({{ $parent->parent->parent_id }}, '{{ $parent->full_name }}', '{{ $parent->email }}', '{{ $parent->phone_number }}', {{ $parent->parent->wallet->balance ?? 0 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">شحن</button>
+                                    {{-- ✅ تعديل: تمرير user->id مباشرة، والوصول للرصيد من علاقة المحفظة --}}
+                                    <button onclick="showChargeModal({{ $user->id }}, '{{ $user->full_name }}', {{ $user->wallet->balance ?? 0 }}, {{ $user->wallet->daily_limit ?? 20 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">
+                                        شحن
+                                    </button>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد أولياء أمور لعرضهم.</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -79,52 +88,61 @@
         </div>
     </div>
 
-    <!-- مودال الشحن -->
-    <div id="chargeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
+    <div id="chargeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">شحن الرصيد</h3>
-                <button onclick="closeChargeModal()" class="text-gray-500">✖</button>
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold text-gray-800">شحن وتحديث الرصيد</h3>
+                <button onclick="closeChargeModal()" class="text-gray-500 hover:text-red-600">✖</button>
             </div>
             <div class="mb-4">
-                <h4 id="modalParentName" class="font-medium"></h4>
-                <p id="modalParentContact" class="text-sm text-gray-500"></p>
-                <div class="bg-gray-100 p-2 rounded mt-2">
-                    <span>الرصيد الحالي: </span><span id="modalCurrentBalance"></span>
+                <p class="text-gray-600">ولي الأمر: <span id="modalParentName" class="font-medium text-gray-900"></span></p>
+                <div class="bg-primary-100 text-primary-700 p-2 rounded mt-2 text-center">
+                    <span>الرصيد الحالي: </span><strong id="modalCurrentBalance" class="text-lg"></strong>
                 </div>
             </div>
-            <form id="chargeForm" onsubmit="event.preventDefault(); submitCharge();">
-                <input type="hidden" id="parentId">
+            <form id="chargeForm" onsubmit="event.preventDefault(); submitCharge();" class="space-y-4">
+                <input type="hidden" id="userIdInput">
 
-                <label class="block text-sm mb-1">المبلغ</label>
-                <input type="number" id="amount" class="w-full border rounded px-3 py-2 mb-3" min="1">
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">المبلغ المراد شحنه</label>
+                    <input type="number" id="amount" class="w-full border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" min="1" required>
+                </div>
 
-                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-2 rounded">تنفيذ الشحن</button>
+                <div>
+                    <label for="daily_limit" class="block text-sm font-medium text-gray-700 mb-1">حد الإنفاق اليومي الجديد (اختياري)</label>
+                    <input type="number" id="daily_limit" class="w-full border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" min="0">
+                </div>
+
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    تنفيذ الشحن
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- مودال النجاح -->
     <div id="successModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 text-center">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 text-center">
             <div class="mb-4">
                 <div class="w-16 h-16 bg-green-100 mx-auto flex items-center justify-center rounded-full">
-                    ✅
+                    <span class="text-4xl">✅</span>
                 </div>
-                <h3 class="text-lg font-bold mt-2">تمت العملية بنجاح</h3>
-                <p id="successMessage" class="text-gray-600 mt-1"></p>
+                <h3 class="text-xl font-bold mt-4 text-gray-800">تمت العملية بنجاح</h3>
+                <p id="successMessage" class="text-gray-600 mt-2"></p>
             </div>
-            <button onclick="closeSuccessModal()" class="bg-primary-500 text-white px-4 py-2 rounded">تم</button>
+            <button onclick="closeSuccessModalAndReload()" class="w-full bg-primary-500 text-white px-4 py-2 rounded-lg font-semibold">رائع!</button>
         </div>
     </div>
 
   <script>
-    function showChargeModal(id, name, email, phone, balance) {
-        document.getElementById('parentId').value = id;
+    // الحصول على التوكن من الميتا تاغ
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function showChargeModal(userId, name, balance, dailyLimit) {
+        document.getElementById('userIdInput').value = userId;
         document.getElementById('modalParentName').textContent = name;
-        document.getElementById('modalParentContact').textContent = `${email} | ${phone}`;
-        document.getElementById('modalCurrentBalance').textContent = `${balance.toFixed(2)} ر.س`;
-        document.getElementById('chargeForm').reset();
+        document.getElementById('modalCurrentBalance').textContent = `${parseFloat(balance).toFixed(2)} د.ل`;
+        document.getElementById('daily_limit').placeholder = `الحد الحالي: ${parseFloat(dailyLimit).toFixed(2)}`;
+        document.getElementById('chargeForm').reset(); // لإفراغ حقل المبلغ
         document.getElementById('chargeModal').classList.remove('hidden');
     }
 
@@ -132,59 +150,64 @@
         document.getElementById('chargeModal').classList.add('hidden');
     }
 
-    function closeSuccessModal() {
+    function closeSuccessModalAndReload() {
         document.getElementById('successModal').classList.add('hidden');
-    }
-
-    function updateParentBalance(parentId, amount) {
-        document.querySelectorAll('tbody tr').forEach(row => {
-            const chargeButton = row.querySelector('button');
-            if (chargeButton && chargeButton.getAttribute('onclick').includes(parentId)) {
-                const balanceCell = row.querySelector('td:nth-child(5)');
-                const currentBalance = parseFloat(balanceCell.textContent.replace(/[^\d.]/g, ''));
-                const newBalance = currentBalance + amount;
-                balanceCell.textContent = `${newBalance.toFixed(2)} ر.س`;
-            }
-        });
+        window.location.reload(); // إعادة تحميل الصفحة لعرض البيانات المحدثة
     }
 
     function submitCharge() {
-        const amount = parseFloat(document.getElementById('amount').value);
-        const parentId = document.getElementById('parentId').value;
+        const userId = document.getElementById('userIdInput').value;
+        const amount = document.getElementById('amount').value;
+        const daily_limit = document.getElementById('daily_limit').value;
 
-        if (!amount || amount <= 0) return alert('أدخل مبلغًا صحيحًا');
+        if (!amount || parseFloat(amount) <= 0) {
+            alert('الرجاء إدخال مبلغ صحيح للشحن.');
+            return;
+        }
+
+        const bodyData = {
+            user_id: userId, // ✅ تعديل: إرسال user_id بدلاً من parent_id
+            amount: parseFloat(amount)
+        };
+
+        if (daily_limit) {
+            bodyData.daily_limit = parseFloat(daily_limit);
+        }
 
         fetch("{{ route('wallet.charge') }}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
-            body: JSON.stringify({
-                parent_id: parentId,
-                amount: amount
-            })
+            body: JSON.stringify(bodyData)
         })
         .then(res => {
-            if (!res.ok) throw new Error("فشل في تنفيذ الشحن");
+            if (!res.ok) {
+                 return res.json().then(err => { throw new Error(err.message || "فشل في تنفيذ الشحن") });
+            }
             return res.json();
         })
         .then(data => {
             document.getElementById('successMessage').textContent = data.message;
             closeChargeModal();
             document.getElementById('successModal').classList.remove('hidden');
-            updateParentBalance(parentId, amount);
         })
-        .catch(err => alert(err.message));
+        .catch(err => {
+            alert(err.message);
+        });
     }
 
     function filterParents() {
         const filter = document.getElementById('parentFilter').value.toLowerCase();
         document.querySelectorAll('tbody tr').forEach(row => {
+            // البحث في اسم ولي الأمر والبريد الإلكتروني ورقم الهاتف
             const name = row.children[1].textContent.toLowerCase();
             const email = row.children[2].textContent.toLowerCase();
             const phone = row.children[3].textContent.toLowerCase();
-            row.classList.toggle('hidden', !(name.includes(filter) || email.includes(filter) || phone.includes(filter)));
+            const isVisible = name.includes(filter) || email.includes(filter) || phone.includes(filter);
+            row.style.display = isVisible ? '' : 'none';
         });
     }
 </script>

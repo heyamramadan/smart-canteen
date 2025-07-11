@@ -31,214 +31,165 @@
 <body class="bg-gray-50">
 
 <div class="flex h-screen">
+  {{-- تأكد من أن لديك ملف sidebar.blade.php في resources/views/layouts --}}
   @include('layouts.sidebar')
 
-  <!-- المحتوى الرئيسي -->
   <div class="flex-1 p-6 overflow-auto">
 
-    <!-- شريط العنوان والبحث -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center flex-wrap gap-4">
       <h2 class="text-lg font-bold text-primary-700 flex items-center">
         <span class="ml-2">💸</span> سجل المعاملات
       </h2>
 
-      <div class="flex items-center space-x-4 space-x-reverse">
- <!-- ✅ نموذج البحث فقط -->
-<form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap space-x-reverse">
-  <div class="relative">
-    <input
-      type="text"
-      id="search"
-      name="search"
-      value="{{ request('search') }}"
-      placeholder="ابحث باسم ولي الأمر أو الطالب"
-      class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-    />
-    <button type="submit" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
-      🔍
-    </button>
-  </div>
-</form>
+      {{-- نموذج البحث والفلاتر مدمج --}}
+      <form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap">
+        <div class="relative">
+          <input
+            type="text"
+            id="search"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="ابحث بالاسم..."
+            class="w-full md:w-auto pr-4 pl-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+        </div>
 
-<!-- ✅ نموذج الفلاتر (النوع + التاريخ) -->
-<form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap space-x-reverse">
+        <select name="type" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <option value="">كل الأنواع</option>
+          <option value="إيداع" {{ request('type') === 'إيداع' ? 'selected' : '' }}>إيداع</option>
+          <option value="سحب" {{ request('type') === 'سحب' ? 'selected' : '' }}>سحب</option>
+        </select>
 
-  <select name="type" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-    <option value="">كل الأنواع</option>
-    <option value="إيداع" {{ request('type') === 'إيداع' ? 'selected' : '' }}>إيداع</option>
-    <option value="سحب" {{ request('type') === 'سحب' ? 'selected' : '' }}>سحب</option>
-  </select>
+        <div class="flex gap-2 items-center">
+          <input type="number" name="day" placeholder="يوم" min="1" max="31" value="{{ request('day') }}" class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <input type="number" name="month" placeholder="شهر" min="1" max="12" value="{{ request('month') }}" class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <input type="number" name="year" placeholder="سنة" min="2020" max="2100" value="{{ request('year') }}" class="w-24 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        </div>
 
-  <div class="flex gap-2 items-center">
-    <input type="number" name="day" placeholder="اليوم" min="1" max="31"
-           value="{{ request('day') }}"
-           class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-    <input type="number" name="month" placeholder="الشهر" min="1" max="12"
-           value="{{ request('month') }}"
-           class="w-20 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-    <input type="number" name="year" placeholder="السنة" min="2000" max="2100"
-           value="{{ request('year') }}"
-           class="w-24 border rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-  </div>
+        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
+          تصفية
+        </button>
+      </form>
+    </div>
 
-  <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
-    تصفية
-  </button>
-</form>
-
-
-
-
+   <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+      <div class="overflow-x-auto">
+        <table class="w-full text-right">
+          <thead class="bg-gray-50 border-b">
+            <tr>
+              <th class="p-3 text-sm text-gray-500 font-semibold">#</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">ولي الأمر</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">الطلاب</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">النوع</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">المبلغ</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">الرصيد بعد</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">ملاحظات</th>
+              <th class="p-3 text-sm text-gray-500 font-semibold">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody id="results" class="divide-y divide-gray-200">
+            @forelse ($transactions as $transaction)
+            @php
+                // ✅ تعديل: الوصول إلى المستخدم (ولي الأمر) مباشرة من المحفظة
+                $user = $transaction->wallet->user;
+            @endphp
+              <tr class="hover:bg-gray-50 transition">
+                <td class="p-3 text-sm text-gray-600">{{ $transaction->transaction_id }}</td>
+                <td class="p-3 text-sm font-medium text-gray-800">{{ $user->full_name ?? 'ولي أمر محذوف' }}</td>
+                <td class="p-3 text-sm text-gray-600">
+                  {{-- ✅ تعديل: عرض جميع الطلاب المرتبطين بولي الأمر --}}
+                  {{ $user->students->pluck('full_name')->implode(', ') ?: 'لا يوجد طلاب' }}
+                </td>
+                <td class="p-3">
+                  <span class="px-3 py-1 rounded-full text-xs font-medium
+                    {{ $transaction->type === 'إيداع' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                    {{ $transaction->type }}
+                  </span>
+                </td>
+                <td class="p-3 font-semibold {{ $transaction->type === 'إيداع' ? 'text-green-600' : 'text-red-600' }}">
+                  {{-- استخدام القيمة المطلقة للمبلغ لعرضه دائماً كرقم موجب --}}
+                  {{ number_format(abs($transaction->amount), 2) }} د.ل
+                </td>
+                <td class="p-3 text-sm font-bold text-gray-800">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
+                <td class="p-3 text-sm text-gray-500">{{ $transaction->reference }}</td>
+                <td class="p-3 text-sm text-gray-500">{{ $transaction->created_at->format('d/m/Y h:i A') }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="8" class="text-center p-6 text-gray-400">لا توجد معاملات تطابق البحث</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
       </div>
     </div>
 
-   <!-- جدول المعاملات -->
-<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-  <div class="overflow-x-auto">
-    <table class="w-full text-right">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="p-3 text-sm text-gray-500">رقم</th>
-          <th class="p-3 text-sm text-gray-500">ولي الأمر</th>
-          <th class="p-3 text-sm text-gray-500">الطالب</th>
-          <th class="p-3 text-sm text-gray-500">النوع</th>
-          <th class="p-3 text-sm text-gray-500">المبلغ</th>
-          <th class="p-3 text-sm text-gray-500">قبل</th>
-          <th class="p-3 text-sm text-gray-500">بعد</th>
-          <th class="p-3 text-sm text-gray-500">التاريخ</th>
-        </tr>
-      </thead>
-    <tbody id="results" class="divide-y divide-gray-200">
-
-        @forelse ($transactions as $transaction)
-        @php
-    $parent = $transaction->wallet->parent ?? null;
-    $parentUser = $parent?->user;
-    $student = $parent?->students?->first();
-    $balanceBefore = $transaction->type === 'إيداع'
-        ? ($transaction->amount ? $transaction->wallet->balance - $transaction->amount : $transaction->wallet->balance)
-        : ($transaction->amount ? $transaction->wallet->balance + $transaction->amount : $transaction->wallet->balance);
-@endphp
-
-          <tr class="hover:bg-gray-50 transition">
-          <td class="p-3 text-sm">{{ $transactions->firstItem() + $loop->index }}</td>
-            <td class="p-3 text-sm">{{ $parentUser?->full_name ?? $parentUser?->name ?? 'غير معروف' }}</td>
-            <td class="p-3 text-sm">{{ $student?->full_name ?? 'غير مرتبط' }}</td>
-            <td class="p-3">
-              <span class="px-3 py-1 rounded-full text-xs
-                {{ $transaction->type === 'إيداع' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                {{ $transaction->type }}
-              </span>
-            </td>
-            <td class="p-3 font-medium {{ $transaction->type === 'إيداع' ? 'text-green-600' : 'text-red-600' }}">
-              {{ $transaction->type === 'إيداع' ? '+' : '-' }}{{ number_format($transaction->amount, 2) }} ر.س
-            </td>
-            <td class="p-3">{{ number_format($balanceBefore, 2) }} د.ل</td>
-            <td class="p-3">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
-            <td class="p-3">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y h:i A') }}</td>
-          </tr>
-        @empty
-          <tr>
-            <td colspan="8" class="text-center p-6 text-gray-400">لا توجد معاملات</td>
-          </tr>
-        @endforelse
-      </tbody>
-    </table>
+    <div class="px-4 py-2">
+      {{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
+    </div>
   </div>
 </div>
 
-<!-- التذييل مع الصفحات -->
-<div class="flex justify-between items-center text-sm text-gray-600">
-  <div>
-    عرض <span class="font-bold">{{ $transactions->firstItem() }}</span>
-    إلى <span class="font-bold">{{ $transactions->lastItem() }}</span>
-    من <span class="font-bold">{{ $transactions->total() }}</span> معاملات
-  </div>
-  <div class="flex space-x-2 space-x-reverse">
-{{ $transactions->appends(request()->query())->links('pagination::tailwind') }}
-
-  </div>
-</div>
 <script>
   const searchInput = document.getElementById('search');
-const results = document.getElementById('results');
-const form = searchInput.closest('form');
+  const resultsTableBody = document.getElementById('results');
+  const form = document.querySelector('form'); // الحصول على أول فورم في الصفحة
 
-searchInput.addEventListener('input', function () {
-  const query = this.value.trim();
+  searchInput.addEventListener('input', function () {
+      const query = this.value.trim();
+      const urlParams = new URLSearchParams(window.location.search);
 
-  if (query === '') {
-    // إعادة تحميل الصفحة مع بقية الفلاتر إذا كانت موجودة في الرابط
-    // بدلاً من حذف الفلاتر، نعيد توجيه المستخدم مع باقي استعلامات الفلترة
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.delete('search'); // حذف نص البحث فقط
-    window.location.href = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
-    return;
-  }
-
-  // اجمع باقي الفلاتر (type, date) لتضمينها في طلب البحث المباشر
-  const urlParams = new URLSearchParams();
-  urlParams.append('search', query);
-
-  // أضف فلتر النوع والتاريخ من الـ form إذا موجودة
-  const type = form.querySelector('select[name="type"]').value;
-  if (type) urlParams.append('type', type);
-
-  const day = form.querySelector('input[name="day"]').value;
-const month = form.querySelector('input[name="month"]').value;
-const year = form.querySelector('input[name="year"]').value;
-
-if (day) urlParams.append('day', day);
-if (month) urlParams.append('month', month);
-if (year) urlParams.append('year', year);
-
-
-  fetch(`/transactions/search?${urlParams.toString()}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.length === 0) {
-        results.innerHTML = `
-          <tr>
-            <td colspan="8" class="text-center p-6 text-gray-400">لا توجد نتائج</td>
-          </tr>`;
-        return;
+      if (query === '') {
+          // إذا كان البحث فارغًا، قم بإعادة تحميل الصفحة مع الفلاتر الحالية
+          urlParams.delete('search');
+          window.location.search = urlParams.toString();
+          return;
       }
 
-      let html = '';
-      data.forEach(transaction => {
-        const typeClass = transaction.type === 'إيداع'
-          ? 'bg-green-100 text-green-800'
-          : 'bg-red-100 text-red-800';
-        const amountColor = transaction.type === 'إيداع'
-          ? 'text-green-600'
-          : 'text-red-600';
-        const sign = transaction.type === 'إيداع' ? '+' : '-';
+      // جمع كل الفلاتر من الفورم
+      urlParams.set('search', query);
+      const formData = new FormData(form);
+      for (const [key, value] of formData.entries()) {
+          if (value) {
+              urlParams.set(key, value);
+          } else {
+              urlParams.delete(key);
+          }
+      }
 
-        html += `
-          <tr class="hover:bg-gray-50 transition">
-            <td class="p-3 text-sm">#TRX-${transaction.id}</td>
-            <td class="p-3 text-sm">${transaction.parent_name}</td>
-            <td class="p-3 text-sm">${transaction.student_names || 'غير مرتبط'}</td>
-            <td class="p-3"><span class="px-3 py-1 rounded-full text-xs ${typeClass}">${transaction.type}</span></td>
-            <td class="p-3 font-medium ${amountColor}">${sign}${parseFloat(transaction.amount).toFixed(2)} ر.س</td>
-            <td class="p-3">-</td>
-            <td class="p-3">-</td>
-            <td class="p-3">${transaction.created_at}</td>
-          </tr>`;
-      });
+      fetch(`/transactions/search?${urlParams.toString()}`)
+          .then(response => response.json())
+          .then(data => {
+              if (data.length === 0) {
+                  resultsTableBody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-gray-400">لا توجد نتائج</td></tr>`;
+                  return;
+              }
 
-      results.innerHTML = html;
-    })
-    .catch(() => {
-      results.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center p-6 text-red-400">حدث خطأ أثناء جلب النتائج</td>
-        </tr>`;
-    });
-});
+              let html = '';
+              data.forEach(tx => {
+                  const typeClass = tx.type === 'إيداع' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                  const amountColor = tx.type === 'إيداع' ? 'text-green-600' : 'text-red-600';
 
+                  html += `
+                      <tr class="hover:bg-gray-50 transition">
+                          <td class="p-3 text-sm text-gray-600">${tx.id}</td>
+                          <td class="p-3 text-sm font-medium text-gray-800">${tx.parent_name}</td>
+                          <td class="p-3 text-sm text-gray-600">${tx.student_names || 'لا يوجد'}</td>
+                          <td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-medium ${typeClass}">${tx.type}</span></td>
+                          <td class="p-3 font-semibold ${amountColor}">${tx.amount} د.ل</td>
+                          <td class="p-3 text-sm font-bold text-gray-800">${tx.balance_after} د.ل</td>
+                          <td class="p-3 text-sm text-gray-500">${tx.reference}</td>
+                          <td class="p-3 text-sm text-gray-500">${tx.created_at}</td>
+                      </tr>`;
+              });
+              resultsTableBody.innerHTML = html;
+          })
+          .catch(() => {
+              resultsTableBody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-red-400">حدث خطأ</td></tr>`;
+          });
+  });
 </script>
-
 
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\ParentModel;
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Studentmodel;
 use App\Models\BannedProduct;
 use App\Models\Product;
@@ -15,85 +16,98 @@ class StudentController extends Controller
     // دالة عرض صفحة إضافة طالب جديد
     public function create()
     {
-          $parents = \App\Models\ParentModel::with('user')->get();
+          $parents = User::where('role', 'ولي أمر')->get();
     return view('user.student', compact('parents'));
     }
 
     // دالة تخزين بيانات الطالب الجديدة
     public function store(Request $request)
     {
-        // تحقق من صحة البيانات (Validation)
+        // ✅ تحديث قواعد التحقق
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
-           'parent_id' => 'required|exists:parents,parent_id',
-            'image_path'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'user_id' => 'required|exists:users,id', // تم التغيير من parent_id
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // اسم الحقل هو image
         ]);
 
-          //  جلب ولي الأمر المرتبط مع معلومات المستخدم
-        $parent = ParentModel::with('user')->find($validated['parent_id']);
+        // ✅ جلب ولي الأمر مباشرة
+        $parentUser = User::find($validated['user_id']);
+        $fatherName = $parentUser->full_name ?? 'غير معروف';
 
-        //  اسم الأب من اسم المستخدم المرتبط جاستخراجديد
-        $fatherName = $parent->user->full_name ?? 'غير معروف';
-
-            // معالجة تحميل الصورة
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('students/images', 'public');
-        $validated['image_path'] = $imagePath;
-    }
-    // دمج البيانات مع اسم الأب
-        $studentData = array_merge($validated, [
+        $studentData = [
+            'full_name' => $validated['full_name'],
+            'class' => $validated['class'],
+            'user_id' => $validated['user_id'],
             'father_name' => $fatherName,
-        ]);
-           //  إنشاء الطالب في قاعدة البيانات جديدة
+        ];
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('students/images', 'public');
+            $studentData['image_path'] = $imagePath;
+        }
+
         Studentmodel::create($studentData);
 
-
-        // إعادة التوجيه مع رسالة نجاح إلى قائمة الطلاب
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح!');
     }
-
   // دالة عرض قائمة الطلاب
-    public function index()
-    {
-           $students = Studentmodel::withTrashed()->paginate(10);
-        $parents = ParentModel::with('user')->get();
-        return view('user.students', compact('students', 'parents'));
-    }
-public function search(Request $request)
-{
-    $searchQuery = $request->input('query');
+  public function index()
+  {
+      // ✅ تحميل علاقة 'user' المباشرة مع الطالب
+      $students = Studentmodel::with('user')->withTrashed()->latest()->paginate(10);
+      // ✅ جلب المستخدمين الذين دورهم "ولي أمر" لتعبئة القوائم المنسدلة في المودالات
+      $parentUsers = User::where('role', 'ولي أمر')->get();
+      
+      return view('user.students', compact('students', 'parentUsers'));
+  }
+  public function search(Request $request)
+  {
+      $searchQuery = $request->input('query');
+      // ✅ تحديث مسار العلاقة
+      $query = Studentmodel::with(['user'])->withTrashed();
 
-    // الاستعلام مع العلاقات المطلوبة والطلاب المؤرشفين
-    $query = Studentmodel::with(['parent.user'])->withTrashed();
+      if (!empty($searchQuery)) {
+          $isIdSearch = is_numeric($searchQuery);
 
-    if (!empty($searchQuery)) {
-        $isIdSearch = is_numeric($searchQuery);
+          $query->where(function($q) use ($searchQuery, $isIdSearch) {
+              $q->where('full_name', 'LIKE', '%' . $searchQuery . '%')
+                ->orWhere('father_name', 'LIKE', '%' . $searchQuery . '%')
+                ->orWhere('class', 'LIKE', '%' . $searchQuery . '%')
+                // ✅ تحديث مسار العلاقة للبحث في اسم ولي الأمر
+                ->orWhereHas('user', function($userQuery) use ($searchQuery) {
+                    $userQuery->where('full_name', 'LIKE', '%' . $searchQuery . '%');
+                });
 
-        $query->where(function($q) use ($searchQuery, $isIdSearch) {
-            $q->where('full_name', 'LIKE', '%' . $searchQuery . '%')
-              ->orWhere('father_name', 'LIKE', '%' . $searchQuery . '%')
-              ->orWhere('class', 'LIKE', '%' . $searchQuery . '%')
-              ->orWhereHas('parent.user', function($q) use ($searchQuery) {
-                  $q->where('full_name', 'LIKE', '%' . $searchQuery . '%');
-              });
+              if ($isIdSearch) {
+                  $q->orWhere('student_id', $searchQuery);
+              }
+          });
+      }
 
-            if ($isIdSearch) {
-                $q->orWhere('student_id', $searchQuery);
-            }
-        });
-    }
+      $students = $query->get();
 
-    $students = $query->get();
-
-    return response()->json($students);
-}
+      // ✅ إرجاع JSON يحتوي على البيانات اللازمة للـ JavaScript
+      return response()->json($students->map(function ($student) {
+          return [
+              'student_id' => $student->student_id,
+              'full_name' => $student->full_name,
+              'father_name' => $student->father_name,
+              'class' => $student->class,
+              'image_path' => $student->image_path,
+              'created_at' => $student->created_at->format('Y-m-d'),
+              'deleted_at' => $student->deleted_at,
+              'user_id' => $student->user_id,
+              'user_name' => $student->user->full_name ?? 'غير معروف',
+          ];
+      }));
+  }
 
 // عرض صفحة تعديل بيانات الطالب
 // عرض صفحة تعديل بيانات الطالب
 public function edit(Studentmodel $student)
 {
-    $parents = ParentModel::with('user')->get();
+    $parents = User::where('role', 'ولي أمر')->with('user')->get();
      $student->image_url = $student->image ? asset('storage/' . $student->image) : null;
     return view('user.edit_student', compact('student', 'parents'));
 }
@@ -101,36 +115,41 @@ public function edit(Studentmodel $student)
 // تحديث بيانات الطالب
 public function update(Request $request, Studentmodel $student)
 {
+    // ✅ تحديث قواعد التحقق
     $validated = $request->validate([
         'full_name' => 'required|string|max:255',
         'class' => 'required|string|max:255',
-        'birth_date' => 'nullable|date',
-        'parent_id' => 'required|exists:parents,parent_id',
-          'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-
+        'user_id' => 'required|exists:users,id', // تم التغيير من parent_id
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
-    $parent = ParentModel::with('user')->find($validated['parent_id']);
-    $fatherName = $parent->user->full_name ?? 'غير معروف';
-      // معالجة تحميل الصورة
-  if ($request->hasFile('image')) {
-    if ($student->image_path && Storage::disk('public')->exists($student->image_path)) {
-        Storage::disk('public')->delete($student->image_path);
-    }
-    $imagePath = $request->file('image')->store('students/images', 'public');
-    $validated['image_path'] = $imagePath; // استخدم image_path بدل image
-}
+    // ✅ جلب ولي الأمر مباشرة
+    $parentUser = User::find($validated['user_id']);
+    $fatherName = $parentUser->full_name ?? 'غير معروف';
 
-    $student->update(array_merge($validated, [
-        'father_name' => $fatherName
-    ]));
+    $studentData = [
+        'full_name' => $validated['full_name'],
+        'class' => $validated['class'],
+        'user_id' => $validated['user_id'],
+        'father_name' => $fatherName,
+    ];
+
+    if ($request->hasFile('image')) {
+        if ($student->image_path && Storage::disk('public')->exists($student->image_path)) {
+            Storage::disk('public')->delete($student->image_path);
+        }
+        $imagePath = $request->file('image')->store('students/images', 'public');
+        $studentData['image_path'] = $imagePath;
+    }
+
+    $student->update($studentData);
 
     return redirect()->route('students.index')->with('success', 'تم تعديل بيانات الطالب بنجاح!');
 }
 public function getAllowedCategories($student_id)
 {
     try {
-        $student = Studentmodel::with(['parent.wallet'])->findOrFail($student_id);
+        $student = Studentmodel::with(['user.wallet'])->findOrFail($student_id);
 
         $bannedProductIds = BannedProduct::where('student_id', $student_id)
             ->pluck('product_id')
@@ -173,8 +192,8 @@ public function getAllowedCategories($student_id)
                 'full_name' => $student->full_name,
                 'father_name' => $student->father_name,
                 'class' => $student->class,
-                'daily_limit' => $student->parent->wallet->daily_limit ?? 0,
-                'remaining_limit' => $this->calculateRemainingLimit($student->parent->wallet)
+                'daily_limit' => $student->user->wallet->daily_limit ?? 0,
+                'remaining_limit' => $this->calculateRemainingLimit($student->user->wallet)
             ]
         ]);
 
@@ -192,7 +211,7 @@ private function calculateRemainingLimit($wallet)
 
     // حساب إجمالي المشتريات اليومية لهذا الطالب
     $todayPurchases = \App\Models\Order::whereHas('student', function($q) use ($wallet) {
-            $q->where('parent_id', $wallet->parent_id);
+            $q->where('user_id', $wallet->user_id);
         })
         ->whereDate('created_at', today())
         ->sum('total_amount');

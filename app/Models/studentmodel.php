@@ -18,16 +18,20 @@ class studentmodel extends Model
 
     // الحقول القابلة للتعبئة من خلال الموديل
     protected $fillable = [
-        'parent_id',   // معرف ولي الأمر المرتبط بهذا الطالب
+        'user_id', // تم تغيير parent_id إلى user_id
         'full_name',   // الاسم الكامل للطالب
         'father_name', // اسم الأب (يمكن استخدامه للتمييز أو البيانات التعريفية)
         'class',       // الصف الدراسي أو المرحلة التعليمية للطالب
          'image_path'
     ];
 
-    public function parent()
+    /**
+     * العلاقة: الطالب ينتمي إلى مستخدم واحد (ولي أمره)
+     */
+    public function user()
     {
-        return $this->belongsTo(ParentModel::class, 'parent_id', 'parent_id');
+        // نربط عبر user_id في جدول students
+        return $this->belongsTo(User::class, 'user_id');
     }
 public function bannedProducts()
     {

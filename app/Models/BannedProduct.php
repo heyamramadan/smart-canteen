@@ -12,17 +12,21 @@ class BannedProduct extends Model
     public $timestamps = false; // لأن created_at في الجدول فقط ولا يوجد updated_at
 
     protected $fillable = [
-        'parent_id',
+        'user_id', // تم تغيير parent_id إلى user_id
         'student_id',
         'product_id',
         'created_at',
     ];
 
   
-    public function parent()
+     /**
+     * العلاقة: الحظر تم بواسطة مستخدم معين (ولي الأمر)
+     */
+    public function user()
     {
-        return $this->belongsTo(ParentModel::class, 'parent_id', 'parent_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+
 
 
     public function student()
