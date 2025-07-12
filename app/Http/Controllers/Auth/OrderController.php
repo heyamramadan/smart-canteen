@@ -70,7 +70,6 @@ class OrderController extends Controller
                 // 4. ✅ جديد: التحقق من حد الإنفاق اليومي
                 $todaySpending = $student->orders()
                                         ->whereDate('created_at', Carbon::today())
-                                        ->where('status', 'completed')
                                         ->sum('total_amount');
 
                 if (($todaySpending + $validated['total_amount']) > $wallet->daily_limit) {
@@ -82,7 +81,6 @@ class OrderController extends Controller
                     'student_id' => $validated['student_id'],
                     'employee_id' => $employee->id,
                     'total_amount' => $validated['total_amount'],
-                    'status' => 'completed'
                 ]);
 
                 // 6. إضافة عناصر الطلب وخصم الكمية من المخزون

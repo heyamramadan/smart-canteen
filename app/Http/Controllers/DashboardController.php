@@ -19,8 +19,9 @@ class DashboardController extends Controller
         $studentCount = studentmodel::count();
         $parentCount = User::where('role', 'ولي أمر')->count();
         $employeeCount = User::where('role', 'موظف')->count();
-        // جلب إجمالي المبيعات للطلبات المكتملة فقط
-        $totalSales = Order::where('status', Order::STATUS_COMPLETED)->sum('total_amount');
+
+        // جلب إجمالي المبيعات لكل الطلبات (بدون تصفية بالحالة)
+        $totalSales = Order::sum('total_amount');
 
         // 2. بيانات الرسوم البيانية
 
@@ -36,7 +37,6 @@ class DashboardController extends Controller
         // ب. الطلاب الأكثر شراءً (حسب إجمالي المبلغ المدفوع)
         $topStudents = Order::query()
             ->select('student_id', DB::raw('SUM(total_amount) as total_spent'))
-            ->where('status', Order::STATUS_COMPLETED)
             ->groupBy('student_id')
             ->orderBy('total_spent', 'desc')
             ->with('student:student_id,full_name') // جلب اسم الطالب فقط
