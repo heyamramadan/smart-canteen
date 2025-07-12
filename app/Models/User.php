@@ -37,7 +37,7 @@ public function students()
  */
 public function wallet()
 {
-    return $this->hasOne(Wallet::class, 'user_id', 'id')->withTrashed();
+    return $this->hasOne(Wallet::class, 'user_id', 'id');
 }
 
 /**
