@@ -14,7 +14,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         // ✅ تعديل: تحميل العلاقات المباشرة (المستخدم وطلاب المستخدم)
-        $query = WalletTransaction::with(['wallet.user.students']);
+        $query = WalletTransaction::with(relations: ['wallet.user.students']);
 
         // 🔍 البحث باسم ولي الأمر أو الطالب
         if ($request->filled('search')) {
