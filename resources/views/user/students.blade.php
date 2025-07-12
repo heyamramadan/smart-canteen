@@ -101,63 +101,66 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @forelse($students as $student)
-                                <tr class="hover:bg-gray-50 transition {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
-                                 <td class="p-3">
-    @if($student->image_path && file_exists(public_path('storage/'.$student->image_path)))
-        <img src="{{ asset('storage/'.$student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
-    @else
-        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <span class="text-gray-500 text-xs">لا يوجد</span>
-        </div>
-    @endif
-</td>
-                                    <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
-                                    <td class="p-3 text-sm">{{ $student->user->full_name ?? 'ولي أمر محذوف' }}</td>
-                                    <td class="p-3 text-sm">{{ $student->class }}</td>
-                                    <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
-                                    <td class="p-3 flex items-center">
-                                        @if($student->trashed())
-                                            <form method="POST" action="{{ route('students.restore', $student->student_id) }}" class="restoreForm">
-    @csrf
-    <button type="button" onclick="confirmRestore(this)" class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
-        ♻️ استعادة
-    </button>
-</form>
+                   <tbody class="divide-y divide-gray-200" id="studentsTableBody">
+    @forelse($students as $student)
+        <tr class="transition hover:bg-gray-50 {{ $student->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
+            <td class="p-3">
+                @if($student->image_path && file_exists(public_path('storage/'.$student->image_path)))
+                    <img src="{{ asset('storage/'.$student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
+                @else
+                    <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500 text-xs">لا يوجد</span>
+                    </div>
+                @endif
+            </td>
+            <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
+            <td class="p-3 text-sm">{{ $student->father_name }}</td>
+            <td class="p-3 text-sm">{{ $student->class }}</td>
+            <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
+            <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
+                @if($student->trashed())
+                    <form method="POST" action="{{ route('students.restore', $student->student_id) }}" class="restoreForm">
+                        @csrf
+                        <button type="button" onclick="confirmRestore(this)"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                            ♻️
+                            <span>استعادة</span>
+                        </button>
+                    </form>
+                @else
+                    <button onclick="openEditModal(
+                        '{{ $student->student_id }}',
+                        '{{ $student->full_name }}',
+                        '{{ $student->father_name }}',
+                        '{{ $student->class }}',
+                        '{{ $student->user_id }}',
+                        '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
+                        '{{ $student->image_path }}'
+                    )"
+                    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                        ✏️
+                        <span>تعديل</span>
+                    </button>
 
-                                        @else
-                                            <button onclick="openEditModal(
-                                                '{{ $student->student_id }}',
-                                                '{{ $student->full_name }}',
-                                                '{{ $student->father_name }}',
-                                                '{{ $student->class }}',
-                                                '{{ $student->user_id }}',
-                                                '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
-                                                
-                                                '{{ $student->image_path }}'
-                                            )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                                ✏️ تعديل
-                                            </button>
-                                       <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" class="archiveForm">
-    @csrf
-    @method('DELETE')
-    <button type="button" onclick="confirmArchive(this)" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-        🗑️ أرشفة
-    </button>
-</form>
+                    <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" class="archiveForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" onclick="confirmArchive(this)"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                            🗑️
+                            <span>أرشفة</span>
+                        </button>
+                    </form>
+                @endif
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
+        </tr>
+    @endforelse
+</tbody>
 
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-
-                            @if($students->isEmpty())
-                                <tr>
-                                    <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد طلاب مسجلين حالياً.</td>
-                                </tr>
-                            @endif
-                        </tbody>
                     </table>
                     <div class="px-4 py-2">
     {{ $students->links() }}
