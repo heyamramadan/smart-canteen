@@ -80,11 +80,9 @@
             <tr>
               <th class="p-3 text-sm text-gray-500 font-semibold">#</th>
               <th class="p-3 text-sm text-gray-500 font-semibold">ولي الأمر</th>
-              <th class="p-3 text-sm text-gray-500 font-semibold">الطلاب</th>
               <th class="p-3 text-sm text-gray-500 font-semibold">النوع</th>
               <th class="p-3 text-sm text-gray-500 font-semibold">المبلغ</th>
               <th class="p-3 text-sm text-gray-500 font-semibold">الرصيد بعد</th>
-              <th class="p-3 text-sm text-gray-500 font-semibold">ملاحظات</th>
               <th class="p-3 text-sm text-gray-500 font-semibold">التاريخ</th>
             </tr>
           </thead>
@@ -97,10 +95,6 @@
               <tr class="hover:bg-gray-50 transition">
                 <td class="p-3 text-sm text-gray-600">{{ $transaction->transaction_id }}</td>
                 <td class="p-3 text-sm font-medium text-gray-800">{{ $user->full_name ?? 'ولي أمر محذوف' }}</td>
-                <td class="p-3 text-sm text-gray-600">
-                  {{-- ✅ تعديل: عرض جميع الطلاب المرتبطين بولي الأمر --}}
-                  {{ $user->students->pluck('full_name')->implode(', ') ?: 'لا يوجد طلاب' }}
-                </td>
                 <td class="p-3">
                   <span class="px-3 py-1 rounded-full text-xs font-medium
                     {{ $transaction->type === 'إيداع' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -112,7 +106,6 @@
                   {{ number_format(abs($transaction->amount), 2) }} د.ل
                 </td>
                 <td class="p-3 text-sm font-bold text-gray-800">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
-                <td class="p-3 text-sm text-gray-500">{{ $transaction->reference }}</td>
                 <td class="p-3 text-sm text-gray-500">{{ \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y h:i A') }}
 </td>
               </tr>
@@ -176,11 +169,9 @@
                       <tr class="hover:bg-gray-50 transition">
                           <td class="p-3 text-sm text-gray-600">${tx.id}</td>
                           <td class="p-3 text-sm font-medium text-gray-800">${tx.parent_name}</td>
-                          <td class="p-3 text-sm text-gray-600">${tx.student_names || 'لا يوجد'}</td>
                           <td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-medium ${typeClass}">${tx.type}</span></td>
                           <td class="p-3 font-semibold ${amountColor}">${tx.amount} د.ل</td>
                           <td class="p-3 text-sm font-bold text-gray-800">${tx.balance_after} د.ل</td>
-                          <td class="p-3 text-sm text-gray-500">${tx.reference}</td>
                           <td class="p-3 text-sm text-gray-500">${tx.created_at}</td>
                       </tr>`;
               });

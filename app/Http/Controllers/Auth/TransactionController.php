@@ -103,10 +103,8 @@ class TransactionController extends Controller
                 'type' => $tx->type,
                 'created_at' => $tx->created_at->format('d/m/Y h:i A'),
                 'parent_name' => $user->full_name ?? 'ولي أمر محذوف',
-                'student_names' => $students->pluck('full_name')->implode(', ') ?: 'لا يوجد طلاب',
                 'balance_before' => number_format($balanceBefore, 2),
                 'balance_after' => number_format($tx->wallet->balance, 2),
-                'reference' => $tx->reference,
             ];
         }));
     }
