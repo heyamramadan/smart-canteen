@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withTrashed()->latest()->paginate(10); // order by latest
+$users = User::withTrashed()->oldest()->paginate(10);
         return view('user.index', compact('users'));
     }
 
@@ -176,4 +176,4 @@ class UserController extends Controller
         $users = $query->get();
         return response()->json($users);
     }
-} 
+}
