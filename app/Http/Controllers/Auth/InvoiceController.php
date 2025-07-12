@@ -9,29 +9,26 @@ use Illuminate\Http\Request;
 class InvoiceController extends Controller
 {
     // عرض صفحة الفواتير
-   public function index(Request $request)
-{
-    $search = $request->input('search');
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
 
-    $invoices = Order::with(['student', 'employee', 'orderItems.product'])
-        ->completed()
-        ->when($search, function ($query) use ($search) {
-            $query->whereHas('student', function ($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%");
-            });
-        })
-        ->latest()
-        ->paginate(perPage: 10);
+        $invoices = Order::with(['student', 'employee', 'orderItems.product'])
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('student', function ($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(perPage: 10);
 
-    return view('invoices', compact('invoices'));
-}
-
+        return view('invoices', compact('invoices'));
+    }
 
     // عرض تفاصيل فاتورة معينة
     public function show($id)
     {
         $invoice = Order::with(['student', 'employee', 'orderItems.product'])
-                        ->completed()
                         ->findOrFail($id);
 
         return view('invoices.show', compact('invoice'));
@@ -51,7 +48,6 @@ class InvoiceController extends Controller
     public function print($id)
     {
         $invoice = Order::with(['student', 'employee', 'orderItems.product'])
-                        ->completed()
                         ->findOrFail($id);
 
         return view('invoices.print', compact('invoice'));
