@@ -41,7 +41,7 @@ class OrderController extends Controller
             // استخدام DB::transaction لضمان تنفيذ كل العمليات أو التراجع عنها كلها
             $orderResponse = DB::transaction(function () use ($validated) {
                 $employee = Auth::user();
-                
+
                 // ✅ تعديل: جلب الطالب مع علاقاته المباشرة (ولي الأمر والمحفظة والمنتجات الممنوعة)
                 $student = StudentModel::with(['user.wallet', 'bannedProducts'])->findOrFail($validated['student_id']);
                 $parentUser = $student->user; // ولي الأمر هو المستخدم المرتبط بالطالب
@@ -108,7 +108,6 @@ class OrderController extends Controller
                     'wallet_id' => $wallet->wallet_id,
                     'amount' => -$validated['total_amount'], // استخدام قيمة سالبة لتمييز السحب
                     'type' => 'سحب',
-                    'reference' => 'شراء من المقصف - طلب رقم ' . $order->order_id,
                     'created_at' => now()
                 ]);
 
