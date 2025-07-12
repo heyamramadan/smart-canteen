@@ -79,42 +79,49 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTableBody"  class="divide-y divide-gray-200">
-                            @foreach ($users as $user)
-                                <tr class="hover:bg-gray-50 transition {{ $user->deleted_at ? 'bg-gray-100 text-gray-400' : '' }}">
-                                    <td class="p-3 text-sm">{{ $user->username }}</td>
-                                    <td class="p-3 text-sm">{{ $user->full_name }}</td>
-                                    <td class="p-3 text-sm">{{ $user->email }}</td>
-                                    <td class="p-3 text-sm">{{ $user->phone_number }}</td>
-                                    <td class="p-3 text-sm">{{ $user->role }}</td>
-                                    <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
-                                    <td class="p-3 flex items-center">
-                                        @if ($user->trashed())
-                                            <form method="POST" action="{{ route('users.restore', $user->id) }}" class="restore-form">
-                                                @csrf
-                                                <button type="button"
-                                                        class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition restore-btn"
-                                                        data-user-id="{{ $user->id }}">
-                                                    ♻️ استعادة
-                                                </button>
-                                            </form>
-                                        @else
-                                            <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                                ✏️ تعديل
-                                            </button>
+                      <tbody id="usersTableBody" class="divide-y divide-gray-200">
+    @foreach ($users as $user)
+        <tr class="hover:bg-gray-100 transition {{ $user->deleted_at ? 'bg-gray-50 text-gray-400' : '' }}">
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->username }}</td>
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->full_name }}</td>
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->email }}</td>
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->phone_number }}</td>
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->role }}</td>
+            <td class="p-3 text-sm whitespace-nowrap">{{ $user->created_at->format('Y-m-d') }}</td>
+            <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
+                @if ($user->trashed())
+                    <form method="POST" action="{{ route('users.restore', $user->id) }}" class="restore-form">
+                        @csrf
+                        <button type="button"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse"
+                            data-user-id="{{ $user->id }}">
+                            <span>♻️</span>
+                            <span>استعادة</span>
+                        </button>
+                    </form>
+                @else
+                    <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
+                        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                        <span>✏️</span>
+                        <span>تعديل</span>
+                    </button>
 
-                                            <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition archive-btn" data-user-id="{{ $user->id }}">
-                                                    🗑️ أرشفة
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                    <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse archive-btn"
+                            data-user-id="{{ $user->id }}">
+                            <span>🗑️</span>
+                            <span>أرشفة</span>
+                        </button>
+                    </form>
+                @endif
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
                     </table>
                         <div class="mt-4 px-4">
         {{ $users->links() }}
