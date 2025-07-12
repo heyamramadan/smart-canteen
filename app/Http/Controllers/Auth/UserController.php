@@ -120,6 +120,7 @@ class UserController extends Controller
             'full_name' => 'required|string|max:255',
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
            'phone_number' => 'required|string|max:20',
+
             'current_password' => 'nullable|string',
             'new_password' => 'nullable|string|min:6|confirmed',
         ]);
@@ -175,4 +176,4 @@ class UserController extends Controller
         $users = $query->get();
         return response()->json($users);
     }
-}
+} 
