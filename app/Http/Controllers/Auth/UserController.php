@@ -30,7 +30,7 @@ class UserController extends Controller
             'password' => 'required|confirmed|min:6',
             'full_name' => 'required|string|max:255',
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
-            'phone_number' => 'nullable|string|max:20',
+          'phone_number' => 'required|string|max:20',
         ]);
 
         $user = User::create([
@@ -119,11 +119,11 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'full_name' => 'required|string|max:255',
             'role' => 'required|in:مسؤول,موظف,ولي أمر',
-            'phone_number' => 'nullable|string|max:20',
+           'phone_number' => 'required|string|max:20',
             'current_password' => 'nullable|string',
             'new_password' => 'nullable|string|min:6|confirmed',
         ]);
-        
+
         // حفظ الدور القديم للمقارنة
         $oldRole = $user->role;
 
