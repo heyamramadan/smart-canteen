@@ -23,7 +23,7 @@ class WalletController extends Controller
         // تم تغيير اسم المتغير في الواجهة من parents إلى users ليكون أكثر وضوحاً
         return view('wallet', ['users' => $parents]);
 
-      
+
     }
 
     /**
@@ -59,7 +59,6 @@ class WalletController extends Controller
             'wallet_id' => $wallet->wallet_id,
             'amount' => $request->amount,
             'type' => 'إيداع',
-            'reference' => 'شحن رصيد من لوحة التحكم',
             'created_at' => now(),
         ]);
 
