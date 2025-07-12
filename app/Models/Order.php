@@ -20,15 +20,9 @@ class Order extends Model
         'student_id',
         'employee_id',
         'total_amount',
-        'status',
         'rejection_reason',
     ];
- const STATUS_PENDING = 'pending';
-    const STATUS_COMPLETED = 'completed';
-    const STATUS_REJECTED = 'rejected';
-      protected $attributes = [
-        'status' => self::STATUS_COMPLETED,
-    ];
+
     // علاقة الطلب ينتمي إلى طالب (Student)
     public function student()
     {
@@ -45,8 +39,5 @@ class Order extends Model
 {
     return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
 }
-   public function scopeCompleted($query)
-    {
-        return $query->where('status', self::STATUS_COMPLETED);
-    }
+  
 }
