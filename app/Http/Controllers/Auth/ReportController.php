@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\OrderItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-
 class ReportController extends Controller
 {
     // عدد العناصر المعروضة في كل صفحة
@@ -26,9 +25,7 @@ class ReportController extends Controller
 
         // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order', function($q) {
-                $q->completed();
-            })
+            ->whereHas('order') // حذف شرط completed()
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
@@ -58,9 +55,7 @@ class ReportController extends Controller
 
         // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order', function($q) {
-                $q->completed();
-            })
+            ->whereHas('order') // حذف شرط completed()
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
@@ -116,35 +111,32 @@ class ReportController extends Controller
     protected function calculateStats(Carbon $startDate, Carbon $endDate): array
     {
         return [
-            'totalSales' => OrderItem::whereHas('order', function($q) {
-                    $q->completed();
-                })
+            'totalSales' => OrderItem::whereHas('order')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->sum(DB::raw('quantity * price')),
 
-            'totalOrders' => Order::completed()
-                ->whereBetween('created_at', [$startDate, $endDate])
+            'totalOrders' => Order::whereBetween('created_at', [$startDate, $endDate])
                 ->count(),
 
-            'totalItemsSold' => OrderItem::whereHas('order', function($q) {
-                    $q->completed();
-                })
+            'totalItemsSold' => OrderItem::whereHas('order')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->sum('quantity')
         ];
     }
 
-// في ReportController@export
-public function export(Request $request)
-{
-    $orderItems = OrderItem::with(['order.student', 'product'])
-    ->whereHas('order', fn($q) => $q->completed())
-    ->orderBy('created_at', 'asc')
-    ->get();
+    /**
+     * تصدير بيانات الطلبات إلى Excel
+     */
+    public function export(Request $request)
+    {
+        $orderItems = OrderItem::with(['order.student', 'product'])
+            ->whereHas('order') // حذف شرط completed()
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-return Excel::download(
-    new OrderItemsExport($orderItems),
-    'جميع_الطلبات.xlsx'
-);
-}
+        return Excel::download(
+            new OrderItemsExport($orderItems),
+            'جميع_الطلبات.xlsx'
+        );
+    }
 }
