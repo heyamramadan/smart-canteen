@@ -57,33 +57,34 @@ $users = User::withTrashed()->oldest()->paginate(10);
     /**
      * أرشفة (حذف ناعم) للمستخدم.
      */
-    public function destroy($id)
-    {
-        $user = User::findOrFail($id);
+   public function destroy($id)
+{
+    $user = User::findOrFail($id);
 
-        // ✅ تعديل: لم نعد نستخدم جدول parents. نصل للطلاب والمحفظة مباشرة.
-        if ($user->role === 'ولي أمر') {
-            // أرشفة جميع الطلاب التابعين له مباشرة
-            foreach ($user->students as $student) {
-                $student->delete(); // soft delete
-            }
+    if ($user->role === 'ولي أمر') {
+        // أرشفة جميع الطلاب التابعين له مباشرة
+        foreach ($user->students as $student) {
+            $student->delete(); // soft delete
+        }
 
-            // أرشفة محفظة ولي الأمر
-            if ($user->wallet) {
-                $user->wallet->delete(); // soft delete
-            }
+        // أرشفة محفظة ولي الأمر
+        if ($user->wallet) {
+            $user->wallet->delete(); // soft delete
         }
 
         // أرشفة المستخدم نفسه
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم وتوابعه بنجاح.');
-    }
+        return redirect()->route('users.index')->with('success', 'تم أرشفة ولي الأمر وطلابه بنجاح.');
+    } else {
+        // أرشفة المستخدم نفسه فقط
+        $user->delete();
 
-    /**
-     * استعادة مستخدم مؤرشف.
-     */
-    public function restore($id)
+        return redirect()->route('users.index')->with('success', 'تمت أرشفة المستخدم بنجاح.');
+    }
+}
+
+public function restore($id)
 {
     $user = User::withTrashed()->findOrFail($id);
 
@@ -93,17 +94,22 @@ $users = User::withTrashed()->oldest()->paginate(10);
             $student->restore();
         }
 
-        // ✅ استعادة المحفظة بالطريقة الصحيحة
+        // استعادة المحفظة
         $wallet = Wallet::withTrashed()->where('user_id', $user->id)->first();
         if ($wallet) {
             $wallet->restore();
         }
+
+        // استعادة المستخدم نفسه
+        $user->restore();
+
+        return redirect()->route('users.index')->with('success', 'تم استعادة ولي الأمر وطلابه بنجاح.');
+    } else {
+        // استعادة المستخدم نفسه فقط
+        $user->restore();
+
+        return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم بنجاح.');
     }
-
-    // استعادة المستخدم نفسه
-    $user->restore();
-
-    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وتوابعه بنجاح.');
 }
 
     /**
