@@ -6,7 +6,6 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>نظام المقصف الذكي</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -131,17 +130,6 @@
   </style>
 </head>
 <body class="bg-gray-50">
-    <!-- مودال الكاميرا -->
-<div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-xl p-6 w-96 shadow-xl text-center relative">
-    <button onclick="closeQRModal()" class="absolute top-4 left-4 text-gray-500 hover:text-red-500 text-xl font-bold transition-colors">&times;</button>
-    <h2 class="text-xl font-bold text-primary-700 mb-4">مسح رمز QR</h2>
-    <video id="preview" class="w-64 h-64 mx-auto border-2 border-primary-100 rounded-lg" playsinline></video>
-    <p class="text-gray-600 mt-4">قم بتوجيه الكاميرا نحو رمز QR الخاص بالطالب</p>
-  </div>
-</div>
-
-
 <!-- الهيكل العام -->
 <div class="flex h-screen">
   <!-- الشريط الجانبي -->
@@ -161,15 +149,15 @@
         <div class="mb-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">بحث عن طالب</label>
           <div class="flex gap-2">
-            <input type="text" id="studentSearchInput" class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-400" placeholder="ادخل اسم الطالب" autocomplete="off" />
-            <button onclick="openQRModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-3 rounded-lg shadow-button flex items-center gap-2">
+            <input type="text" id="studentSearchInput" class="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-400" placeholder="ادخل اسم الطالب أو امسح QR Code" autocomplete="off" />
+            <button class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-3 rounded-lg shadow-button flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              مسح QR
+              بحث
             </button>
           </div>
+          <p class="text-sm text-gray-500 mt-1">يمكنك استخدام قارئ QR Code الخارجي لمسح كود الطالب</p>
         </div>
 
         <div id="studentInfoContainer" class="mb-6"></div>
@@ -299,9 +287,20 @@
   let allProducts = [];
   let currentStudentId = null;
   let currentCategory = null;
-  let dailyLimit = 0; // تغيير اسم المتغير ليعكس أنه ثابت
+  let dailyLimit = 0;
 
-  // بحث الطلاب
+  // استقبال البيانات من قارئ QR Code الخارجي
+  studentSearchInput.addEventListener('keydown', function(e) {
+    // إذا كان الإدخال يحتوي على رمز QR (عادةً ما ينتهي بمفتاح Enter)
+    if (e.key === 'Enter') {
+      const qrCode = this.value.trim();
+      if (qrCode) {
+        searchStudentByQR(qrCode);
+      }
+    }
+  });
+
+  // بحث الطلاب العادي
   studentSearchInput.addEventListener('input', function () {
     const query = this.value.trim();
 
@@ -323,13 +322,12 @@
         data.forEach(student => {
           const tr = document.createElement('tr');
           tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
-      tr.innerHTML = `
-  <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
-  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
-  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
-  <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
-`;
-
+          tr.innerHTML = `
+            <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
+            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
+            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
+            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
+          `;
           tr.addEventListener('click', () => {
             currentStudentId = student.student_id;
             loadCategoriesAndProducts(currentStudentId);
@@ -344,6 +342,47 @@
       });
   });
 
+  // البحث عن طريق QR Code
+  function searchStudentByQR(qrCode) {
+    fetch(`/students/search?query=${encodeURIComponent(qrCode)}`)
+      .then(res => res.json())
+      .then(data => {
+        studentsTableBody.innerHTML = '';
+        if (data.length === 0) {
+          studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 p-2">لم يتم العثور على الطالب</td></tr>`;
+          return;
+        }
+
+        // افترض أن QR Code يعيد طالباً واحداً فقط
+        const student = data[0];
+        const tr = document.createElement('tr');
+        tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
+        tr.innerHTML = `
+          <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
+          <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
+          <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
+          <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
+        `;
+        tr.addEventListener('click', () => {
+          currentStudentId = student.student_id;
+          loadCategoriesAndProducts(currentStudentId);
+          highlightSelectedStudent(tr);
+          invoiceItems = [];
+          renderInvoice();
+        });
+        studentsTableBody.appendChild(tr);
+
+        // تحديد الطالب تلقائياً
+        currentStudentId = student.student_id;
+        loadCategoriesAndProducts(currentStudentId);
+        highlightSelectedStudent(tr);
+        invoiceItems = [];
+        renderInvoice();
+      }).catch(() => {
+        studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center p-2 text-red-500">حدث خطأ في جلب البيانات</td></tr>`;
+      });
+  }
+
   function highlightSelectedStudent(selectedRow) {
     studentsTableBody.querySelectorAll('tr').forEach(r => {
       r.classList.remove('bg-primary-100', 'text-white');
@@ -351,86 +390,77 @@
     selectedRow.classList.add('bg-primary-100', 'text-white');
   }
 
-  // جلب التصنيفات والمنتجات للطالب المحدد
-// في دالة loadCategoriesAndProducts
-function loadCategoriesAndProducts(studentId) {
+  function loadCategoriesAndProducts(studentId) {
     fetch(`/students/${studentId}/allowed-categories`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                // تحويل daily_limit إلى رقم إذا كان سلسلة نصية
-                if (data.student && data.student.daily_limit) {
-                    data.student.daily_limit = parseFloat(data.student.daily_limit) || 0;
-                }
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          if (data.student && data.student.daily_limit) {
+            data.student.daily_limit = parseFloat(data.student.daily_limit) || 0;
+          }
 
-                updateStudentInfo(data.student);
-                renderCategories(data.categories);
-                allProducts = data.products;
-                currentCategory = null;
-                renderProducts(allProducts);
+          updateStudentInfo(data.student);
+          renderCategories(data.categories);
+          allProducts = data.products;
+          currentCategory = null;
+          renderProducts(allProducts);
 
-                // تخزين سقف الشراء الثابت فقط
-                if (data.student.daily_limit !== undefined) {
-                    dailyLimit = data.student.daily_limit;
-                    updateLimitInfo();
-                }
-            } else {
-                showError(data.message);
-            }
-        })
-        .catch(err => {
-            showError('حدث خطأ في جلب البيانات: ' + err.message);
-        });
-}
+          if (data.student.daily_limit !== undefined) {
+            dailyLimit = data.student.daily_limit;
+            updateLimitInfo();
+          }
+        } else {
+          showError(data.message);
+        }
+      })
+      .catch(err => {
+        showError('حدث خطأ في جلب البيانات: ' + err.message);
+      });
+  }
 
-// في دالة updateStudentInfo
-function updateStudentInfo(student) {
+  function updateStudentInfo(student) {
     const studentInfoContainer = document.getElementById('studentInfoContainer');
-
-    // التحقق من وجود daily_limit وتنسيقه بشكل آمن
     const dailyLimitDisplay = student.daily_limit !== undefined && student.daily_limit !== null ?
-        parseFloat(student.daily_limit).toFixed(2) + ' د.ل' :
-        'غير محدد';
+      parseFloat(student.daily_limit).toFixed(2) + ' د.ل' :
+      'غير محدد';
 
     studentInfoContainer.innerHTML = `
-        <div class="bg-blue-50 p-3 rounded mb-4">
-            <h3 class="font-bold">الطالب المحدد:</h3>
-            <p>الاسم: ${student.full_name}</p>
-            <p>الصف: ${student.class}</p>
-            <p class="text-gray-700">
-                سقف الشراء اليومي: ${dailyLimitDisplay}
-            </p>
-        </div>
+      <div class="bg-blue-50 p-3 rounded mb-4">
+        <h3 class="font-bold">الطالب المحدد:</h3>
+        <p>الاسم: ${student.full_name}</p>
+        <p>الصف: ${student.class}</p>
+        <p class="text-gray-700">
+          سقف الشراء اليومي: ${dailyLimitDisplay}
+        </p>
+      </div>
     `;
-}
+  }
 
-// في دالة updateLimitInfo
-function updateLimitInfo() {
+  function updateLimitInfo() {
     const total = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (dailyLimit > 0) {
-        limitInfoDiv.classList.remove('hidden');
-        const formattedLimit = parseFloat(dailyLimit).toFixed(2);
+      limitInfoDiv.classList.remove('hidden');
+      const formattedLimit = parseFloat(dailyLimit).toFixed(2);
 
-        if (total > dailyLimit) {
-            remainingLimitText.innerHTML = `
-                <span class="text-red-600 font-bold">
-                    تحذير: تجاوز سقف الشراء اليومي (${formattedLimit} ر.س)
-                </span>
-            `;
-        } else {
-            remainingLimitText.innerHTML = `
-                <span class="text-gray-700">
-                    السقف اليومي: ${formattedLimit} ر.س
-                </span>
-            `;
-        }
+      if (total > dailyLimit) {
+        remainingLimitText.innerHTML = `
+          <span class="text-red-600 font-bold">
+            تحذير: تجاوز سقف الشراء اليومي (${formattedLimit} د.ل)
+          </span>
+        `;
+      } else {
+        remainingLimitText.innerHTML = `
+          <span class="text-gray-700">
+            السقف اليومي: ${formattedLimit} د.ل
+          </span>
+        `;
+      }
     } else {
-        limitInfoDiv.classList.add('hidden');
+      limitInfoDiv.classList.add('hidden');
     }
-}
+  }
 
-  // عرض التصنيفات
   function renderCategories(categories) {
     if (!categories || categories.length === 0) {
       categoriesContainer.innerHTML = `<span class="text-gray-400">لا توجد تصنيفات متاحة لهذا الطالب</span>`;
@@ -440,7 +470,6 @@ function updateLimitInfo() {
 
     categoriesContainer.innerHTML = '';
 
-    // إضافة خيار "عرض الكل"
     const allLabel = document.createElement('label');
     allLabel.className = "cursor-pointer select-none";
     allLabel.innerHTML = `
@@ -449,7 +478,6 @@ function updateLimitInfo() {
     `;
     categoriesContainer.appendChild(allLabel);
 
-    // عرض كل التصنيفات
     categories.forEach(cat => {
       const label = document.createElement('label');
       label.className = "cursor-pointer select-none";
@@ -466,12 +494,10 @@ function updateLimitInfo() {
     renderProducts(allProducts);
   }
 
-  // دالة مساعدة للتعامل مع الأحرف الخاصة في أسماء المنتجات
   function escapeSingleQuote(str) {
     return str.replace(/'/g, "\\'");
   }
 
-  // عرض المنتجات مع فلترة
   function renderProducts(products) {
     products.forEach(p => {
       if (typeof p.price === 'string') {
@@ -517,7 +543,6 @@ function updateLimitInfo() {
     });
   }
 
-  // إضافة منتج إلى الفاتورة
   function addToInvoice(id, name, price, availableQty) {
     const existingItem = invoiceItems.find(i => i.id === id);
 
@@ -545,13 +570,11 @@ function updateLimitInfo() {
     renderInvoice();
   }
 
-  // إزالة عنصر من الفاتورة
   function removeItem(index) {
     invoiceItems.splice(index, 1);
     renderInvoice();
   }
 
-  // تحديث كمية منتج في الفاتورة
   function updateQuantity(index, delta) {
     const item = invoiceItems[index];
     const product = allProducts.find(p => p.id === item.id);
@@ -570,7 +593,6 @@ function updateLimitInfo() {
     }
   }
 
-  // عرض الفاتورة
   function renderInvoice() {
     invoiceTableBody.innerHTML = '';
     let total = 0;
@@ -594,7 +616,7 @@ function updateLimitInfo() {
       `;
       invoiceTableBody.appendChild(row);
     });
-    totalAmountSpan.textContent = `${total.toFixed(2)} ر.س`;
+    totalAmountSpan.textContent = `${total.toFixed(2)} د.ل`;
     updateLimitInfo();
   }
 
@@ -610,9 +632,8 @@ function updateLimitInfo() {
 
     const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // التحقق من السقف اليومي إذا كان موجوداً
     if (dailyLimit > 0 && totalAmount > dailyLimit) {
-      alert(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} ر.س`);
+      alert(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} د.ل`);
       return;
     }
 
@@ -656,7 +677,6 @@ function updateLimitInfo() {
     }
   }
 
-  // دالة مساعدة للحصول على الكوكيز
   function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -665,80 +685,6 @@ function updateLimitInfo() {
 
   function showError(message) {
     alert(message);
-  }
-     let scanner;
-
-  // فتح المودال وبدء الكاميرا
-  function openQRModal() {
-    document.getElementById('qrModal').classList.remove('hidden');
-    startQRScanner();
-  }
-
-  // إغلاق المودال وإيقاف الكاميرا
-  function closeQRModal() {
-    document.getElementById('qrModal').classList.add('hidden');
-    if (scanner) scanner.stop();
-  }
-
-  function startQRScanner() {
-    const video = document.getElementById('preview');
-
-    scanner = new Instascan.Scanner({ video: video, mirror: false });
-    scanner.addListener('scan', function (content) {
-      if (content) {
-        studentSearchInput.value = content;
-        closeQRModal(); // إغلاق المودال
-        scanner.stop(); // إيقاف الكاميرا
-        triggerSearch(content); // بدء البحث
-      }
-    });
-
-    Instascan.Camera.getCameras().then(function (cameras) {
-      if (cameras.length > 0) {
-        scanner.start(cameras[0]);
-      } else {
-        alert('لم يتم العثور على كاميرات.');
-        closeQRModal();
-      }
-    }).catch(function (e) {
-      alert('حدث خطأ أثناء الوصول إلى الكاميرا: ' + e);
-      closeQRModal();
-    });
-  }
-
-  function triggerSearch(query) {
-    if (!query) return;
-
-    fetch(`/students/search?query=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(data => {
-        studentsTableBody.innerHTML = '';
-        if (data.length === 0) {
-          studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 p-2">لم يتم العثور على الطالب</td></tr>`;
-          return;
-        }
-
-        data.forEach(student => {
-          const tr = document.createElement('tr');
-          tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
-          tr.innerHTML = `
-            <td class="p-2 border">${student.full_name}</td>
-            <td class="p-2 border">${student.father_name ?? '—'}</td>
-            <td class="p-2 border">${student.class}</td>
-            <td class="p-2 border">${student.daily_limit ? student.daily_limit.toFixed(2) + ' ر.س' : '—'}</td>
-          `;
-          tr.addEventListener('click', () => {
-            currentStudentId = student.student_id;
-            loadCategoriesAndProducts(currentStudentId);
-            highlightSelectedStudent(tr);
-            invoiceItems = [];
-            renderInvoice();
-          });
-          studentsTableBody.appendChild(tr);
-        });
-      }).catch(() => {
-        studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center p-2 text-red-500">حدث خطأ في جلب البيانات</td></tr>`;
-      });
   }
 </script>
 
