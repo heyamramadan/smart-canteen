@@ -296,6 +296,7 @@
       const qrCode = this.value.trim();
       if (qrCode) {
         searchStudentByQR(qrCode);
+          this.value = '';
       }
     }
   });
