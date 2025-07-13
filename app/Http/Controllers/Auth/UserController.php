@@ -84,28 +84,27 @@ $users = User::withTrashed()->oldest()->paginate(10);
      * استعادة مستخدم مؤرشف.
      */
     public function restore($id)
-    {
-        $user = User::withTrashed()->findOrFail($id);
+{
+    $user = User::withTrashed()->findOrFail($id);
 
-        // ✅ تعديل: استعادة العلاقات المباشرة بدون المرور بجدول parents.
-        if ($user->role === 'ولي أمر') {
-            // استعادة الطلاب المرتبطين به
-            // نستخدم withTrashed() لجلب الطلاب المؤرشفين مع ولي الأمر
-            foreach ($user->students()->withTrashed()->get() as $student) {
-                $student->restore();
-            }
-
-            // استعادة محفظة ولي الأمر
-            if ($user->wallet()->withTrashed()->first()) {
-                $user->wallet()->withTrashed()->first()->restore();
-            }
+    if ($user->role === 'ولي أمر') {
+        // استعادة الطلاب
+        foreach ($user->students()->withTrashed()->get() as $student) {
+            $student->restore();
         }
 
-        // استعادة المستخدم نفسه
-        $user->restore();
-
-        return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وتوابعه بنجاح.');
+        // ✅ استعادة المحفظة بالطريقة الصحيحة
+        $wallet = Wallet::withTrashed()->where('user_id', $user->id)->first();
+        if ($wallet) {
+            $wallet->restore();
+        }
     }
+
+    // استعادة المستخدم نفسه
+    $user->restore();
+
+    return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم وتوابعه بنجاح.');
+}
 
     /**
      * تحديث بيانات المستخدم.
