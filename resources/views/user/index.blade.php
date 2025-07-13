@@ -92,12 +92,13 @@
                 @if ($user->trashed())
                     <form method="POST" action="{{ route('users.restore', $user->id) }}" class="restore-form">
                         @csrf
-                        <button type="button"
-                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse"
-                            data-user-id="{{ $user->id }}">
-                            <span>♻️</span>
-                            <span>استعادة</span>
-                        </button>
+                    <button type="button"
+    class="restore-btn bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse"
+    data-user-id="{{ $user->id }}">
+    <span>♻️</span>
+    <span>استعادة</span>
+</button>
+
                     </form>
                 @else
                     <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
