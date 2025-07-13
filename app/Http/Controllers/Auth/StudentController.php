@@ -55,10 +55,10 @@ class StudentController extends Controller
   public function index()
   {
       // ✅ تحميل علاقة 'user' المباشرة مع الطالب
-      $students = Studentmodel::with('user')->withTrashed()->latest()->paginate(10);
+      $students = Studentmodel::with('user')->withTrashed()->oldest()->paginate(10);
       // ✅ جلب المستخدمين الذين دورهم "ولي أمر" لتعبئة القوائم المنسدلة في المودالات
       $parentUsers = User::where('role', 'ولي أمر')->get();
-      
+
       return view('user.students', compact('students', 'parentUsers'));
   }
   public function search(Request $request)
