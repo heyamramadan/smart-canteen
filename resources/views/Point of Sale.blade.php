@@ -272,6 +272,14 @@
     </div>
   </div>
 </div>
+<!-- مودال الرسائل -->
+<div id="messageModal" class="fixed inset-0 bg-black bg-opacity-30 z-50 hidden items-center justify-center">
+  <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full text-center">
+    <h2 id="modalTitle" class="text-xl font-bold mb-4 text-primary-700">رسالة</h2>
+    <p id="modalMessage" class="text-gray-700 mb-6">...</p>
+    <button onclick="closeModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg">حسناً</button>
+  </div>
+</div>
 
 <script>
   const invoiceTableBody = document.querySelector('#invoiceTable tbody');
@@ -551,7 +559,7 @@
       if (existingItem.quantity < availableQty) {
         existingItem.quantity++;
       } else {
-        alert('لا يمكن طلب كمية أكبر من الكمية المتاحة (' + availableQty + ')');
+        showModal('لا يمكن طلب كمية أكبر من الكمية المتاحة (' + availableQty + ')');
         return;
       }
     } else {
@@ -563,7 +571,7 @@
           quantity: 1
         });
       } else {
-        alert('هذا المنتج غير متوفر حالياً');
+        showModal('هذا المنتج غير متوفر حالياً');
         return;
       }
     }
@@ -584,7 +592,7 @@
 
     let newQty = item.quantity + delta;
     if (newQty > product.quantity) {
-      alert('لا يمكن زيادة الكمية عن المتوفر.');
+      showModal('لا يمكن زيادة الكمية عن المتوفر.');
       return;
     } else if (newQty <= 0) {
       removeItem(index);
@@ -623,18 +631,18 @@
 
   async function confirmSale() {
     if (!currentStudentId) {
-      alert('يرجى اختيار طالب أولاً.');
+       showModal('يرجى اختيار طالب أولاً.');
       return;
     }
     if (invoiceItems.length === 0) {
-      alert('لا يوجد منتجات في الفاتورة.');
+       showModal('لا يوجد منتجات في الفاتورة.');
       return;
     }
 
     const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (dailyLimit > 0 && totalAmount > dailyLimit) {
-      alert(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} د.ل`);
+       showModal(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} د.ل`);
       return;
     }
 
@@ -668,12 +676,12 @@
         throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
       }
 
-      alert('تم تأكيد عملية البيع بنجاح');
+      showModal('تم تأكيد عملية البيع بنجاح');
       invoiceItems = [];
       renderInvoice();
       loadCategoriesAndProducts(currentStudentId);
     } catch (err) {
-      alert(err.message || 'حدث خطأ أثناء تأكيد البيع');
+      showModal(err.message || 'حدث خطأ أثناء تأكيد البيع');
       console.error(err);
     }
   }
@@ -686,6 +694,17 @@
 
   function showError(message) {
     alert(message);
+  }
+    function showModal(message, title = "رسالة") {
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMessage").textContent = message;
+    document.getElementById("messageModal").classList.remove("hidden");
+    document.getElementById("messageModal").classList.add("flex");
+  }
+
+  function closeModal() {
+    document.getElementById("messageModal").classList.add("hidden");
+    document.getElementById("messageModal").classList.remove("flex");
   }
 </script>
 
