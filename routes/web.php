@@ -114,4 +114,4 @@ Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('in
     Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
 
 
-}); 
+});
