@@ -71,10 +71,22 @@
                         <td class="p-3">{{ $category->created_at->format('Y-m-d H:i') }}</td>
                         <td class="p-3">{{ $category->updated_at->format('Y-m-d H:i') }}</td>
                         <td class="p-3 flex justify-center space-x-2 space-x-reverse">
-                            <button onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}', `{{ $category->description }}`)" class="text-primary-600 hover:underline">✏️ تعديل</button>
+<button
+    onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}', `{{ $category->description }}`)"
+    class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm"
+>
+    ✏️ تعديل
+</button>
+
                             <form method="POST" action="{{ route('categories.destroy', $category->category_id) }}">
                                 @csrf @method('DELETE')
-                                <button onclick="return confirm('هل أنت متأكد من الحذف؟')" class="text-red-500 hover:underline">🗑️ حذف</button>
+<button
+    onclick="return confirm('هل أنت متأكد من الحذف؟')"
+    class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm"
+>
+    🗑️ حذف
+</button>
+
                             </form>
                         </td>
                     </tr>
