@@ -79,22 +79,24 @@
 
                             <td class="p-3 text-sm">{{ $invoice->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total_amount, 2) }} د.ل</td>
-                            <td class="p-3 flex items-center space-x-2 space-x-reverse">
-                           <button
-    onclick='openInvoiceModal(@json($invoice))'
-    class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition"
->
-    👁️ عرض
-</button>
-  <button
+<td class="p-3 flex items-center gap-2">
+    <button
+        onclick='openInvoiceModal(@json($invoice))'
+        class="flex items-center gap-1 border border-primary-500 text-primary-600 bg-white hover:bg-primary-600 hover:text-white px-3 py-1 rounded-full text-sm transition"
+        title="عرض الفاتورة"
+    >
+        👁️ <span>عرض</span>
+    </button>
+
+    <button
         onclick='printInvoiceDirect(@json($invoice))'
-        class="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-100 transition"
+        class="flex items-center gap-1 border border-primary-500 text-primary-600 bg-white hover:bg-primary-600 hover:text-white px-3 py-1 rounded-full text-sm transition"
         title="طباعة الفاتورة"
     >
-        🖨️ طباعة
+        🖨️ <span>طباعة</span>
     </button>
-                            </td>
-                        </tr>
+</td>
+
                         @empty
                         <tr>
                             <td colspan="6" class="text-center p-4 text-gray-400">لا توجد فواتير حالياً</td>
@@ -103,6 +105,7 @@
                     </tbody>
                 </table>
             </div>
+
             <!-- روابط الصفحات -->
             <div class="p-4">
                 {{ $invoices->links() }}
