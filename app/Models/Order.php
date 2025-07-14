@@ -24,10 +24,10 @@ class Order extends Model
     ];
 
     // علاقة الطلب ينتمي إلى طالب (Student)
-    public function student()
-    {
-        return $this->belongsTo(StudentModel::class, 'student_id', 'student_id');
-    }
+public function student()
+{
+    return $this->belongsTo(StudentModel::class, 'student_id', 'student_id')->withTrashed();
+}
 
     // علاقة الطلب ينتمي إلى موظف (User)
     public function employee()
@@ -39,5 +39,5 @@ class Order extends Model
 {
     return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
 }
-  
+
 }
