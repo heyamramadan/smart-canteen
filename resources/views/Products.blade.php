@@ -243,9 +243,10 @@
                 <form id="deleteForm" method="POST" class="inline">
                     @csrf
                     @method('DELETE')
-<button type="submit" class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition">
+<button type="submit" class="px-4 py-2 rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition">
     نعم، احذف
 </button>
+
 
                 </form>
             </div>
