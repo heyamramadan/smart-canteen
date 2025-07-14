@@ -124,9 +124,13 @@
                                 <form action="{{ route('products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">
-                                        🗑️ حذف
-                                    </button>
+                               <button
+    type="button"
+    onclick="showDeleteModal({{ $product->product_id }})"
+    class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">
+    🗑️ حذف
+</button>
+
                                 </form>
                             </td>
                         </tr>
@@ -223,6 +227,31 @@
         </div>
     </div>
 </div>
+<!-- مودال تأكيد الحذف -->
+<div id="deleteConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-auto">
+        <div class="p-6">
+      <h2 class="text-lg font-bold text-primary-700 mb-4">⚠️ تأكيد الحذف</h2>
+
+            <p class="text-sm text-gray-700 mb-6">هل أنت متأكد من حذف هذا المنتج؟.</p>
+
+            <div class="flex justify-end space-x-3 space-x-reverse">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition">
+                    إلغاء
+                </button>
+                <form id="deleteForm" method="POST" class="inline">
+                    @csrf
+                    @method('DELETE')
+<button type="submit" class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition">
+    نعم، احذف
+</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     // فتح مودال إضافة منتج جديد
@@ -299,6 +328,17 @@ document.querySelectorAll('.edit-btn').forEach(button => {
         openEditProductModal(product);
     });
 });
+function showDeleteModal(productId) {
+    const form = document.getElementById('deleteForm');
+    form.action = `/products/${productId}`; // تأكد أن المسار صحيح حسب الـ Route الخاص بك
+    document.getElementById('deleteConfirmModal').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteConfirmModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
 
 </script>
 
