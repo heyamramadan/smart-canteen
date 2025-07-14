@@ -81,7 +81,8 @@
                             <form method="POST" action="{{ route('categories.destroy', $category->category_id) }}">
                                 @csrf @method('DELETE')
 <button
-    onclick="return confirm('هل أنت متأكد من الحذف؟')"
+    type="button"
+    onclick="confirmDelete('{{ route('categories.destroy', $category->category_id) }}')"
     class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm"
 >
     🗑️ حذف
@@ -149,6 +150,19 @@
         </form>
     </div>
 </div>
+<!-- 🔴 مودال تأكيد الحذف -->
+<div id="deleteModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-xl w-full max-w-sm text-center">
+        <h3 class="text-lg font-bold text-primary-700 mb-4">تأكيد الحذف</h3>
+        <p class="text-gray-700 mb-6">هل أنت متأكد أنك تريد حذف هذا التصنيف؟</p>
+        <form id="deleteForm" method="POST" class="flex justify-center gap-4">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 rounded border">لا</button>
+            <button class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded">نعم</button>
+        </form>
+    </div>
+</div>
 
 <!-- JavaScript -->
 <script>
@@ -165,6 +179,20 @@
         document.getElementById('editDescription').value = description;
         document.getElementById('editForm').action = `/categories/${id}`;
         openModal('editModal');
+    }
+
+     function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    function confirmDelete(actionUrl) {
+        const form = document.getElementById('deleteForm');
+        form.action = actionUrl;
+        openModal('deleteModal');
     }
 </script>
 </body>
