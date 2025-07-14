@@ -61,7 +61,7 @@
                 </li>
                 <li class="p-3 {{ request()->is('students*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/students') }}" class="flex items-center">
-                        <span class="ml-2">🎒</span> إدارة الطلاب
+                        <span class="ml-2">👨‍🎓</span> إدارة الطلاب
                     </a>
                 </li>
                 <li class="p-3 {{ request()->is('categories*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">

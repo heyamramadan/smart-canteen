@@ -58,7 +58,6 @@
                     <th class="p-3">الاسم</th>
                     <th class="p-3">الوصف</th>
                     <th class="p-3">تاريخ الإضافة</th>
-                    <th class="p-3">تاريخ التحديث</th>
                     <th class="p-3">الإجراءات</th>
                 </tr>
                 </thead>
@@ -69,7 +68,6 @@
                         <td class="p-3">{{ $category->name }}</td>
                         <td class="p-3">{{ $category->description ?? '-' }}</td>
                         <td class="p-3">{{ $category->created_at->format('Y-m-d H:i') }}</td>
-                        <td class="p-3">{{ $category->updated_at->format('Y-m-d H:i') }}</td>
                         <td class="p-3 flex justify-center space-x-2 space-x-reverse">
 <button
     onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}', `{{ $category->description }}`)"
