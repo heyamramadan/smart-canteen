@@ -71,7 +71,7 @@
     <div class="flex-1 p-6 overflow-auto">
       <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
         <h1 class="text-lg font-bold text-primary-700 flex items-center">
-          <span class="ml-2">🎫</span>
+          <span class="ml-2">💳</span>
           بطاقات الطلاب
         </h1>
       </div>
@@ -93,19 +93,22 @@
           </button>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-right">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="p-3 text-sm text-gray-500"><input type="checkbox" id="headerCheckbox" class="rounded"></th>
-                <th class="p-3 text-sm text-gray-500">الصورة</th>
-                <th class="p-3 text-sm text-gray-500">الاسم</th>
-                <th class="p-3 text-sm text-gray-500">الفصل الدراسي</th>
-              </tr>
-            </thead>
-            <tbody id="studentsTableBody" class="divide-y divide-gray-200"></tbody>
-          </table>
-        </div>
+     <div class="overflow-x-auto rounded-lg shadow border border-gray-200">
+  <table class="min-w-full text-right divide-y divide-gray-200">
+    <thead class="bg-gray-100 sticky top-0 z-10">
+      <tr>
+        <th class="p-3 text-sm font-medium text-gray-600">
+          <input type="checkbox" id="headerCheckbox" class="rounded focus:ring-primary-500">
+        </th>
+        <th class="p-3 text-sm font-medium text-gray-600">الصورة</th>
+        <th class="p-3 text-sm font-medium text-gray-600">الاسم</th>
+        <th class="p-3 text-sm font-medium text-gray-600">الفصل الدراسي</th>
+      </tr>
+    </thead>
+    <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-100"></tbody>
+  </table>
+</div>
+
       </div>
 
       <!-- حاوية البطاقات للطباعة (مخفية) -->
@@ -151,7 +154,8 @@
 
       filtered.forEach(student => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-50 transition text-center';
+      tr.className = 'hover:bg-orange-50 transition text-center text-sm';
+
 
         tr.innerHTML = `
           <td class="p-3">
