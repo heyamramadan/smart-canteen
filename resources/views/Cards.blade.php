@@ -101,7 +101,6 @@
                 <th class="p-3 text-sm text-gray-500">الصورة</th>
                 <th class="p-3 text-sm text-gray-500">الاسم</th>
                 <th class="p-3 text-sm text-gray-500">الفصل الدراسي</th>
-                <th class="p-3 text-sm text-gray-500">الرقم</th>
               </tr>
             </thead>
             <tbody id="studentsTableBody" class="divide-y divide-gray-200"></tbody>
@@ -163,7 +162,6 @@
           </td>
           <td class="p-3 text-sm">${student.full_name}</td>
           <td class="p-3 text-sm">${student.class ?? 'غير محدد'}</td>
-          <td class="p-3 text-sm">${student.student_id}</td>
         `;
 
         studentsTableBody.appendChild(tr);
@@ -222,7 +220,6 @@
               <h2 class="font-bold text-lg text-primary-700">مدرسة المستقبل</h2>
               <p><strong>الاسم:</strong> ${student.full_name}</p>
               <p><strong>الصف:</strong> ${student.class ?? 'غير محدد'}</p>
-              <p><strong>الرقم:</strong> ${student.student_id}</p>
             </div>
           </div>
           <img src="${qrCodeUrl}" alt="QR Code" class="qr">
