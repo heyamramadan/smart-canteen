@@ -192,14 +192,6 @@
                             @enderror
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">اسم الأب</label>
-                            <input type="text" name="father_name" value="{{ old('father_name') }}"
-                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                            @error('father_name')
-                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
                             <label class="block text-sm text-gray-600 mb-1">الصف الدراسي</label>
                             <select name="class" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                                 <option value="">اختر الصف</option>
