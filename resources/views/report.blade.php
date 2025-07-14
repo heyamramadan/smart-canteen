@@ -161,10 +161,10 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الفاتورة</th>
+                                   <th class="text-center px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">رقم الفاتورة</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الطالب</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المنتج</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الكمية</th>
+                                    <th class="text-center px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"> الكمية</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">السعر</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المجموع</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
@@ -173,10 +173,13 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse($orderItems as $item)
                                 <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#ORD-{{ $item->order->order_id }}</td>
+                                <td class="text-center px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ ($orderItems->currentPage() - 1) * $orderItems->perPage() + $loop->iteration }}
+                                    </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->order->student->full_name  ?? 'غير معروف' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->product->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->quantity }}</td>
+                                    <td class="text-center px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->quantity }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->price, 2) }} د.ل</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($item->quantity * $item->price, 2) }} د.ل</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->created_at->format('Y-m-d H:i') }}</td>
