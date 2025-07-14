@@ -51,7 +51,7 @@
         <!-- شريط البحث وإضافة منتج -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                <span class="ml-2">📂</span>
+                <span class="ml-2">🛒</span>
                 إدارة المنتجات
             </h2>
 
