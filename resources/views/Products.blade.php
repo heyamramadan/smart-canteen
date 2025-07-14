@@ -119,22 +119,26 @@
                             </td>
                             <td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 flex items-center space-x-1 space-x-reverse">
-                            <button
-    class="text-primary-500 hover:text-primary-700 p-1 rounded hover:bg-primary-100 transition edit-btn"
+ <button
+    class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm edit-btn"
     data-product='@json($product)'
 >
     ✏️ تعديل
 </button>
 
+
                                 <form action="{{ route('products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
                                     @csrf
                                     @method('DELETE')
-                               <button
+<button
     type="button"
     onclick="showDeleteModal({{ $product->product_id }})"
-    class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">
+    class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm"
+>
     🗑️ حذف
 </button>
+
+
 
                                 </form>
                             </td>
