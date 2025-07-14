@@ -34,16 +34,6 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice'));
     }
 
-    // حذف فاتورة
-    public function destroy($id)
-    {
-        $invoice = Order::findOrFail($id);
-        $invoice->delete();
-
-        return redirect()->route('invoices.index')
-                         ->with('success', 'تم حذف الفاتورة بنجاح');
-    }
-
     // طباعة الفاتورة
     public function print($id)
     {

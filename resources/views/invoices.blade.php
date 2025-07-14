@@ -93,15 +93,6 @@
     >
         🖨️ طباعة
     </button>
-
-
-                                <form action="{{ route('invoices.destroy', $invoice->order_id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف الفاتورة؟')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">
-                                        🗑️ حذف
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                         @empty
