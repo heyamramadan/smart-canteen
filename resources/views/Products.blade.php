@@ -110,7 +110,7 @@
                             </td>
                             <td class="p-3 text-sm font-medium">{{ $product->name }}</td>
                             <td class="p-3 text-sm">{{ \Illuminate\Support\Str::limit($product->description, 50) }}</td>
-                            <td class="p-3 text-sm">{{ number_format($product->price, 2) }} ر.س</td>
+                            <td class="p-3 text-sm">{{ number_format($product->price, 2) }} د.ل</td>
                             <td class="p-3 text-sm">{{ $product->quantity }}</td>
                             <td class="p-3">
                                 <span class="{{ $product->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} px-3 py-1 rounded-full text-xs">
