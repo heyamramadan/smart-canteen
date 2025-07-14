@@ -274,11 +274,6 @@
                                    class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">اسم الأب</label>
-                            <input type="text" name="father_name" id="edit_father_name"
-                                   class="w-full border border-orange-300 rounded-lg px-4 py-2" />
-                        </div>
-                        <div>
                             <label class="block text-sm text-gray-600 mb-1">الصف الدراسي</label>
                             <select name="class" id="edit_class" required class="w-full border border-orange-300 rounded-lg px-4 py-2">
                                 <option value="">اختر الصف</option>
@@ -367,7 +362,6 @@
         function openEditModal(id, fullName, fatherName, classVal, birthDate, parentId, imagePath) {
             document.getElementById('edit_student_id').value = id;
             document.getElementById('edit_full_name').value = fullName;
-            document.getElementById('edit_father_name').value = fatherName;
             document.getElementById('edit_class').value = classVal;
             document.getElementById('edit_user_id').value = parentId;
 
