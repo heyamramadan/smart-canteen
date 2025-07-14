@@ -230,14 +230,25 @@ private function calculateRemainingLimit($wallet)
         return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
     }
 
-    public function restore($id)
-    {
-        $student = Studentmodel::onlyTrashed()->findOrFail($id);
-        $student->restore();
+   public function restore($id)
+{
+    // جلب الطالب المؤرشف
+    $student = Studentmodel::onlyTrashed()->findOrFail($id);
 
-        // يمكنك هنا إضافة أي عمليات إضافية تحتاجها عند استعادة الطالب
+    // جلب ولي الأمر (المستخدم المرتبط) بما في ذلك المؤرشفين
+    $parentUser = User::withTrashed()->find($student->user_id);
 
-        return redirect()->route('students.index')->with('success', 'تم استعادة الطالب بنجاح.');
+    // تحقق هل ولي الأمر مؤرشف (محذوف)
+    if ($parentUser && $parentUser->trashed()) {
+        // لا نستطيع استعادة الطالب لأن ولي الأمر مؤرشف
+        return redirect()->route('students.index')->with('error', 'لا يمكن استعادة الطالب لأن ولي أمره مؤرشف.');
     }
+
+    // ولي الأمر غير مؤرشف، نكمل استعادة الطالب
+    $student->restore();
+
+    return redirect()->route('students.index')->with('success', 'تم استعادة الطالب بنجاح.');
+}
+
 
 }
