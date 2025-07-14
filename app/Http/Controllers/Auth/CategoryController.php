@@ -20,7 +20,7 @@ class CategoryController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate(10);
 
         return view('categories', compact('categories', 'search'));
