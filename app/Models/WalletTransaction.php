@@ -22,6 +22,6 @@ class WalletTransaction extends Model
     // علاقة: المعاملة تنتمي إلى محفظة
     public function wallet()
     {
-        return $this->belongsTo(Wallet::class, 'wallet_id', 'wallet_id');
+          return $this->belongsTo(Wallet::class, 'wallet_id', 'wallet_id')->withTrashed();
     }
 }
