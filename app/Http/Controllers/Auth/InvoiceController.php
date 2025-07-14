@@ -19,7 +19,7 @@ class InvoiceController extends Controller
                     $q->where('full_name', 'like', "%{$search}%");
                 });
             })
-            ->latest()
+            ->oldest()
             ->paginate(perPage: 10);
 
         return view('invoices', compact('invoices'));
