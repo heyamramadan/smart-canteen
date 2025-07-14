@@ -83,6 +83,8 @@
                 <table class="w-full text-right">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="p-3 text-sm text-gray-500">#</th>
+
                             <th class="p-3 text-sm text-gray-500">الصورة</th>
                             <th class="p-3 text-sm text-gray-500">اسم المنتج</th>
                             <th class="p-3 text-sm text-gray-500">الوصف</th>
@@ -94,8 +96,11 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach($products as $product)
+                     @foreach($products as $index => $product)
+
                         <tr class="hover:bg-gray-50 transition">
+                            <td class="p-3 text-sm ">{{ $index + 1 }}</td>
+
                             <td class="p-3 text-sm">
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}" alt="صورة المنتج" class="product-image" />
