@@ -45,7 +45,7 @@ class TransactionController extends Controller
             });
         }
 
-        $transactions = $query->latest('created_at')->paginate(10);
+        $transactions = $query->oldest('created_at')->paginate(10);
 
         return view('Transaction', compact('transactions'));
     }
@@ -82,7 +82,7 @@ class TransactionController extends Controller
             });
         }
 
-        $transactions = $query->latest('created_at')->take(20)->get();
+        $transactions = $query->oldest('created_at')->take(20)->get();
 
         // ✅ تعديل: تحديث طريقة الوصول للبيانات لتناسب العلاقات الجديدة
         return response()->json($transactions->map(function ($tx) {
