@@ -30,6 +30,29 @@
     @include('layouts.sidebar')
 
     <div class="flex-1 p-6 overflow-auto">
+        @if(session('success'))
+    <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
+        <div
+            class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 text-lg font-medium rounded-lg shadow-xl transition-opacity duration-500 opacity-100"
+            id="flashMessageContent">
+            {{ session('success') }}
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            const flash = document.getElementById('flashMessageContent');
+            if (flash) {
+                flash.style.opacity = '0';
+                setTimeout(() => {
+                    const wrapper = document.getElementById('flashMessage');
+                    if (wrapper) wrapper.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+@endif
+
         <!-- العنوان وزر الإضافة -->
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
