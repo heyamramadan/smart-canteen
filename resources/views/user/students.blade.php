@@ -114,7 +114,7 @@
                 @endif
             </td>
             <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
-            <td class="p-3 text-sm">{{ $student->father_name }}</td>
+            <td class="p-3 text-sm">{{ $student->user->full_name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student->class }}</td>
             <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
