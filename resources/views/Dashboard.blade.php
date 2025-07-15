@@ -133,6 +133,29 @@
 
 <!-- المحتوى الرئيسي -->
 <div class="mr-64 p-6 overflow-auto min-h-screen bg-white">
+@if(session('success'))
+    <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 text-lg font-medium rounded-lg shadow-xl transition-opacity duration-500 opacity-100"
+             id="flashMessageContent">
+            {{ session('success') }}
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            const flash = document.getElementById('flashMessageContent');
+            if (flash) {
+                flash.style.opacity = '0';
+                setTimeout(() => {
+                    const wrapper = document.getElementById('flashMessage');
+                    if (wrapper) wrapper.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+@endif
+
+
     @if(auth()->user()->role === 'مسؤول' || auth()->user()->role === 'موظف')
         <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
             {{-- <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-primary-500">

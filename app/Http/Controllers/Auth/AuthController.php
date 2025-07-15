@@ -31,12 +31,12 @@ class AuthController extends Controller
 
             // إعادة توجيه حسب الدور
             if (Auth::user()->role === 'مسؤول') {
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/dashboard')->with('success', 'تم تسجيل الدخول بنجاح');
             } elseif (Auth::user()->role === 'موظف') {
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/dashboard')->with('success', 'تم تسجيل الدخول بنجاح');
             }
 
-          
+
         }
 
       return back()->withErrors([
