@@ -62,46 +62,40 @@ class StudentController extends Controller
       return view('user.students', compact('students', 'parentUsers'));
   }
   public function search(Request $request)
-  {
-      $searchQuery = $request->input('query');
-      // ✅ تحديث مسار العلاقة
-      $query = Studentmodel::with(['user'])->withTrashed();
+{
+    $searchQuery = $request->input('query');
 
-      if (!empty($searchQuery)) {
-          $isIdSearch = is_numeric($searchQuery);
+    $students = Studentmodel::with(['user.wallet'])
+        ->withTrashed()
+        ->where(function ($query) use ($searchQuery) {
+            $query->where('full_name', 'LIKE', "%$searchQuery%");
 
-          $query->where(function($q) use ($searchQuery, $isIdSearch) {
-              $q->where('full_name', 'LIKE', '%' . $searchQuery . '%')
-                ->orWhere('father_name', 'LIKE', '%' . $searchQuery . '%')
-                ->orWhere('class', 'LIKE', '%' . $searchQuery . '%')
-                // ✅ تحديث مسار العلاقة للبحث في اسم ولي الأمر
-                ->orWhereHas('user', function($userQuery) use ($searchQuery) {
-                    $userQuery->where('full_name', 'LIKE', '%' . $searchQuery . '%');
-                });
+            if (is_numeric($searchQuery)) {
+                $query->orWhere('student_id', $searchQuery);
+            }
 
-              if ($isIdSearch) {
-                  $q->orWhere('student_id', $searchQuery);
-              }
-          });
-      }
+            $query->orWhereHas('user', function($q) use ($searchQuery) {
+                $q->where('full_name', 'LIKE', "%$searchQuery%");
+            });
+        })
+        ->get();
 
-      $students = $query->get();
+    return response()->json($students->map(function ($student) {
+        return [
+            'student_id'     => $student->student_id,
+            'full_name'      => $student->full_name,
+            'class'          => $student->class,
+            'image_path'     => $student->image_path,
+            'created_at'     => $student->created_at->format('Y-m-d'),
+            'deleted_at'     => $student->deleted_at,
+            'user_id'        => $student->user_id,
+            'user_name'      => $student->user->full_name ?? 'غير معروف',
+            'father_name'    => $student->user->full_name ?? 'غير معروف',
+            'daily_limit'    => $student->user->wallet->daily_limit ?? 0,
+        ];
+    }));
+}
 
-      // ✅ إرجاع JSON يحتوي على البيانات اللازمة للـ JavaScript
-      return response()->json($students->map(function ($student) {
-          return [
-              'student_id' => $student->student_id,
-              'full_name' => $student->full_name,
-              'father_name' => $student->father_name,
-              'class' => $student->class,
-              'image_path' => $student->image_path,
-              'created_at' => $student->created_at->format('Y-m-d'),
-              'deleted_at' => $student->deleted_at,
-              'user_id' => $student->user_id,
-              'user_name' => $student->user->full_name ?? 'غير معروف',
-          ];
-      }));
-  }
 
 // عرض صفحة تعديل بيانات الطالب
 // عرض صفحة تعديل بيانات الطالب
