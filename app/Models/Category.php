@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
 
-
     protected $primaryKey = 'category_id'; // إذا لم يكن id هو المفتاح الأساسي
 
     protected $fillable = [
