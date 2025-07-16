@@ -345,7 +345,7 @@ data.forEach(student => {
         // --- حالة الطالب المؤرشف ---
         // تغيير شكل الصف ليدل على أنه غير فعال
         tr.classList.add('opacity-50', 'bg-red-50', 'cursor-not-allowed');
-        
+
         // إضافة علامة (مؤرشف) بجانب اسم الطالب
         tr.querySelector('td:first-child').innerHTML += ` <span class="text-red-600 font-bold">(مؤرشف)</span>`;
 
