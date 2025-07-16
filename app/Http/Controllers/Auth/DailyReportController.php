@@ -21,7 +21,6 @@ class DailyReportController extends Controller
 
         // جلب بيانات الطلبات المكتملة في هذا اليوم
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order', fn($q) => $q->completed())
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'desc')
             ->get();
