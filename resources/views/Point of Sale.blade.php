@@ -328,24 +328,46 @@
       .then(res => res.json())
       .then(data => {
         studentsTableBody.innerHTML = '';
-        data.forEach(student => {
-          const tr = document.createElement('tr');
-          tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
-          tr.innerHTML = `
-            <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
-            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
-            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
-            <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
-          `;
-          tr.addEventListener('click', () => {
+       // الكود المعدل
+data.forEach(student => {
+    const tr = document.createElement('tr');
+
+    // بناء محتوى الصف
+    tr.innerHTML = `
+        <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
+        <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
+        <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.class}</td>
+        <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
+    `;
+
+    // التحقق إذا كان الطالب مؤرشفاً
+    if (student.deleted_at) {
+        // --- حالة الطالب المؤرشف ---
+        // تغيير شكل الصف ليدل على أنه غير فعال
+        tr.classList.add('opacity-50', 'bg-red-50', 'cursor-not-allowed');
+        
+        // إضافة علامة (مؤرشف) بجانب اسم الطالب
+        tr.querySelector('td:first-child').innerHTML += ` <span class="text-red-600 font-bold">(مؤرشف)</span>`;
+
+        // عند النقر، نعرض رسالة خطأ بدلاً من تحميل البيانات
+        tr.addEventListener('click', () => {
+            showModal('هذا الطالب مؤرشف ولا يمكن إجراء عمليات عليه.', 'عملية غير ممكنة');
+        });
+
+    } else {
+        // --- حالة الطالب النشط (المنطق الأصلي) ---
+        tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
+        tr.addEventListener('click', () => {
             currentStudentId = student.student_id;
             loadCategoriesAndProducts(currentStudentId);
             highlightSelectedStudent(tr);
             invoiceItems = [];
             renderInvoice();
-          });
-          studentsTableBody.appendChild(tr);
         });
+    }
+
+    studentsTableBody.appendChild(tr);
+});
       }).catch(() => {
         studentsTableBody.innerHTML = `<tr><td colspan="4" class="text-center p-2 text-red-500">خطأ في جلب الطلاب</td></tr>`;
       });
