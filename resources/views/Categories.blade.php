@@ -79,7 +79,6 @@
                 <tr>
                     <th class="p-3">#</th>
                     <th class="p-3">الاسم</th>
-                    <th class="p-3">الوصف</th>
                     <th class="p-3">تاريخ الإضافة</th>
                     <th class="p-3">الإجراءات</th>
                 </tr>
@@ -89,11 +88,10 @@
                     <tr class="hover:bg-gray-50">
                         <td class="p-3">{{ $index + 1 }}</td>
                         <td class="p-3">{{ $category->name }}</td>
-                        <td class="p-3">{{ $category->description ?? '-' }}</td>
                         <td class="p-3">{{ $category->created_at->format('Y-m-d H:i') }}</td>
                         <td class="p-3 flex justify-center space-x-2 space-x-reverse">
 <button
-    onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}', `{{ $category->description }}`)"
+   onclick="openEditModal({{ $category->category_id }}, '{{ $category->name }}')"
     class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm"
 >
     ✏️ تعديل
@@ -138,10 +136,6 @@
                 <label class="block mb-1 text-sm">اسم التصنيف</label>
                 <input name="name" required class="w-full border px-3 py-2 rounded" />
             </div>
-            <div class="mb-4">
-                <label class="block mb-1 text-sm">الوصف</label>
-                <textarea name="description" class="w-full border px-3 py-2 rounded"></textarea>
-            </div>
             <div class="flex justify-end space-x-2 space-x-reverse">
                 <button type="button" onclick="closeModal('addModal')" class="px-4 py-2 border rounded">إلغاء</button>
                 <button class="px-4 py-2 bg-primary-500 text-white rounded">حفظ</button>
@@ -159,10 +153,6 @@
             <div class="mb-4">
                 <label class="block mb-1 text-sm">اسم التصنيف</label>
                 <input name="name" id="editName" required class="w-full border px-3 py-2 rounded" />
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1 text-sm">الوصف</label>
-                <textarea name="description" id="editDescription" class="w-full border px-3 py-2 rounded"></textarea>
             </div>
             <div class="flex justify-end space-x-2 space-x-reverse">
                 <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 border rounded">إلغاء</button>
@@ -197,7 +187,6 @@
 
     function openEditModal(id, name, description) {
         document.getElementById('editName').value = name;
-        document.getElementById('editDescription').value = description;
         document.getElementById('editForm').action = `/categories/${id}`;
         openModal('editModal');
     }
