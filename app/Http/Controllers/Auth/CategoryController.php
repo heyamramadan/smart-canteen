@@ -37,12 +37,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
-            'description' => 'nullable|string',
         ]);
 
         Category::create([
             'name' => $request->name,
-            'description' => $request->description,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'تم إضافة التصنيف بنجاح.');
@@ -63,12 +61,10 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->category_id . ',category_id',
-            'description' => 'nullable|string',
         ]);
 
         $category->update([
             'name' => $request->name,
-            'description' => $request->description,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'تم تعديل التصنيف بنجاح.');
