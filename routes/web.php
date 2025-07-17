@@ -14,6 +14,8 @@ use App\Http\Controllers\Auth\ProfileController;
  use App\Http\Controllers\Auth\ReportController;
  use App\Http\Controllers\Auth\DailyReportController;
   use App\Http\Controllers\Auth\TransactionController;
+  use App\Http\Controllers\Auth\ArchivedUserController;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
@@ -86,6 +88,11 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
+///ارشيف
+
+
+Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
+Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
     });
 
 
