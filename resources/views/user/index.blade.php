@@ -56,7 +56,6 @@
                                class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
                         <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
                     </div>
-
                     <!-- زر إضافة مستخدم -->
                     <button onclick="openModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
                         <span class="ml-1">+</span> إضافة مستخدم جديد
