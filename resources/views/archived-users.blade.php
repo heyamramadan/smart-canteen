@@ -104,12 +104,13 @@
             </button>
             <form id="restoreForm" method="POST" style="display:inline;">
                 @csrf
-                <button
-                    type="submit"
-                    class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
-                >
-                    استعادة
-                </button>
+          <button
+    type="submit"
+    class="px-4 py-2 rounded bg-orange-600 text-white hover:bg-orange-700 transition"
+>
+    استعادة
+</button>
+
             </form>
         </div>
     </div>
