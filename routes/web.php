@@ -58,7 +58,6 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/index', [UserController::class, 'index'])->name('users.index');
     Route::post('/index', [UserController::class, 'store'])->name('users.store');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
@@ -88,6 +87,8 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
+
+Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
 ///ارشيف
 
 

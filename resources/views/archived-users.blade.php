@@ -64,7 +64,8 @@
                             <td class="p-3 text-sm">{{ $user->role }}</td>
                             <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
                             <td class="p-3">
-                                <form method="POST" action="{{ route('users.restore', $user->id) }}" class="inline">
+<form method="POST" action="{{ route('archived-users.restore', $user->id) }}" class="inline">
+
                                     @csrf
                                     <button type="submit"
                                             class="text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition">

@@ -85,33 +85,6 @@ $users = User::oldest()->paginate(10);
     }
 }
 
-public function restore($id)
-{
-    $user = User::withTrashed()->findOrFail($id);
-
-    if ($user->role === 'ولي أمر') {
-        // استعادة الطلاب
-        foreach ($user->students()->withTrashed()->get() as $student) {
-            $student->restore();
-        }
-
-        // استعادة المحفظة
-        $wallet = Wallet::withTrashed()->where('user_id', $user->id)->first();
-        if ($wallet) {
-            $wallet->restore();
-        }
-
-        // استعادة المستخدم نفسه
-        $user->restore();
-
-        return redirect()->route('users.index')->with('success', 'تم استعادة ولي الأمر وطلابه بنجاح.');
-    } else {
-        // استعادة المستخدم نفسه فقط
-        $user->restore();
-
-        return redirect()->route('users.index')->with('success', 'تم استعادة المستخدم بنجاح.');
-    }
-}
 
     /**
      * تحديث بيانات المستخدم.
