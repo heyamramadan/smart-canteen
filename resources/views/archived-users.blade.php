@@ -37,10 +37,6 @@
                 <span class="ml-2">📁</span>
                 سجل أرشيف المستخدمين
             </h2>
-            <a href="{{ route('users.index') }}"
-               class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
-                🔙 العودة
-            </a>
         </div>
 
         <!-- جدول المستخدمين المؤرشفين -->
