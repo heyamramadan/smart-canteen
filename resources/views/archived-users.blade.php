@@ -1,4 +1,3 @@
-{{-- resources/views/users/archived-users.blade.php --}}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -64,14 +63,13 @@
                             <td class="p-3 text-sm">{{ $user->role }}</td>
                             <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
                             <td class="p-3">
-<form method="POST" action="{{ route('archived-users.restore', $user->id) }}" class="inline">
-
-                                    @csrf
-                                    <button type="submit"
-                                            class="text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition">
-                                        ♻️ استعادة
-                                    </button>
-                                </form>
+                                <!-- زر استعادة يفتح المودال -->
+                                <button
+                                    onclick="openRestoreModal({{ $user->id }}, '{{ $user->username }}')"
+                                    class="text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition"
+                                >
+                                    ♻️ استعادة
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -88,5 +86,57 @@
         </div>
     </div>
 </div>
+
+<!-- مودال التأكيد -->
+<div
+    id="restoreModal"
+    class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center hidden"
+>
+    <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">هل أنت متأكد من الاستعادة؟</h3>
+        <p class="mb-6 text-gray-600" id="modalUserName"></p>
+        <div class="flex justify-end space-x-3 rtl:space-x-reverse">
+            <button
+                onclick="closeRestoreModal()"
+                class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition"
+            >
+                إلغاء
+            </button>
+            <form id="restoreForm" method="POST" style="display:inline;">
+                @csrf
+                <button
+                    type="submit"
+                    class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                    استعادة
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('restoreModal');
+    const modalUserName = document.getElementById('modalUserName');
+    const restoreForm = document.getElementById('restoreForm');
+
+    function openRestoreModal(userId, username) {
+        modalUserName.textContent = `هل تريد استعادة المستخدم: ${username}؟`;
+        restoreForm.action = `/archived-users/${userId}/restore`;
+        modal.classList.remove('hidden');
+    }
+
+    function closeRestoreModal() {
+        modal.classList.add('hidden');
+    }
+
+    // اغلاق المودال لو ضغط المستخدم خارج محتوى النافذة
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeRestoreModal();
+        }
+    });
+</script>
+
 </body>
 </html>
