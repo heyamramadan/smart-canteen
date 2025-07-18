@@ -88,35 +88,23 @@
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->role }}</td>
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
-                @if ($user->trashed())
-                    <form method="POST" action="{{ route('users.restore', $user->id) }}" class="restore-form">
-                        @csrf
-                    <button type="button"
-    class="restore-btn bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse"
-    data-user-id="{{ $user->id }}">
-    <span>♻️</span>
-    <span>استعادة</span>
+         <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
+    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+    <span>✏️</span>
+    <span>تعديل</span>
 </button>
 
-                    </form>
-                @else
-                    <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
-                        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-                        <span>✏️</span>
-                        <span>تعديل</span>
-                    </button>
+<form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
+    @csrf
+    @method('DELETE')
+    <button type="button"
+        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse archive-btn"
+        data-user-id="{{ $user->id }}">
+        <span>🗑️</span>
+        <span>أرشفة</span>
+    </button>
+</form>
 
-                    <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button"
-                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse archive-btn"
-                            data-user-id="{{ $user->id }}">
-                            <span>🗑️</span>
-                            <span>أرشفة</span>
-                        </button>
-                    </form>
-                @endif
             </td>
         </tr>
     @endforeach
@@ -292,21 +280,7 @@
     </div>
 </div>
 
-<!-- مودال تأكيد الاستعادة -->
-<div id="confirmRestoreModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-        <h3 class="text-lg font-bold text-primary-700 mb-4">تأكيد الاستعادة</h3>
-        <p class="mb-6">هل أنت متأكد من استعادة هذا المستخدم؟</p>
-        <div class="flex justify-end space-x-3 space-x-reverse">
-            <button id="cancelRestoreBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
-                إلغاء
-            </button>
-            <button id="confirmRestoreBtn" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
-                استعادة
-            </button>
-        </div>
-    </div>
-</div>
+
 
 
     @if(session('success'))
@@ -404,43 +378,6 @@
                 }
             });
 
-            // مودال تأكيد الاستعادة
-            const restoreModal = document.getElementById('confirmRestoreModal');
-            const cancelRestoreBtn = document.getElementById('cancelRestoreBtn');
-            const confirmRestoreBtn = document.getElementById('confirmRestoreBtn');
-            let currentRestoreForm = null;
-
-            // عند الضغط على زر الاستعادة
-            document.querySelectorAll('.restore-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    currentRestoreForm = this.closest('form');
-                    restoreModal.classList.remove('hidden');
-                    document.body.classList.add('overflow-hidden');
-                });
-            });
-
-            // عند الضغط على إلغاء الاستعادة
-            cancelRestoreBtn.addEventListener('click', function() {
-                restoreModal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-                currentRestoreForm = null;
-            });
-
-            // عند الضغط على تأكيد الاستعادة
-            confirmRestoreBtn.addEventListener('click', function() {
-                if (currentRestoreForm) {
-                    currentRestoreForm.submit();
-                }
-            });
-
-            // إغلاق المودال عند الضغط خارج المحتوى
-            restoreModal.addEventListener('click', function(e) {
-                if (e.target === restoreModal) {
-                    restoreModal.classList.add('hidden');
-                    document.body.classList.remove('overflow-hidden');
-                    currentRestoreForm = null;
-                }
-            });
         });
         document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');

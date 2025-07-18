@@ -15,7 +15,8 @@ class UserController extends Controller
      */
     public function index()
     {
-$users = User::withTrashed()->oldest()->paginate(10);
+$users = User::oldest()->paginate(10);
+
         return view('user.index', compact('users'));
     }
 
@@ -164,7 +165,8 @@ public function restore($id)
     public function search(Request $request)
     {
         $searchQuery = $request->input('query');
-        $query = User::withTrashed();
+      $query = User::query(); // فقط غير المؤرشفين
+
 
         if (!empty($searchQuery)) {
             $isIdSearch = is_numeric($searchQuery);
