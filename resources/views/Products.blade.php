@@ -353,6 +353,8 @@
                 const doc = parser.parseFromString(html, 'text/html');
                 const newTable = doc.querySelector('#productTableContainer');
                 document.getElementById('productTableContainer').innerHTML = newTable.innerHTML;
+                  bindEditButtons();
+    bindDeleteButtons();
             });
         }, 300); // 300 ميلي ثانية تأخير
     });
@@ -374,6 +376,27 @@ function closeDeleteModal() {
     document.getElementById('deleteConfirmModal').classList.add('hidden');
     document.body.classList.remove('overflow-hidden');
 }
+function bindEditButtons() {
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const product = JSON.parse(this.dataset.product);
+            openEditProductModal(product);
+        });
+    });
+}
+
+function bindDeleteButtons() {
+    document.querySelectorAll('[onclick^="showDeleteModal"]').forEach(button => {
+        const id = button.getAttribute('onclick').match(/\d+/)?.[0];
+        button.addEventListener('click', function () {
+            showDeleteModal(id);
+        });
+    });
+}
+document.addEventListener('DOMContentLoaded', function () {
+    bindEditButtons();
+    bindDeleteButtons();
+});
 
 </script>
 
