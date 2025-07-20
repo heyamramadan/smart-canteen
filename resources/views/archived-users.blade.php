@@ -33,7 +33,7 @@
     <div class="flex-1 p-6 overflow-auto">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
-                <span class="ml-2">📁</span>
+                <span class="ml-2">🗃️</span>
                 سجل أرشيف المستخدمين
             </h2>
         </div>

@@ -59,6 +59,12 @@
                         <span class="ml-2">👥</span> إدارة المستخدمين
                     </a>
                 </li>
+                <li class="p-3 {{ request()->is('archived-users*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/archived-users') }}" class="flex items-center">
+        <span class="ml-2">🗃️</span> أرشيف المستخدمين
+    </a>
+</li>
+
                 <li class="p-3 {{ request()->is('students*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/students') }}" class="flex items-center">
                         <span class="ml-2">👨‍🎓</span> إدارة الطلاب
