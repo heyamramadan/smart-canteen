@@ -118,41 +118,34 @@
             <td class="p-3 text-sm">{{ $student->class }}</td>
             <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
-                @if($student->trashed())
-                    <form method="POST" action="{{ route('students.restore', $student->student_id) }}" class="restoreForm">
-                        @csrf
-                        <button type="button" onclick="confirmRestore(this)"
-                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-                            ♻️
-                            <span>استعادة</span>
-                        </button>
-                    </form>
-                @else
-                    <button onclick="openEditModal(
-                        '{{ $student->student_id }}',
-                        '{{ $student->full_name }}',
-                        '{{ $student->father_name }}',
-                        '{{ $student->class }}',
-                        '{{ $student->user_id }}',
-                        '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
-                        '{{ $student->image_path }}'
-                    )"
-                    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-                        ✏️
-                        <span>تعديل</span>
-                    </button>
+            <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
+    @if(!$student->trashed())
+        <button onclick="openEditModal(
+            '{{ $student->student_id }}',
+            '{{ $student->full_name }}',
+            '{{ $student->father_name }}',
+            '{{ $student->class }}',
+            '{{ $student->user_id }}',
+            '{{ $student->birth_date ? $student->birth_date->format('Y-m-d') : '' }}',
+            '{{ $student->image_path }}'
+        )"
+        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+            ✏️
+            <span>تعديل</span>
+        </button>
 
-                    <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" class="archiveForm">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" onclick="confirmArchive(this)"
-                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-                            🗑️
-                            <span>أرشفة</span>
-                        </button>
-                    </form>
-                @endif
-            </td>
+        <form method="POST" action="{{ route('students.destroy', $student->student_id) }}" class="archiveForm">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="confirmArchive(this)"
+                class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                🗑️
+                <span>أرشفة</span>
+            </button>
+        </form>
+    @endif
+</td>
+
         </tr>
     @empty
         <tr>
@@ -473,73 +466,67 @@
         });
 
         // تحديث جدول الطلاب بالنتائج
-        function updateStudentsTable(students) {
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
+   function updateStudentsTable(students) {
+    const tbody = document.querySelector('tbody');
+    tbody.innerHTML = '';
 
-            if (students.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            students.forEach(student => {
-                const isArchived = student.deleted_at !== null;
-                const rowClass = isArchived ? 'bg-gray-100 text-gray-400 hover:bg-gray-200' : 'hover:bg-gray-50';
-
-                const row = document.createElement('tr');
-                row.className = `transition ${rowClass}`;
-
-                row.innerHTML = `
-                 <td class="p-3">
-    ${student.image_path ?
-        `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
-        `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <span class="text-gray-500 text-xs">لا يوجد</span>
-        </div>`
+    if (students.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
+            </tr>
+        `;
+        return;
     }
-</td>
-                    <td class="p-3 text-sm font-medium">${student.full_name}</td>
-                    <td class="p-3 text-sm">${student.father_name}</td>
-                    <td class="p-3 text-sm">${student.class}</td>
-                    <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
-                    <td class="p-3 flex items-center">
-                        ${isArchived ? `
-                            <form method="POST" action="/students/${student.student_id}/restore" onsubmit="return confirm('هل تريد استعادة هذا الطالب؟');">
-                                @csrf
-                                <button class="text-green-600 hover:text-green-800 mx-1 p-1 rounded hover:bg-green-100 transition">
-                                    ♻️ استعادة
-                                </button>
-                            </form>
-                        ` : `
-                            <button onclick="openEditModal(
-                                '${student.student_id}',
-                                '${student.full_name}',
-                                '${student.father_name}',
-                                '${student.class}',
-                                '${student.birth_date ? student.birth_date : ''}',
-                                '${student.user_id}',
-                                '${student.image_path}'
-                            )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
-                                ✏️ تعديل
-                            </button>
-                            <form method="POST" action="/students/${student.student_id}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
-                                    🗑️ أرشفة
-                                </button>
-                            </form>
-                        `}
-                    </td>
-                `;
 
-                tbody.appendChild(row);
-            });
-        }
+    students.forEach(student => {
+        const isArchived = student.deleted_at !== null;
+        const rowClass = isArchived ? 'bg-gray-100 text-gray-400 hover:bg-gray-200' : 'hover:bg-gray-50';
+
+        const row = document.createElement('tr');
+        row.className = `transition ${rowClass}`;
+
+        row.innerHTML = `
+            <td class="p-3">
+                ${student.image_path ?
+                    `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
+                    `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500 text-xs">لا يوجد</span>
+                    </div>`
+                }
+            </td>
+            <td class="p-3 text-sm font-medium">${student.full_name}</td>
+            <td class="p-3 text-sm">${student.father_name}</td>
+            <td class="p-3 text-sm">${student.class}</td>
+            <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
+            <td class="p-3 flex items-center">
+                ${!isArchived ? `
+                    <button onclick="openEditModal(
+                        '${student.student_id}',
+                        '${student.full_name}',
+                        '${student.father_name}',
+                        '${student.class}',
+                        '${student.birth_date ? student.birth_date : ''}',
+                        '${student.user_id}',
+                        '${student.image_path}'
+                    )" class="text-primary-500 hover:text-primary-700 mx-1 p-1 rounded hover:bg-primary-100 transition">
+                        ✏️ تعديل
+                    </button>
+                    <form method="POST" action="/students/${student.student_id}" onsubmit="return confirm('هل أنت متأكد من أرشفة هذا الطالب؟');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:text-red-700 mx-1 p-1 rounded hover:bg-red-100 transition">
+                            🗑️ أرشفة
+                        </button>
+                    </form>
+                ` : ''}
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
      let confirmAction = null;
 
 function showConfirmModal(title, message, onConfirm, confirmText = 'نعم') {
