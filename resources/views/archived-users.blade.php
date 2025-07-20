@@ -37,6 +37,14 @@
                 سجل أرشيف المستخدمين
             </h2>
         </div>
+@if (session('success'))
+    <div
+        id="successMessage"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-100 text-green-800 border border-green-300 px-6 py-4 rounded-lg shadow-lg z-50 text-center"
+    >
+        {{ session('success') }}
+    </div>
+@endif
 
         <!-- جدول المستخدمين المؤرشفين -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -137,6 +145,14 @@
             closeRestoreModal();
         }
     });
+        // إخفاء رسالة النجاح بعد 4 ثواني
+    const successMessage = document.getElementById('successMessage');
+    if (successMessage) {
+        setTimeout(() => {
+            successMessage.classList.add('opacity-0', 'transition', 'duration-500');
+            setTimeout(() => successMessage.remove(), 500); // إزالة العنصر بعد التلاشي
+        }, 4000);
+    }
 </script>
 
 </body>
