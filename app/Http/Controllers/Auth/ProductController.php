@@ -34,6 +34,8 @@ class ProductController extends Controller
             'quantity' => 'required|integer',
              'is_active' => 'required|boolean',
             'image' => 'nullable|image|max:2048',
+            'expiry_date' => 'required|date|after_or_equal:today',
+
         ]);
 
         if ($request->hasFile('image')) {
@@ -74,6 +76,7 @@ class ProductController extends Controller
              'quantity' => 'required|integer',
           'is_active' => 'required|boolean',
             'image' => 'nullable|image|max:2048',
+                 'expiry_date' => 'required|date|after_or_equal:today',
         ]);
 
         if ($request->hasFile('image')) {

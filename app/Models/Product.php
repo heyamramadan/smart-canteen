@@ -18,6 +18,7 @@ class Product extends Model
      'quantity',// كمية منتج
         'image',        // رابط أو اسم صورة المنتج (اختياري)
         'is_active',    // حالة تفعيل المنتج (1 = مفعل، 0 = غير مفعل)
+         'expiry_date',//تاريخ صلاحية
     ];
 
     public function category()
