@@ -407,33 +407,40 @@
                 const row = document.createElement('tr');
                 row.className = `hover:bg-gray-50 transition ${isTrashed ? 'bg-gray-100 text-gray-400' : ''}`;
 
-                row.innerHTML = `
-                    <td class="p-3 text-sm">${user.username}</td>
-                    <td class="p-3 text-sm">${user.full_name}</td>
-                    <td class="p-3 text-sm">${user.email}</td>
-                    <td class="p-3 text-sm">${user.phone_number || ''}</td>
-                    <td class="p-3 text-sm">${user.role}</td>
-                    <td class="p-3 text-sm">${new Date(user.created_at).toISOString().slice(0,10)}</td>
-                    <td class="p-3 flex items-center space-x-2 space-x-reverse">
-                        ${isTrashed ? `
-                            <form method="POST" action="/users/${user.id}/restore" class="restore-form">
-                                @csrf
-                                <button type="submit" class="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-100 transition">♻️ استعادة</button>
-                            </form>
-                        ` : `
-                            <button onclick="openEditModal(${user.id}, '${user.username}', '${user.email}', '${user.full_name}', '${user.role}', '${user.phone_number}')"
-                                    class="text-primary-500 hover:text-primary-700 p-1 rounded hover:bg-primary-100 transition">
-                                ✏️ تعديل
-                            </button>
+               row.innerHTML = `
+    <td class="p-3 text-sm">${user.username}</td>
+    <td class="p-3 text-sm">${user.full_name}</td>
+    <td class="p-3 text-sm">${user.email}</td>
+    <td class="p-3 text-sm">${user.phone_number || ''}</td>
+    <td class="p-3 text-sm">${user.role}</td>
+    <td class="p-3 text-sm">${new Date(user.created_at).toISOString().slice(0,10)}</td>
+    <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
+        ${isTrashed ? `
+            <form method="POST" action="/users/${user.id}/restore" class="restore-form">
+                <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
+                <button type="submit"
+                    class="bg-white text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                    ♻️ <span>استعادة</span>
+                </button>
+            </form>
+        ` : `
+            <button onclick="openEditModal(${user.id}, '${user.username}', '${user.email}', '${user.full_name}', '${user.role}', '${user.phone_number}')"
+                class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                ✏️ <span>تعديل</span>
+            </button>
+            <form method="POST" action="/users/${user.id}" class="archive-form">
+                <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="button"
+                    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse archive-btn"
+                    data-user-id="${user.id}">
+                    🗑️ <span>أرشفة</span>
+                </button>
+            </form>
+        `}
+    </td>
+`;
 
-                            <form method="POST" action="/users/${user.id}" class="archive-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition">🗑️ أرشفة</button>
-                            </form>
-                        `}
-                    </td>
-                `;
                 usersTableBody.appendChild(row);
             });
         })
