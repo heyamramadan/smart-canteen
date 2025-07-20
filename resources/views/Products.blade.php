@@ -90,6 +90,7 @@
                             <th class="p-3 text-sm text-gray-500">الوصف</th>
                             <th class="p-3 text-sm text-gray-500">السعر</th>
                             <th class="p-3 text-sm text-gray-500">الكمية</th>
+                            <th class="p-3 text-sm text-gray-500">تاريخ الصلاحية</th>
                             <th class="p-3 text-sm text-gray-500">الحالة</th>
                             <th class="p-3 text-sm text-gray-500">تاريخ الإنشاء</th>
                             <th class="p-3 text-sm text-gray-500">الإجراءات</th>
@@ -118,6 +119,22 @@
                                 </span>
                             </td>
                             <td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
+                            <td class="p-3 text-sm">
+    @php
+        $exp = \Carbon\Carbon::parse($product->expiry_date);
+        $daysLeft = now()->diffInDays($exp, false);
+    @endphp
+
+    <span class="{{ $daysLeft <= 7 ? 'text-red-600 font-bold' : '' }}">
+        {{ $product->expiry_date }}
+        @if ($daysLeft <= 7 && $daysLeft >= 0)
+            <span class="text-xs text-red-500 block">⚠ {{ $daysLeft }} يوم متبقي</span>
+        @elseif ($daysLeft < 0)
+            <span class="text-xs text-red-500 block">⛔ منتهي</span>
+        @endif
+    </span>
+</td>
+
                             <td class="p-3 flex items-center space-x-1 space-x-reverse">
  <button
     class="text-primary-600 hover:text-white border border-primary-500 hover:bg-primary-500 px-3 py-1 rounded-lg transition text-sm edit-btn"
@@ -205,6 +222,12 @@
                                class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         @error('quantity') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
+<div>
+    <label class="block text-sm text-gray-600 mb-1">تاريخ الصلاحية</label>
+    <input type="date" name="expiry_date" id="productExpiry" required
+           class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+    @error('expiry_date') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+</div>
 
                     <div>
                         <label class="block text-sm text-gray-600 mb-1">الحالة</label>
@@ -288,6 +311,8 @@
         document.getElementById('productDescription').value = product.description ?? '';
         document.getElementById('productPrice').value = product.price ?? '';
         document.getElementById('productQuantity').value = product.quantity ?? '';
+        document.getElementById('productExpiry').value = product.expiry_date ?? '';
+
         document.getElementById('productStatus').value = product.is_active ? '1' : '0';
 
         document.getElementById('productModal').classList.remove('hidden');

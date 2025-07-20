@@ -51,6 +51,7 @@ class ProductController extends Controller
             'quantity' => $validated['quantity'],
             'is_active' => $validated['is_active'],
             'image' => $validated['image'] ?? null,
+             'expiry_date' => $validated['expiry_date'], 
         ]);
 
         return redirect()->route('products.index')->with('success', 'تم إضافة المنتج بنجاح');
