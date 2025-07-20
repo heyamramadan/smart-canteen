@@ -187,8 +187,8 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-sm text-gray-600 mb-1">وصف المنتج</label>
-                        <textarea name="description" id="productDescription" rows="3"
-                                  class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+<textarea name="description" id="productDescription" rows="3" required
+          class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
                         @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
 

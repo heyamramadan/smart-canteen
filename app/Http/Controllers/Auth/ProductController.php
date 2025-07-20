@@ -29,7 +29,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,category_id',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price' => 'required|numeric',
             'quantity' => 'required|integer',
              'is_active' => 'required|boolean',
@@ -69,7 +69,7 @@ class ProductController extends Controller
         $validated = $request->validate([
               'category_id' => 'required|exists:categories,category_id',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+           'description' => 'required|string',
             'price' => 'required|numeric',
              'quantity' => 'required|integer',
           'is_active' => 'required|boolean',
