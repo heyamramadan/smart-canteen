@@ -15,7 +15,7 @@ use App\Http\Controllers\Auth\ProfileController;
  use App\Http\Controllers\Auth\DailyReportController;
   use App\Http\Controllers\Auth\TransactionController;
   use App\Http\Controllers\Auth\ArchivedUserController;
-
+use App\Http\Controllers\Auth\ArchivedStudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
@@ -94,6 +94,11 @@ Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'res
 
 Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
+
+///ارشيف طلاب
+
+Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
+Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('students.restore');
     });
 
 

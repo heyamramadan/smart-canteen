@@ -70,6 +70,12 @@
                         <span class="ml-2">👨‍🎓</span> إدارة الطلاب
                     </a>
                 </li>
+                <li class="p-3 {{ request()->is('archived-students*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+    <a href="{{ url('/archived-students') }}" class="flex items-center">
+        <span class="ml-2">📦</span> أرشيف الطلاب
+    </a>
+</li>
+
                 <li class="p-3 {{ request()->is('categories*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/categories') }}" class="flex items-center">
                         <span class="ml-2">📂</span> إدارة التصنيفات
