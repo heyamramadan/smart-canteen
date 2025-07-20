@@ -55,7 +55,8 @@ class StudentController extends Controller
   public function index()
   {
       // ✅ تحميل علاقة 'user' المباشرة مع الطالب
-      $students = Studentmodel::with('user')->withTrashed()->oldest()->paginate(10);
+$students = Studentmodel::with('user')->oldest()->paginate(10);
+
       // ✅ جلب المستخدمين الذين دورهم "ولي أمر" لتعبئة القوائم المنسدلة في المودالات
       $parentUsers = User::where('role', 'ولي أمر')->get();
 
@@ -66,7 +67,7 @@ class StudentController extends Controller
     $searchQuery = $request->input('query');
 
     $students = Studentmodel::with(['user.wallet'])
-        ->withTrashed()
+
         ->where(function ($query) use ($searchQuery) {
             $query->where('full_name', 'LIKE', "%$searchQuery%");
 
