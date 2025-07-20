@@ -72,6 +72,12 @@
                     <span class="ml-2">👨‍🎓</span>
                     إدارة الطلاب
                 </h2>
+@if(session('success'))
+    <div id="successAlert"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg z-50 text-center transition-opacity duration-300">
+        {{ session('success') }}
+    </div>
+@endif
 
                 <div class="flex items-center space-x-4 space-x-reverse">
                     <!-- حقل البحث -->
@@ -567,7 +573,14 @@ function confirmRestore(button) {
 }
 
 
-
+    // إخفاء الرسالة بعد 4 ثواني
+    setTimeout(() => {
+        const alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.classList.add('opacity-0');
+            setTimeout(() => alert.remove(), 300); // إزالة العنصر من الصفحة بعد اختفاءه
+        }
+    }, 4000);
     </script>
 </body>
 </html>
