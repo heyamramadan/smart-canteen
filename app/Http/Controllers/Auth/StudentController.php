@@ -189,7 +189,8 @@ public function getAllowedCategories($student_id)
                 'father_name' => $student->father_name,
                 'class' => $student->class,
                 'daily_limit' => $student->user->wallet->daily_limit ?? 0,
-                'remaining_limit' => $this->calculateRemainingLimit($student->user->wallet)
+                'remaining_limit' => $this->calculateRemainingLimit($student->user->wallet),
+                'pin_code' => strval($student->pin_code), // تحويل إلى string
             ]
         ]);
 

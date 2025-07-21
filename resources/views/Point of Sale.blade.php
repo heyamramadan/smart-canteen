@@ -264,7 +264,7 @@
 
         <!-- زر التأكيد -->
         <div class="text-center">
-          <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-md hover:shadow-lg transition-all" onclick="confirmSale()">
+          <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-md hover:shadow-lg transition-all" id="confirmSaleBtn" >
             تأكيد عملية البيع
           </button>
         </div>
@@ -338,7 +338,8 @@ function loadCategoriesAndProducts(studentId) {
           }
 
           // تخزين الرقم السري من بيانات الطالب
-          currentStudentPin = data.student.pin_code || null;
+          currentStudentPin = String(data.student.pin_code || '');
+          console.log('Loaded Student PIN:', currentStudentPin);
 
         } else {
           showError(data.message);
@@ -473,34 +474,7 @@ data.forEach(student => {
     selectedRow.classList.add('bg-primary-100', 'text-white');
   }
 
-  function loadCategoriesAndProducts(studentId) {
-    fetch(`/students/${studentId}/allowed-categories`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          if (data.student && data.student.daily_limit) {
-            data.student.daily_limit = parseFloat(data.student.daily_limit) || 0;
-          }
 
-          updateStudentInfo(data.student);
-          renderCategories(data.categories);
-          allProducts = data.products;
-          currentCategory = null;
-          renderProducts(allProducts);
-
-          if (data.student.daily_limit !== undefined) {
-            dailyLimit = data.student.daily_limit;
-            updateLimitInfo();
-          }
-             currentStudentPin = data.student.pin_code || null;
-        } else {
-          showError(data.message);
-        }
-      })
-      .catch(err => {
-        showError('حدث خطأ في جلب البيانات: ' + err.message);
-      });
-  }
 
   function updateStudentInfo(student) {
     const studentInfoContainer = document.getElementById('studentInfoContainer');
@@ -713,80 +687,99 @@ data.forEach(student => {
        showModal('لا يوجد منتجات في الفاتورة.');
       return;
     }
-   pinError.classList.add('hidden');
+    
+    pinInput.value = ''; // مسح الحقل عند الفتح
+    pinError.classList.add('hidden');
     pinModal.classList.remove('hidden');
     pinModal.classList.add('flex');
     pinInput.focus();
-  }
+}
    cancelPinBtn.addEventListener('click', () => {
+    pinInput.value = ''; // مسح الحقل
     pinModal.classList.add('hidden');
     pinModal.classList.remove('flex');
   });
- confirmPinBtn.addEventListener('click', () => {
+  confirmPinBtn.addEventListener('click', () => {
     const enteredPin = pinInput.value.trim();
+    console.log('Entered PIN:', enteredPin, 'Type:', typeof enteredPin);
+    console.log('Stored PIN:', currentStudentPin, 'Type:', typeof currentStudentPin);
+    
     if (!enteredPin) {
       pinError.textContent = 'الرجاء إدخال الرقم السري.';
       pinError.classList.remove('hidden');
       return;
     }
-    if (enteredPin === currentStudentPin) {
-      pinModal.classList.add('hidden');
-      pinModal.classList.remove('flex');
-      pinError.classList.add('hidden');
-      sendSaleToServer();
-    } else {
+    
+    // تحويل كلا القيمتين إلى سترينج للمقارنة
+    const enteredPinStr = String(enteredPin);
+    const storedPinStr = String(currentStudentPin);
+    
+    console.log('Comparison:', enteredPinStr === storedPinStr);
+    
+    if (enteredPinStr === storedPinStr) {
+  const confirmedPin = enteredPinStr; // ← خزّن القيمة مؤقتاً
+
+  pinModal.classList.add('hidden');
+  pinModal.classList.remove('flex');
+  pinError.classList.add('hidden');
+  pinInput.value = ''; // ← الآن يمكن مسحه
+
+  sendSaleToServer(confirmedPin); // ← مرر الرقم السري
+}
+ else {
       pinError.textContent = 'الرقم السري غير صحيح، حاول مرة أخرى.';
       pinError.classList.remove('hidden');
     }
-  });
-  async function sendSaleToServer() {
-    const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+});
+async function sendSaleToServer(confirmedPin) {
+  const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    if (dailyLimit > 0 && totalAmount > dailyLimit) {
-       showModal(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} د.ل`);
-      return;
-    }
-
-    try {
-      const saleData = {
-        student_id: currentStudentId,
-           pin_code: pinInput.value.trim(),
-        items: invoiceItems.map(i => ({
-          product_id: i.id,
-          quantity: i.quantity,
-          price: i.price
-        })),
-        total_amount: totalAmount
-      };
-
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
-                       getCookie('XSRF-TOKEN');
-
-      const response = await fetch('/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(saleData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
-      }
-
-      showModal('تم تأكيد عملية البيع بنجاح');
-      invoiceItems = [];
-      renderInvoice();
-      loadCategoriesAndProducts(currentStudentId);
-    } catch (err) {
-      showModal(err.message || 'حدث خطأ أثناء تأكيد البيع');
-      console.error(err);
-    }
+  if (dailyLimit > 0 && totalAmount > dailyLimit) {
+    showModal(`لا يمكن إتمام الشراء، السقف اليومي هو ${dailyLimit.toFixed(2)} د.ل`);
+    return;
   }
+
+  try {
+    const saleData = {
+      student_id: currentStudentId,
+      pin_code: confirmedPin, // ← استخدم الرقم السري الممرر
+      items: invoiceItems.map(i => ({
+        product_id: i.id,
+        quantity: i.quantity,
+        price: i.price
+      })),
+      total_amount: totalAmount
+    };
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                     getCookie('XSRF-TOKEN');
+
+    const response = await fetch('/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(saleData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'حدث خطأ في تأكيد البيع');
+    }
+
+    showModal('تم تأكيد عملية البيع بنجاح');
+    invoiceItems = [];
+    renderInvoice();
+    loadCategoriesAndProducts(currentStudentId);
+  } catch (err) {
+    showModal(err.message || 'حدث خطأ أثناء تأكيد البيع');
+    console.error(err);
+  }
+}
+
   // زر تأكيد البيع يربط مع confirmSale
   document.getElementById('confirmSaleBtn').addEventListener('click', confirmSale);
 
