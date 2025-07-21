@@ -118,9 +118,10 @@
             <td class="p-3 text-sm">{{ $student->user->full_name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student->class }}</td>
             <td class="p-3 text-sm font-mono">
-   <button onclick="showPinCode('{{ $student->student_id }}')"
-        class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold transition">
-    عرض الرقم السري
+<button onclick="showPinCode('{{ $student->student_id }}')"
+    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+    🔒
+    <span>عرض الرقم السري</span>
 </button>
 
 
