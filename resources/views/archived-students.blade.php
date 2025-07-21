@@ -37,7 +37,12 @@
                     <span class="ml-2">📦</span> أرشيف الطلاب
                 </h2>
             </div>
-
+@if(session('success'))
+<div id="successAlert"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-xl shadow-2xl z-50 text-center text-lg font-medium transition-opacity duration-300">
+    {{ session('success') }}
+</div>
+@endif
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -130,6 +135,13 @@
             const form = button.closest('form');
             showConfirmModal('تأكيد الاستعادة', 'هل تريد استعادة هذا الطالب؟', () => form.submit());
         }
+            setTimeout(() => {
+        const alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.classList.add('opacity-0');
+            setTimeout(() => alert.remove(), 300); // يمكن حذفه إن أردت فقط الإخفاء
+        }
+    }, 3000);
     </script>
 </body>
 </html>
