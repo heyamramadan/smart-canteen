@@ -138,7 +138,7 @@ $users = User::oldest()->paginate(10);
 public function search(Request $request)
 {
     $searchQuery = $request->input('query');
-
+    $roleFilter = $request->input('role_filter');
     // جلب المستخدمين غير المؤرشفة فقط
     $query = User::query(); // هذا يعيد فقط غير المحذوفين نرمياً تلقائياً
 
