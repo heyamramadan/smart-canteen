@@ -386,11 +386,6 @@
     searchInput.addEventListener('input', function() {
         const query = this.value.trim();
 
-    if(query === '') {
-        // إعادة تحميل الصفحة لعرض كل المستخدمين بدون فلتر
-        window.location.reload();
-        return;
-    }
         fetch(`/users/search?query=${encodeURIComponent(query)}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
