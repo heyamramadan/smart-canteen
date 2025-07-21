@@ -97,6 +97,7 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الاسم الكامل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">اسم الأب</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الصف الدراسي</th>
+                                <th class="p-3 text-right text-sm text-gray-500">رقم السر</th>
                                 <th class="p-3 text-right text-sm text-gray-500">تاريخ التسجيل</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
@@ -116,6 +117,8 @@
             <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
             <td class="p-3 text-sm">{{ $student->user->full_name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student->class }}</td>
+            <td class="p-3 text-sm font-mono">{{ $student->pin_code }}</td>
+
             <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">

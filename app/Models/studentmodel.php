@@ -22,7 +22,8 @@ class studentmodel extends Model
         'full_name',   // الاسم الكامل للطالب
         'father_name', // اسم الأب (يمكن استخدامه للتمييز أو البيانات التعريفية)
         'class',       // الصف الدراسي أو المرحلة التعليمية للطالب
-         'image_path'
+         'image_path',
+         'pin_code',
     ];
 
     /**
