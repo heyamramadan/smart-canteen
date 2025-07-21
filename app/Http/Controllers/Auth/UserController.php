@@ -135,25 +135,29 @@ $users = User::oldest()->paginate(10);
      * البحث عن مستخدمين.
      * (لا تحتاج هذه الدالة لأي تعديل)
      */
-    public function search(Request $request)
-    {
-        $searchQuery = $request->input('query');
-      $query = User::query(); // فقط غير المؤرشفين
+public function search(Request $request)
+{
+    $searchQuery = $request->input('query');
 
+    // جلب المستخدمين غير المؤرشفة فقط
+    $query = User::query(); // هذا يعيد فقط غير المحذوفين نرمياً تلقائياً
 
-        if (!empty($searchQuery)) {
-            $isIdSearch = is_numeric($searchQuery);
-            $query->where(function($q) use ($searchQuery, $isIdSearch) {
-                $q->where('username', 'LIKE', '%' . $searchQuery . '%')
-                  ->orWhere('full_name', 'LIKE', '%' . $searchQuery . '%')
-                  ->orWhere('role', 'LIKE', '%' . $searchQuery . '%');
-                if ($isIdSearch) {
-                    $q->orWhere('id', $searchQuery);
-                }
-            });
-        }
+    if (!empty($searchQuery)) {
+        $isIdSearch = is_numeric($searchQuery);
+        $query->where(function($q) use ($searchQuery, $isIdSearch) {
+            $q->where('username', 'LIKE', '%' . $searchQuery . '%')
+              ->orWhere('full_name', 'LIKE', '%' . $searchQuery . '%')
+              ->orWhere('role', 'LIKE', '%' . $searchQuery . '%');
 
-        $users = $query->get();
-        return response()->json($users);
+            if ($isIdSearch) {
+                $q->orWhere('id', $searchQuery);
+            }
+        });
     }
+
+    $users = $query->orderBy('created_at', 'desc')->get();  // يمكن إضافة ترتيب للوضوح
+
+    return response()->json($users);
+}
+
 }

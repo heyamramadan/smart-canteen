@@ -1,4 +1,4 @@
-<!-- resources/views/students/archived.blade.php -->
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
