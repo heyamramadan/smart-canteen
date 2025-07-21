@@ -41,7 +41,7 @@ class OrderController extends Controller
     $student = StudentModel::findOrFail($validated['student_id']);
 
     // التحقق من كلمة السر
-    if ($student->pin_code !== $validated['pin_code']) {
+   if ((string)$student->pin_code !== (string)$validated['pin_code']) {
         return response()->json(['success' => false, 'message' => 'كلمة السر غير صحيحة'], 401);
     }
         try {
