@@ -40,7 +40,7 @@ class StudentController extends Controller
             'class' => $validated['class'],
             'user_id' => $validated['user_id'],
             'father_name' => $fatherName,
-            'pin_code' => mt_rand(100000, 999999),
+            'pin_code' => mt_rand(1000, 9999),
         ];
 
         if ($request->hasFile(key: 'image')) {
