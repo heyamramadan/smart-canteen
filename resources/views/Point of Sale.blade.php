@@ -750,7 +750,7 @@ data.forEach(student => {
     try {
       const saleData = {
         student_id: currentStudentId,
-           pin_code: pinInput.value.trim(), 
+           pin_code: pinInput.value.trim(),
         items: invoiceItems.map(i => ({
           product_id: i.id,
           quantity: i.quantity,
