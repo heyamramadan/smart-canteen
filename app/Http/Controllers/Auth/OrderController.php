@@ -43,39 +43,11 @@ class OrderController extends Controller
         ]);
     
         // جلب بيانات الطالب مع PIN
-        $student = StudentModel::findOrFail($validated['student_id']);
-    
-        Log::info('==== بيانات الرقم السري ====');
-        Log::info('الرقم السري المخزن في قاعدة البيانات:', [
-            'value' => $student->pin_code,
-            'type' => gettype($student->pin_code),
-            'length' => strlen($student->pin_code),
-            'trimmed' => trim(strval($student->pin_code)),
-            'trimmed_length' => strlen(trim(strval($student->pin_code))),
-        ]);
-    
-        Log::info('الرقم السري المرسل من العميل:', [
-            'value' => $validated['pin_code'],
-            'type' => gettype($validated['pin_code']),
-            'length' => strlen($validated['pin_code']),
-            'trimmed' => trim(strval($validated['pin_code'])),
-            'trimmed_length' => strlen(trim(strval($validated['pin_code']))),
-        ]);
+        $student = StudentModel::with(['user.wallet', 'bannedProducts'])->findOrFail($validated['student_id']);
     
         // التحقق من كلمة السر
         $storedPin = trim(strval($student->pin_code));
         $receivedPin = trim(strval($validated['pin_code']));
-    
-        Log::info('==== نتائج المقارنة ====');
-        Log::info('المقارنة بدون trim:', [
-            'result' => $student->pin_code === $validated['pin_code'] ? 'متطابق' : 'غير متطابق'
-        ]);
-        Log::info('المقارنة مع trim:', [
-            'result' => $storedPin === $receivedPin ? 'متطابق' : 'غير متطابق'
-        ]);
-        Log::info('المقارنة مع ==:', [
-            'result' => $storedPin == $receivedPin ? 'متطابق' : 'غير متطابق'
-        ]);
     
         if ($storedPin !== $receivedPin) {
             Log::error('فشل التحقق من الرقم السري', [
@@ -93,8 +65,79 @@ class OrderController extends Controller
     
         try {
             // استخدام DB::transaction لضمان تنفيذ كل العمليات أو التراجع عنها كلها
-            $orderResponse = DB::transaction(function () use ($validated) {
-                // ... بقية الكود كما هو ...
+            $orderResponse = DB::transaction(function () use ($validated, $student) {
+                $employee = Auth::user();
+                $parentUser = $student->user; // ولي الأمر هو المستخدم المرتبط بالطالب
+    
+                // 1. التحقق من وجود ولي أمر
+                if (!$parentUser) {
+                    throw new \Exception('لا يوجد ولي أمر مسجل لهذا الطالب.');
+                }
+    
+                // 2. التحقق من المنتجات الممنوعة
+                $bannedProductIds = $student->bannedProducts->pluck('product_id')->toArray();
+                foreach ($validated['items'] as $item) {
+                    if (in_array($item['product_id'], $bannedProductIds)) {
+                        $productName = Product::find($item['product_id'])->name;
+                        throw new \Exception("لا يمكن شراء المنتج '{$productName}' لأنه ممنوع لهذا الطالب.");
+                    }
+                }
+    
+                $wallet = $parentUser->wallet;
+    
+                // 3. التحقق من وجود المحفظة والرصيد الكافي
+                if (!$wallet || $wallet->balance < $validated['total_amount']) {
+                    throw new \Exception('رصيد المحفظة غير كافٍ لإتمام العملية.');
+                }
+    
+                // 4. التحقق من حد الإنفاق اليومي
+                $todaySpending = $student->orders()
+                                        ->whereDate('created_at', Carbon::today())
+                                        ->sum('total_amount');
+    
+                if (($todaySpending + $validated['total_amount']) > $wallet->daily_limit) {
+                    throw new \Exception("لا يمكن إتمام الطلب، لقد تجاوز الطالب حد الإنفاق اليومي المحدد له وهو: {$wallet->daily_limit} د.ل");
+                }
+    
+                // 5. إنشاء الطلب
+                $order = Order::create([
+                    'student_id' => $validated['student_id'],
+                    'employee_id' => $employee->id,
+                    'total_amount' => $validated['total_amount'],
+                ]);
+    
+                // 6. إضافة عناصر الطلب وخصم الكمية من المخزون
+                foreach ($validated['items'] as $item) {
+                    $product = Product::find($item['product_id']);
+                    if ($product->quantity < $item['quantity']) {
+                        throw new \Exception('الكمية غير متوفرة للمنتج: ' . $product->name);
+                    }
+    
+                    OrderItem::create([
+                        'order_id' => $order->order_id,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                        'price' => $item['price']
+                    ]);
+    
+                    $product->decrement('quantity', $item['quantity']);
+                }
+    
+                // 7. خصم المبلغ من المحفظة وتسجيل المعاملة
+                $wallet->decrement('balance', $validated['total_amount']);
+                WalletTransaction::create([
+                    'wallet_id' => $wallet->wallet_id,
+                    'amount' => -$validated['total_amount'], // استخدام قيمة سالبة لتمييز السحب
+                    'type' => 'سحب',
+                    'created_at' => now()
+                ]);
+    
+                return [
+                    'success' => true,
+                    'message' => 'تمت عملية البيع بنجاح',
+                    'order_id' => $order->order_id,
+                    'employee' => $employee->full_name
+                ];
             });
     
             Log::info('تمت عملية البيع بنجاح', ['order_id' => $orderResponse['order_id'] ?? null]);
