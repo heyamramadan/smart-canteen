@@ -280,6 +280,18 @@
     <button onclick="closeModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg">حسناً</button>
   </div>
 </div>
+<!-- مودال إدخال الرقم السري -->
+<div id="pinModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full text-center">
+    <h2 class="text-xl font-bold mb-4 text-primary-700">أدخل الرقم السري للطالب</h2>
+    <input type="password" id="pinInput" class="w-full p-3 border border-gray-300 rounded mb-4" placeholder="الرقم السري" />
+    <p id="pinError" class="text-red-600 mb-4 hidden">الرقم السري غير صحيح، حاول مرة أخرى.</p>
+    <div class="flex justify-center gap-4">
+      <button id="cancelPinBtn" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">إلغاء</button>
+      <button id="confirmPinBtn" class="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700">تأكيد</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const invoiceTableBody = document.querySelector('#invoiceTable tbody');
@@ -290,12 +302,52 @@
   const studentsTableBody = document.querySelector('#studentsTable tbody');
   const limitInfoDiv = document.getElementById('limitInfo');
   const remainingLimitText = document.getElementById('remainingLimitText');
+// مودال الرقم السري وعناصره
+const pinModal = document.getElementById('pinModal');
+const pinInput = document.getElementById('pinInput');
+const pinError = document.getElementById('pinError');
+const cancelPinBtn = document.getElementById('cancelPinBtn');
+const confirmPinBtn = document.getElementById('confirmPinBtn');
+
+// تخزين الرقم السري الصحيح مؤقتاً عند تحميل بيانات الطالب
 
   let invoiceItems = [];
   let allProducts = [];
   let currentStudentId = null;
   let currentCategory = null;
   let dailyLimit = 0;
+let currentStudentPin = null;
+function loadCategoriesAndProducts(studentId) {
+    fetch(`/students/${studentId}/allowed-categories`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          if (data.student && data.student.daily_limit) {
+            data.student.daily_limit = parseFloat(data.student.daily_limit) || 0;
+          }
+
+          updateStudentInfo(data.student);
+          renderCategories(data.categories);
+          allProducts = data.products;
+          currentCategory = null;
+          renderProducts(allProducts);
+
+          if (data.student.daily_limit !== undefined) {
+            dailyLimit = data.student.daily_limit;
+            updateLimitInfo();
+          }
+
+          // تخزين الرقم السري من بيانات الطالب
+          currentStudentPin = data.student.pin_code || null;
+
+        } else {
+          showError(data.message);
+        }
+      })
+      .catch(err => {
+        showError('حدث خطأ في جلب البيانات: ' + err.message);
+      });
+  }
 
   // استقبال البيانات من قارئ QR Code الخارجي
   studentSearchInput.addEventListener('keydown', function(e) {
@@ -440,6 +492,7 @@ data.forEach(student => {
             dailyLimit = data.student.daily_limit;
             updateLimitInfo();
           }
+             currentStudentPin = data.student.pin_code || null;
         } else {
           showError(data.message);
         }
@@ -660,7 +713,33 @@ data.forEach(student => {
        showModal('لا يوجد منتجات في الفاتورة.');
       return;
     }
-
+   pinError.classList.add('hidden');
+    pinModal.classList.remove('hidden');
+    pinModal.classList.add('flex');
+    pinInput.focus();
+  }
+   cancelPinBtn.addEventListener('click', () => {
+    pinModal.classList.add('hidden');
+    pinModal.classList.remove('flex');
+  });
+ confirmPinBtn.addEventListener('click', () => {
+    const enteredPin = pinInput.value.trim();
+    if (!enteredPin) {
+      pinError.textContent = 'الرجاء إدخال الرقم السري.';
+      pinError.classList.remove('hidden');
+      return;
+    }
+    if (enteredPin === currentStudentPin) {
+      pinModal.classList.add('hidden');
+      pinModal.classList.remove('flex');
+      pinError.classList.add('hidden');
+      sendSaleToServer();
+    } else {
+      pinError.textContent = 'الرقم السري غير صحيح، حاول مرة أخرى.';
+      pinError.classList.remove('hidden');
+    }
+  });
+  async function sendSaleToServer() {
     const totalAmount = invoiceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (dailyLimit > 0 && totalAmount > dailyLimit) {
@@ -671,6 +750,7 @@ data.forEach(student => {
     try {
       const saleData = {
         student_id: currentStudentId,
+           pin_code: pinInput.value.trim(), 
         items: invoiceItems.map(i => ({
           product_id: i.id,
           quantity: i.quantity,
@@ -707,6 +787,8 @@ data.forEach(student => {
       console.error(err);
     }
   }
+  // زر تأكيد البيع يربط مع confirmSale
+  document.getElementById('confirmSaleBtn').addEventListener('click', confirmSale);
 
   function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -728,6 +810,7 @@ data.forEach(student => {
     document.getElementById("messageModal").classList.add("hidden");
     document.getElementById("messageModal").classList.remove("flex");
   }
+
 </script>
 
 </body>

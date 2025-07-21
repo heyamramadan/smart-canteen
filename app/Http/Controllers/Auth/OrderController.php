@@ -34,9 +34,16 @@ class OrderController extends Controller
             'items.*.product_id' => 'required|exists:products,product_id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'total_amount' => 'required|numeric|min:0'
+            'total_amount' => 'required|numeric|min:0',
+  'pin_code' => 'required|string',
         ]);
+   // جلب بيانات الطالب مع PIN
+    $student = StudentModel::findOrFail($validated['student_id']);
 
+    // التحقق من كلمة السر
+    if ($student->pin_code !== $validated['pin_code']) {
+        return response()->json(['success' => false, 'message' => 'كلمة السر غير صحيحة'], 401);
+    }
         try {
             // استخدام DB::transaction لضمان تنفيذ كل العمليات أو التراجع عنها كلها
             $orderResponse = DB::transaction(function () use ($validated) {
