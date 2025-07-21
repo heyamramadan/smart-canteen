@@ -70,8 +70,7 @@ Route::put('/students/{student}', [StudentController::class, 'update'])->name('s
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
-
-
+Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
      //محافظة
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');

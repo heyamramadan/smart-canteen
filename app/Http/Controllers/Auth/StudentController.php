@@ -43,7 +43,7 @@ class StudentController extends Controller
             'pin_code' => mt_rand(100000, 999999),
         ];
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile(key: 'image')) {
             $imagePath = $request->file('image')->store('students/images', 'public');
             $studentData['image_path'] = $imagePath;
         }
@@ -226,5 +226,12 @@ private function calculateRemainingLimit($wallet)
         return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
     }
 
-
+public function showPinCode(Studentmodel $student)
+{
+    // مباشرة نعيد الرقم السري بدون أي تحقق (لأن الوصول مقصور على المسؤولين أصلاً)
+    return response()->json([
+        'pin_code' => $student->pin_code,
+        'student_name' => $student->full_name
+    ]);
+}
 }

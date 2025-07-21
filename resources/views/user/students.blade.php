@@ -117,7 +117,15 @@
             <td class="p-3 text-sm font-medium">{{ $student->full_name }}</td>
             <td class="p-3 text-sm">{{ $student->user->full_name ?? 'غير معروف' }}</td>
             <td class="p-3 text-sm">{{ $student->class }}</td>
-            <td class="p-3 text-sm font-mono">{{ $student->pin_code }}</td>
+            <td class="p-3 text-sm font-mono">
+   <button onclick="showPinCode('{{ $student->student_id }}')"
+        class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold transition">
+    عرض الرقم السري
+</button>
+
+
+</td>
+
 
             <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
@@ -338,6 +346,17 @@
                 إلغاء
             </button>
         </div>
+    </div>
+</div>
+<!-- مودال عرض الرقم السري -->
+<div id="pinCodeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 text-center relative">
+        <button onclick="closePinCodeModal()" class="absolute top-3 left-3 text-gray-500 hover:text-gray-700 text-xl font-bold">×</button>
+        <h3 class="text-lg font-bold mb-4 text-primary-700">الرقم السري للطالب</h3>
+        <p id="pinCodeText" class="text-2xl font-mono text-gray-800 mb-6 select-all"></p>
+        <button onclick="closePinCodeModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+            إغلاق
+        </button>
     </div>
 </div>
 
@@ -578,6 +597,32 @@ function confirmRestore(button) {
             setTimeout(() => alert.remove(), 300); // إزالة العنصر من الصفحة بعد اختفاءه
         }
     }, 4000);
+ function showPinCode(studentId) {
+    fetch(`/students/${studentId}/pincode`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('pinCodeText').innerHTML = `
+            <div class="mb-2">الطالب: <strong>${data.student_name}</strong></div>
+            <div class="text-3xl font-bold">${data.pin_code}</div>
+        `;
+        document.getElementById('pinCodeModal').classList.remove('hidden');
+    })
+    .catch(() => alert('حدث خطأ في جلب الرقم السري'));
+}
+
+function closePinCodeModal() {
+    document.getElementById('pinCodeModal').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+// إغلاق المودال عند النقر خارج المحتوى
+document.getElementById('pinCodeModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePinCodeModal();
+    }
+});
+
+
     </script>
 </body>
 </html>
