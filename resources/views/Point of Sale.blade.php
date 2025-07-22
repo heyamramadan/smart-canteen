@@ -687,7 +687,7 @@ data.forEach(student => {
        showModal('لا يوجد منتجات في الفاتورة.');
       return;
     }
-    
+
     pinInput.value = ''; // مسح الحقل عند الفتح
     pinError.classList.add('hidden');
     pinModal.classList.remove('hidden');
@@ -703,19 +703,19 @@ data.forEach(student => {
     const enteredPin = pinInput.value.trim();
     console.log('Entered PIN:', enteredPin, 'Type:', typeof enteredPin);
     console.log('Stored PIN:', currentStudentPin, 'Type:', typeof currentStudentPin);
-    
+
     if (!enteredPin) {
       pinError.textContent = 'الرجاء إدخال الرقم السري.';
       pinError.classList.remove('hidden');
       return;
     }
-    
+
     // تحويل كلا القيمتين إلى سترينج للمقارنة
     const enteredPinStr = String(enteredPin);
     const storedPinStr = String(currentStudentPin);
-    
+
     console.log('Comparison:', enteredPinStr === storedPinStr);
-    
+
     if (enteredPinStr === storedPinStr) {
   const confirmedPin = enteredPinStr; // ← خزّن القيمة مؤقتاً
 
