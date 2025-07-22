@@ -16,7 +16,7 @@ class Wallet extends Model
     protected $fillable = [
         'user_id', // تم تغيير parent_id إلى user_id
         'balance',
-         'daily_limit',
+
     ];
 
     // العلاقة: المحفظة تنتمي إلى ولي الأمر
