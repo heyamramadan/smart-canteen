@@ -189,7 +189,8 @@ public function getAllowedCategories($student_id)
                 'father_name' => $student->father_name,
                 'class' => $student->class,
                 'daily_limit' => $student->daily_limit ?? 0,
-                'remaining_limit' => $this->calculateRemainingLimit($student->user->wallet),
+'remaining_limit' => $this->calculateRemainingLimit($student),
+
                 'pin_code' => strval($student->pin_code), // تحويل إلى string
             ]
         ]);
@@ -213,6 +214,7 @@ private function calculateRemainingLimit($student)
     $remaining = $student->daily_limit - $todayPurchases;
     return max($remaining, 0);
 }
+
 
   public function destroy($id)
     {

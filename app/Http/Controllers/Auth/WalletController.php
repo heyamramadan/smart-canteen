@@ -40,7 +40,7 @@ class WalletController extends Controller
         // ✅ تعديل: البحث عن المحفظة باستخدام user_id
         $wallet = Wallet::firstOrCreate(
             ['user_id' => $request->user_id], // الشرط للبحث أو الإنشاء
-            ['balance' => 0, 'daily_limit' => 20] // قيم افتراضية عند الإنشاء
+               ['balance' => 0]// قيم افتراضية عند الإنشاء
         );
 
         // تحديث الرصيد الحالي
