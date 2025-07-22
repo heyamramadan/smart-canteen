@@ -188,7 +188,7 @@ public function getAllowedCategories($student_id)
                 'full_name' => $student->full_name,
                 'father_name' => $student->father_name,
                 'class' => $student->class,
-                'daily_limit' => $student->user->wallet->daily_limit ?? 0,
+                'daily_limit' => $student->daily_limit ?? 0,
                 'remaining_limit' => $this->calculateRemainingLimit($student->user->wallet),
                 'pin_code' => strval($student->pin_code), // تحويل إلى string
             ]
@@ -202,20 +202,18 @@ public function getAllowedCategories($student_id)
     }
 }
 
-private function calculateRemainingLimit($wallet)
+private function calculateRemainingLimit($student)
 {
-    if (!$wallet) return 0;
+    if (!$student) return 0;
 
-    // حساب إجمالي المشتريات اليومية لهذا الطالب
-    $todayPurchases = \App\Models\Order::whereHas('student', function($q) use ($wallet) {
-            $q->where('user_id', $wallet->user_id);
-        })
+    $todayPurchases = \App\Models\Order::where('student_id', $student->student_id)
         ->whereDate('created_at', today())
         ->sum('total_amount');
 
-    $remaining = $wallet->daily_limit - $todayPurchases;
-    return max($remaining, 0); // التأكد من عدم الرجوع بقيمة سالبة
+    $remaining = $student->daily_limit - $todayPurchases;
+    return max($remaining, 0);
 }
+
   public function destroy($id)
     {
         $student = Studentmodel::findOrFail($id);
