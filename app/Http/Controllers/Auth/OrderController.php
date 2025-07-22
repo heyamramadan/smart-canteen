@@ -96,7 +96,7 @@ class OrderController extends Controller
                                         ->sum('total_amount');
 
                if (($todaySpending + $validated['total_amount']) > $student->daily_limit) {
-    throw new \Exception("لا يمكن إتمام الطلب، لقد تجاوز الطالب حد الإنفاق اليومي المحدد له وهو: {$student->daily_limit} د.ل");
+    throw new \Exception(message: "لا يمكن إتمام الطلب، لقد تجاوز الطالب حد الإنفاق اليومي المحدد له وهو: {$student->daily_limit} د.ل");
 }
 
 
