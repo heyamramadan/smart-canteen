@@ -90,8 +90,8 @@
                             <th class="p-3 text-sm text-gray-500">الوصف</th>
                             <th class="p-3 text-sm text-gray-500">السعر</th>
                             <th class="p-3 text-sm text-gray-500">الكمية</th>
+                             <th class="p-3 text-sm text-gray-500">الحالة</th>
                             <th class="p-3 text-sm text-gray-500">تاريخ الصلاحية</th>
-                            <th class="p-3 text-sm text-gray-500">الحالة</th>
                             <th class="p-3 text-sm text-gray-500">تاريخ الإنشاء</th>
                             <th class="p-3 text-sm text-gray-500">الإجراءات</th>
                         </tr>
