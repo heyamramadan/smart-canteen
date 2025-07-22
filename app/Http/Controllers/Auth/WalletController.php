@@ -35,7 +35,6 @@ class WalletController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id', // التأكد من أن المستخدم موجود في جدول users
             'amount' => 'required|numeric|min:1',
-            'daily_limit' => 'nullable|numeric|min:0'
         ]);
 
         // ✅ تعديل: البحث عن المحفظة باستخدام user_id
@@ -47,10 +46,6 @@ class WalletController extends Controller
         // تحديث الرصيد الحالي
         $wallet->balance += $request->amount;
 
-        // تحديث سقف الشراء اليومي إذا تم إرساله في الطلب
-        if ($request->filled('daily_limit')) {
-            $wallet->daily_limit = $request->daily_limit;
-        }
 
         $wallet->save(); // حفظ التغييرات
 

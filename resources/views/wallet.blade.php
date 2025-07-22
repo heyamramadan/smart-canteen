@@ -108,10 +108,6 @@
                     <input type="number" id="amount" class="w-full border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" min="1" required>
                 </div>
 
-                <div>
-                    <label for="daily_limit" class="block text-sm font-medium text-gray-700 mb-1">حد الإنفاق اليومي الجديد (اختياري)</label>
-                    <input type="number" id="daily_limit" class="w-full border-gray-300 rounded-lg shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" min="0">
-                </div>
 
                 <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                     تنفيذ الشحن
@@ -141,7 +137,7 @@
         document.getElementById('userIdInput').value = userId;
         document.getElementById('modalParentName').textContent = name;
         document.getElementById('modalCurrentBalance').textContent = `${parseFloat(balance).toFixed(2)} د.ل`;
-        document.getElementById('daily_limit').placeholder = `الحد الحالي: ${parseFloat(dailyLimit).toFixed(2)}`;
+
         document.getElementById('chargeForm').reset(); // لإفراغ حقل المبلغ
         document.getElementById('chargeModal').classList.remove('hidden');
     }
@@ -158,7 +154,6 @@
     function submitCharge() {
         const userId = document.getElementById('userIdInput').value;
         const amount = document.getElementById('amount').value;
-        const daily_limit = document.getElementById('daily_limit').value;
 
         if (!amount || parseFloat(amount) <= 0) {
             alert('الرجاء إدخال مبلغ صحيح للشحن.');
@@ -170,9 +165,6 @@
             amount: parseFloat(amount)
         };
 
-        if (daily_limit) {
-            bodyData.daily_limit = parseFloat(daily_limit);
-        }
 
         fetch("{{ route('wallet.charge') }}", {
             method: "POST",
