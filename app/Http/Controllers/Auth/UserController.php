@@ -103,6 +103,14 @@ $users = User::oldest()->paginate(10);
             'current_password' => 'nullable|string',
             'new_password' => 'nullable|string|min:6|confirmed',
         ]);
+// ✅ تصفير كلمة المرور إذا طلب المستخدم
+if ($request->has('reset_password') && $request->reset_password == '1') {
+    $user->update([
+        'password' => Hash::make('000000'),
+    ]);
+
+    return redirect()->route('users.index')->with('success', 'تم تصفير كلمة المرور إلى القيمة الافتراضية.');
+}
 
         // حفظ الدور القديم للمقارنة
         $oldRole = $user->role;

@@ -178,6 +178,13 @@
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
                 </div>
+<!-- زر تصفير كلمة المرور -->
+<div class="pt-2">
+    <button type="button" onclick="resetPasswordToDefault()"
+        class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
+        🔄 تصفير كلمة المرور إلى القيمة الافتراضية
+    </button>
+</div>
 
                 <div class="pt-4 flex justify-end space-x-3 space-x-reverse">
                     <button type="button" onclick="closeEditModal()"
@@ -327,6 +334,14 @@
             document.getElementById('editUserModal').classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
+function resetPasswordToDefault() {
+    let input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'reset_password';
+    input.value = '1';
+    document.getElementById('editUserForm').appendChild(input);
+    document.getElementById('editUserForm').submit();
+}
 
         // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
         @if ($errors->any())
