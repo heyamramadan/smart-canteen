@@ -415,7 +415,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 4000); // بعد 4 ثوانٍ
     }
 });
-
+    document.getElementById('productQuantity').addEventListener('input', function () {
+        const quantity = parseInt(this.value);
+        const status = document.getElementById('productStatus');
+        if (!isNaN(quantity)) {
+            status.value = quantity > 0 ? '1' : '0';
+        }
+    });
 </script>
 
 </body>

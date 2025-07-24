@@ -84,6 +84,7 @@ class ProductController extends Controller
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
         }
+$validated['is_active'] = $validated['quantity'] > 0 ? 1 : 0;
 
         $product->update($validated);
 
