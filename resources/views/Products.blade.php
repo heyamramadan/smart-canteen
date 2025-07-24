@@ -100,8 +100,9 @@
                             <th class="p-3 text-sm text-gray-500">السعر</th>
                             <th class="p-3 text-sm text-gray-500">الكمية</th>
                              <th class="p-3 text-sm text-gray-500">الحالة</th>
+                               <th class="p-3 text-sm text-gray-500">تاريخ الإنشاء</th>
                             <th class="p-3 text-sm text-gray-500">تاريخ الصلاحية</th>
-                            <th class="p-3 text-sm text-gray-500">تاريخ الإنشاء</th>
+
                             <th class="p-3 text-sm text-gray-500">الإجراءات</th>
                         </tr>
                     </thead>
@@ -127,7 +128,8 @@
                                     {{ $product->is_active ? 'نشط' : 'غير نشط' }}
                                 </span>
                             </td>
-                         <td class="p-3 text-sm">
+                            <td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
+                            <td class="p-3 text-sm">
     @php
         $exp = \Carbon\Carbon::parse($product->expiry_date);
         $daysLeft = now()->diffInDays($exp, false);
@@ -142,9 +144,6 @@
         @endif
     </span>
 </td>
-
-<td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
-
 
                             <td class="p-3 flex items-center space-x-1 space-x-reverse">
  <button
