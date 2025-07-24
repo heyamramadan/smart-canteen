@@ -121,7 +121,13 @@ class OrderController extends Controller
                         'price' => $item['price']
                     ]);
 
-                    $product->decrement('quantity', $item['quantity']);
+                   $product->decrement('quantity', $item['quantity']);
+
+// تحديث حالة المنتج تلقائيًا إذا نفدت الكمية
+if ($product->quantity - $item['quantity'] <= 0) {
+    $product->update(['is_active' => false]);
+}
+
                 }
 
                 // 7. خصم المبلغ من المحفظة وتسجيل المعاملة
