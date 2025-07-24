@@ -88,11 +88,13 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
 
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
+
 ///ارشيف
 
 
 Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
+Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
 
 ///ارشيف طلاب
 

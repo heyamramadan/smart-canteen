@@ -45,6 +45,17 @@
         {{ session('success') }}
     </div>
 @endif
+<div class="flex justify-between items-center mb-4">
+    <div class="relative">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="ابحث عن مستخدم..."
+            class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+        <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
+    </div>
+</div>
 
         <!-- جدول المستخدمين المؤرشفين -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -61,7 +72,7 @@
                         <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                     </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody id="archivedUsersTable" class="divide-y divide-gray-200">
                     @forelse ($archivedUsers as $user)
                         <tr class="bg-gray-50 text-gray-500 hover:bg-gray-100 transition">
                             <td class="p-3 text-sm">{{ $user->username }}</td>
@@ -152,6 +163,45 @@
             successMessage.classList.add('opacity-0', 'transition', 'duration-500');
             setTimeout(() => successMessage.remove(), 500); // إزالة العنصر بعد التلاشي
         }, 4000);
+    }
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+        fetch(`/archived-users/search?query=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => updateArchivedUsersTable(data))
+            .catch(err => console.error(err));
+    });
+
+    function updateArchivedUsersTable(users) {
+        const tbody = document.getElementById('archivedUsersTable');
+        tbody.innerHTML = '';
+
+        if (users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة.</td></tr>`;
+            return;
+        }
+
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.className = 'bg-gray-50 text-gray-500 hover:bg-gray-100 transition';
+            row.innerHTML = `
+                <td class="p-3 text-sm">${user.username}</td>
+                <td class="p-3 text-sm">${user.full_name}</td>
+                <td class="p-3 text-sm">${user.email}</td>
+                <td class="p-3 text-sm">${user.phone_number}</td>
+                <td class="p-3 text-sm">${user.role}</td>
+                <td class="p-3 text-sm">${user.created_at}</td>
+                <td class="p-3">
+                    <button
+                        onclick="openRestoreModal(${user.id}, '${user.username}')"
+                        class="text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition"
+                    >
+                        ♻️ استعادة
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
     }
 </script>
 
