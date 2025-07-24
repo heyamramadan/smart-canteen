@@ -27,4 +27,21 @@ class ArchivedStudentController extends Controller
         $student->restore();
         return redirect()->route('archived-students.index')->with('success', 'تم استعادة الطالب بنجاح.');
     }
+public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $students = Studentmodel::onlyTrashed()
+        ->where(function ($q) use ($query) {
+            $q->where('full_name', 'like', "%$query%")
+              ->orWhereHas('user', function ($q2) use ($query) {
+                  $q2->where('full_name', 'like', "%$query%");
+              });
+        })
+        ->with('user')
+        ->get();
+
+    return response()->json($students);
+}
+
 }

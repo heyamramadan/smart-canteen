@@ -37,6 +37,11 @@
                     <span class="ml-2">📦</span> أرشيف الطلاب
                 </h2>
             </div>
+            <div class="mb-4">
+    <input type="text" id="archivedSearchInput" placeholder="ابحث عن طالب..."
+        class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+</div>
+
 @if(session('success'))
 <div id="successAlert"
     class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-xl shadow-2xl z-50 text-center text-lg font-medium transition-opacity duration-300">
@@ -142,6 +147,58 @@
             setTimeout(() => alert.remove(), 300); // يمكن حذفه إن أردت فقط الإخفاء
         }
     }, 3000);
+        document.getElementById('archivedSearchInput').addEventListener('input', function (e) {
+        const query = e.target.value.trim();
+
+        fetch(`/archived-students/search?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => updateArchivedTable(data))
+            .catch(error => console.error('Error:', error));
+    });
+
+    function updateArchivedTable(students) {
+        const tbody = document.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        if (students.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد نتائج مطابقة للبحث.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        students.forEach(student => {
+            const row = document.createElement('tr');
+            row.className = 'transition bg-gray-100 text-gray-400 hover:bg-gray-200';
+
+            row.innerHTML = `
+                <td class="p-3">
+                    ${student.image_path ?
+                        `<img src="/storage/${student.image_path}" class="h-10 w-10 rounded-full object-cover" />` :
+                        `<div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-500 text-xs">لا يوجد</span>
+                        </div>`
+                    }
+                </td>
+                <td class="p-3 text-sm font-medium">${student.full_name}</td>
+                <td class="p-3 text-sm">${student.user?.full_name || 'غير معروف'}</td>
+                <td class="p-3 text-sm">${student.class}</td>
+                <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
+                <td class="p-3">
+                    <form method="POST" action="{{ route('archived-students.restore', $student->student_id) }}"class="restoreForm">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <button type="button" onclick="confirmRestore(this)"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                            ♻️ <span>استعادة</span>
+                        </button>
+                    </form>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
     </script>
 </body>
 </html>

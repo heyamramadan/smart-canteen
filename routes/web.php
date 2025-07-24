@@ -99,7 +99,9 @@ Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArch
 ///ارشيف طلاب
 
 Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
-Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('students.restore');
+Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('archived-students.restore');
+Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
+
     });
 
 
