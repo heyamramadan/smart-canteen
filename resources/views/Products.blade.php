@@ -127,8 +127,7 @@
                                     {{ $product->is_active ? 'نشط' : 'غير نشط' }}
                                 </span>
                             </td>
-                            <td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
-                            <td class="p-3 text-sm">
+                         <td class="p-3 text-sm">
     @php
         $exp = \Carbon\Carbon::parse($product->expiry_date);
         $daysLeft = now()->diffInDays($exp, false);
@@ -143,6 +142,9 @@
         @endif
     </span>
 </td>
+
+<td class="p-3 text-sm">{{ $product->created_at->format('Y-m-d') }}</td>
+
 
                             <td class="p-3 flex items-center space-x-1 space-x-reverse">
  <button
