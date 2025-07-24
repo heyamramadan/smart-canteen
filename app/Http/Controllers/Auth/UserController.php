@@ -163,6 +163,9 @@ public function search(Request $request)
         });
     }
 
+    if (!empty($roleFilter)) {
+        $query->where('role', $roleFilter);
+    }
     $users = $query->orderBy('created_at', 'desc')->get();  // يمكن إضافة ترتيب للوضوح
 
     return response()->json($users);

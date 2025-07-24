@@ -51,6 +51,13 @@
                     إدارة المستخدمين
                 </h2>
                 <div class="flex items-center space-x-4 space-x-reverse">
+                    <select id="roleFilter" class="border rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500">
+    <option value="">كل الأدوار</option>
+    <option value="مسؤول">مسؤول</option>
+    <option value="موظف">موظف</option>
+    <option value="ولي أمر">ولي أمر</option>
+</select>
+
                     <!-- حقل البحث -->
                                  <div class="relative">
                         <input id="searchInput" type="text" placeholder="ابحث عن مستخدم..."
@@ -401,9 +408,12 @@ function resetPasswordToDefault() {
     const usersTableBody = document.getElementById('usersTableBody');
 
     searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
+   const query = this.value.trim();
+const role = document.getElementById('roleFilter').value;
 
-        fetch(`/users/search?query=${encodeURIComponent(query)}`, {
+
+       fetch(`/users/search?query=${encodeURIComponent(query)}&role_filter=${encodeURIComponent(role)}`, {
+
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -465,6 +475,9 @@ function resetPasswordToDefault() {
             console.error('Error fetching users:', error);
         });
     });
+});
+document.getElementById('roleFilter').addEventListener('change', function () {
+    searchInput.dispatchEvent(new Event('input'));
 });
 
     </script>
