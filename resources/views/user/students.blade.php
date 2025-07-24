@@ -489,7 +489,7 @@
         });
 
         // تحديث جدول الطلاب بالنتائج
-   function updateStudentsTable(students) {
+  function updateStudentsTable(students) {
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -519,43 +519,45 @@
                 }
             </td>
             <td class="p-3 text-sm font-medium">${student.full_name}</td>
-            <td class="p-3 text-sm">${student.father_name}</td>
+            <td class="p-3 text-sm">${student.father_name || 'غير معروف'}</td>
             <td class="p-3 text-sm">${student.class}</td>
+            <td class="p-3 text-sm font-mono">
+                <button onclick="showPinCode('${student.student_id}')"
+                    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                    🔒 <span>عرض الرقم السري</span>
+                </button>
+            </td>
             <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
-        <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
-    ${!isArchived ? `
-        <button onclick="openEditModal(
-            '${student.student_id}',
-            '${student.full_name}',
-            '${student.father_name}',
-            '${student.class}',
-            '${student.user_id}',
-            '${student.birth_date ? student.birth_date : ''}',
-            '${student.image_path}'
-        )"
-        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-            ✏️
-            <span>تعديل</span>
-        </button>
-
-   <form method="POST" action="/students/${student.student_id}" onsubmit="event.preventDefault(); confirmArchive(this);" class="inline-block archiveForm">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="_method" value="DELETE">
-    <button type="submit"
-        class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-        🗑️
-        <span>أرشفة</span>
-    </button>
-</form>
-
-    ` : ''}
-</td>
-
+            <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
+                ${!isArchived ? `
+                    <button onclick="openEditModal(
+                        '${student.student_id}',
+                        '${student.full_name}',
+                        '${student.father_name}',
+                        '${student.class}',
+                        '${student.user_id}',
+                        '${student.birth_date ?? ''}',
+                        '${student.image_path ?? ''}'
+                    )"
+                    class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                        ✏️ <span>تعديل</span>
+                    </button>
+                    <form method="POST" action="/students/${student.student_id}" onsubmit="event.preventDefault(); confirmArchive(this);" class="inline-block archiveForm">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit"
+                            class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+                            🗑️ <span>أرشفة</span>
+                        </button>
+                    </form>
+                ` : ''}
+            </td>
         `;
 
         tbody.appendChild(row);
     });
 }
+
 
      let confirmAction = null;
 
