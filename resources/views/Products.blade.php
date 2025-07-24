@@ -46,6 +46,15 @@
 <div class="flex h-screen">
     @include('layouts.sidebar')
 
+    @if (session('success'))
+  <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-8 py-4 rounded-xl shadow-xl text-sm font-bold text-center animate-fade-in-out">
+        {{ session('success') }}
+    </div>
+</div>
+
+@endif
+
     <!-- محتوى إدارة المنتجات -->
     <div class="flex-1 p-6 overflow-auto">
         <!-- شريط البحث وإضافة منتج -->
@@ -396,6 +405,15 @@ function bindDeleteButtons() {
 document.addEventListener('DOMContentLoaded', function () {
     bindEditButtons();
     bindDeleteButtons();
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const flash = document.getElementById('flashMessage');
+    if (flash) {
+        setTimeout(() => {
+            flash.classList.add('fade-out');
+            setTimeout(() => flash.remove(), 1000); // إزالة العنصر بعد اختفائه
+        }, 4000); // بعد 4 ثوانٍ
+    }
 });
 
 </script>
