@@ -48,7 +48,7 @@
 
     @if (session('success'))
   <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
-    <div class="bg-green-100 border border-green-400 text-green-700 px-8 py-4 rounded-xl shadow-xl text-sm font-bold text-center animate-fade-in-out">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-8 py-4 rounded-xl shadow-xl text-xl font-bold text-center animate-fade-in-out">
         {{ session('success') }}
     </div>
 </div>
