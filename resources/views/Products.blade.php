@@ -231,6 +231,8 @@
                                class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         @error('quantity') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
+                    <input type="hidden" name="is_active" id="productStatus" value="1">
+
 <div>
     <label class="block text-sm text-gray-600 mb-1">تاريخ الصلاحية</label>
     <input type="date" name="expiry_date" id="productExpiry" required
@@ -238,15 +240,7 @@
     @error('expiry_date') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
 </div>
 
-                    <div>
-                        <label class="block text-sm text-gray-600 mb-1">الحالة</label>
-                        <select name="is_active" id="productStatus" required
-                                class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <option value="1">نشط</option>
-                            <option value="0">غير نشط</option>
-                        </select>
-                        @error('is_active') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-                    </div>
+
 
                     <div class="md:col-span-2">
                         <label class="block text-sm text-gray-600 mb-1">صورة المنتج (اختياري)</label>
@@ -321,8 +315,6 @@
         document.getElementById('productPrice').value = product.price ?? '';
         document.getElementById('productQuantity').value = product.quantity ?? '';
         document.getElementById('productExpiry').value = product.expiry_date ?? '';
-
-        document.getElementById('productStatus').value = product.is_active ? '1' : '0';
 
         document.getElementById('productModal').classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
