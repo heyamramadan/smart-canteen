@@ -23,9 +23,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // طلاب ولي الأمر
     Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']);
 
-    // المحفظة
-    Route::get('/wallet', [ApiWalletController::class, 'getWallet']);
-    Route::post('/wallet/daily-limit', [ApiWalletController::class, 'updateDailyLimit']);
+// جلب سقف الشراء اليومي لكل طالب
+Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLimits']);
+
+// تحديث سقف الشراء لطالب معين
+Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
 
 
 // المنتجات والتصنيفات
