@@ -78,7 +78,8 @@
                                     <td class="p-3 text-sm">{{ $student->class }}</td>
                                     <td class="p-3 text-sm">{{ $student->created_at->format('Y-m-d') }}</td>
                                     <td class="p-3">
-                                        <form method="POST" action="{{ route('students.restore', $student->student_id) }}" class="restoreForm">
+<form method="POST" action="{{ route('archived-students.restore', $student->student_id) }}" class="restoreForm">
+
                                             @csrf
                                             <button type="button" onclick="confirmRestore(this)"
                                                 class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
