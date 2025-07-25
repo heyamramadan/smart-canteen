@@ -58,7 +58,7 @@
                                 <th class="p-3 text-right text-sm text-gray-500">اسم الأب</th>
                                 <th class="p-3 text-right text-sm text-gray-500">الصف الدراسي</th>
                                 <th class="p-3 text-right text-sm text-gray-500">تاريخ التسجيل</th>
-                                <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
+                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
