@@ -6,6 +6,7 @@ use App\Models\ParentModel;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ParentStudentController extends Controller
 {
@@ -15,7 +16,8 @@ class ParentStudentController extends Controller
         $user = $request->user();
 
         // إيجاد بيانات ولي الأمر المرتبط بالمستخدم الحالي
-        $parent = User::where('role', 'ولي أمر')->where('user_id', $user->id)
+   $parent = User::where('role', 'ولي أمر')->where('id', $user->id)
+
             ->with('students') // تحميل الطلاب المرتبطين
             ->first();
 

@@ -18,6 +18,7 @@ class ParentAuthController extends Controller
 
         $user = User::where('username', $credentials['username'])
             ->where('role', 'ولي أمر')
+             ->whereNull('deleted_at') 
             ->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
