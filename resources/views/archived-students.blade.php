@@ -63,7 +63,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @forelse($students as $student)
-                                <tr class="transition bg-gray-100 text-gray-400 hover:bg-gray-200">
+                                 <tr class="transition bg-gray-100 text-gray-400 hover:bg-gray-200">
                                     <td class="p-3">
                                         @if($student->image_path && file_exists(public_path('storage/' . $student->image_path)))
                                             <img src="{{ asset('storage/' . $student->image_path) }}" class="h-10 w-10 rounded-full object-cover" />
