@@ -10,16 +10,17 @@ use App\Models\ParentModel;
 class ApiBannedProductController extends Controller
 {
   // جلب جميع المنتجات الممنوعة المرتبطة بولي الأمر (أو لطفل معين)
-    public function index(Request $request)
-    {
-        $parent = $request->user()->parent;
-
-        $bannedProducts = BannedProduct::with('product', 'student')
-            ->where('parent_id', $parent->parent_id)
-            ->get();
-
-        return response()->json(['banned_products' => $bannedProducts]);
-    }
+  public function index(Request $request)
+  {
+      $parent = $request->user();
+  
+      $bannedProducts = BannedProduct::with('product', 'student')
+          ->where('user_id', $parent->id) // ✅ تصحيح هنا
+          ->get();
+  
+      return response()->json(['banned_products' => $bannedProducts]);
+  }
+  
 
     // إضافة منتج ممنوع لطفل معين
     public function store(Request $request)
@@ -28,44 +29,54 @@ class ApiBannedProductController extends Controller
             'student_id' => 'required|exists:students,student_id',
             'product_id' => 'required|exists:products,product_id',
         ]);
-
-        $parent = $request->user()->parent;
-
-        // تحقق إذا المنتج ممنوع بالفعل
-        $exists = BannedProduct::where('parent_id', $parent->parent_id)
+    
+        $parent = $request->user();
+    
+        // تحقق من الدور
+        if ($parent->role !== 'ولي أمر') {
+            return response()->json(['message' => 'المستخدم ليس ولي أمر.'], 403);
+        }
+    
+        $exists = BannedProduct::where('user_id', $parent->id) // نستخدم user_id كـ user_id
             ->where('student_id', $request->student_id)
             ->where('product_id', $request->product_id)
             ->exists();
-
+    
         if ($exists) {
             return response()->json(['message' => 'المنتج ممنوع مسبقاً لهذا الطالب'], 409);
         }
-
+    
         $bannedProduct = BannedProduct::create([
-            'parent_id' => $parent->parent_id,
+            'user_id' => $parent->id,
             'student_id' => $request->student_id,
             'product_id' => $request->product_id,
             'created_at' => now(),
         ]);
-
+    
         return response()->json([
             'message' => 'تم إضافة المنتج الممنوع بنجاح',
             'banned_product' => $bannedProduct,
         ]);
     }
+    
 
     // حذف منتج ممنوع
     public function destroy(Request $request, $ban_id)
     {
-        $parent = $request->user()->parent;
+        $parent = $request->user();
 
         $bannedProduct = BannedProduct::where('ban_id', $ban_id)
-            ->where('parent_id', $parent->parent_id)
+            ->where('user_id', $parent->id)
             ->first();
+
+
 
         if (!$bannedProduct) {
             return response()->json(['message' => 'لم يتم العثور على المنتج الممنوع'], 404);
         }
+
+       
+        // تحقق من الدور
 
         $bannedProduct->delete();
 
