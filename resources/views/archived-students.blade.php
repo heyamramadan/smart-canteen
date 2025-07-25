@@ -36,11 +36,14 @@
                 <h2 class="text-lg font-bold text-primary-700 flex items-center">
                     <span class="ml-2">📦</span> أرشيف الطلاب
                 </h2>
-            </div>
-            <div class="mb-4">
+                 <div class="relative mb-4 w-full max-w-xs">
     <input type="text" id="archivedSearchInput" placeholder="ابحث عن طالب..."
-        class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+        class="pr-10 pl-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+    <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
 </div>
+
+            </div>
+
 
 @if(session('success'))
 <div id="successAlert"
