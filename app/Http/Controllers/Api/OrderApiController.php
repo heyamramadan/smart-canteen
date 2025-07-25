@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\ParentModel;
+use App\Models\User;
+
 class OrderApiController extends Controller
 {
      // جلب مشتريات الطلاب التابعين لولي الأمر
