@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
     'phone_number' => '01234567890',
     'full_name' => 'هيام رمضان', //
         ]);
-        
+
     }
 }
