@@ -176,10 +176,10 @@
                       </tr>`;
               });
               resultsTableBody.innerHTML = html;
-          })
-          .catch(() => {
+        //  })
+         // .catch(() => {
               resultsTableBody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-red-400">حدث خطأ</td></tr>`;
-          });
+         // });
   });
 </script>
 
