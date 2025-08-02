@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>أرشيف الطلاب - لوحة تحكم المقصف</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -191,7 +193,7 @@
                 <td class="p-3 text-sm">${student.class}</td>
                 <td class="p-3 text-sm">${new Date(student.created_at).toLocaleDateString()}</td>
                 <td class="p-3">
-                    <form method="POST" action="{{ route('archived-students.restore', $student->student_id) }}"class="restoreForm">
+                    <form method="POST" action="/archived-students/${student.student_id}/restore" class="restoreForm">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <button type="button" onclick="confirmRestore(this)"
                             class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
