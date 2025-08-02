@@ -175,10 +175,10 @@
 
                         <!-- كلمة المرور الحالية -->
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">كلمة المرور الحالية</label>
+                            <label class="block text-sm text-gray-600 mb-1">كلمة السر الحالية</label>
                             <div class="relative">
                                 <input type="password" name="current_password"
-                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="current-password" placeholder="أدخل كلمة المرور الحالية إذا كنت تريد التغيير">
+                                       class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500" autocomplete="current-password" placeholder="أدخل كلمة السر الحالية إذا كنت تريد التغيير">
                                 <button type="button" onclick="togglePassword(this)"
                                         class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
                                    🔒
@@ -191,7 +191,7 @@
 
           <!-- كلمة المرور الجديدة -->
 <div>
-    <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
+    <label class="block text-sm text-gray-600 mb-1">كلمة السر الجديدة</label>
     <div class="relative">
         <input type="password" name="new_password"
                class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -208,11 +208,11 @@
 
 <!-- تأكيد كلمة المرور الجديدة -->
 <div>
-    <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور الجديدة</label>
+    <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة السر الجديدة</label>
     <div class="relative">
         <input type="password" name="new_password_confirmation"
                class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-               autocomplete="new-password" placeholder="أعد إدخال كلمة المرور الجديدة">
+               autocomplete="new-password" placeholder="أعد إدخال كلمة السر الجديدة">
         <button type="button" onclick="togglePassword(this)"
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600">
             🔒
@@ -253,14 +253,14 @@ document.getElementById('profileImageInput').addEventListener('change', function
         const reader = new FileReader();
         reader.onload = function(e) {
             document.querySelector('.profile-image').src = e.target.result;
-            
+
             // إنشاء FormData من النموذج كاملاً
             const form = document.getElementById('profileForm');
             const formData = new FormData(form);
-            
+
             // استبدال ملف الصورة في الـ FormData
             formData.set('profile_image', file);
-            
+
             fetch('{{ route("profile.update") }}', {
                 method: 'POST',
                 body: formData,
