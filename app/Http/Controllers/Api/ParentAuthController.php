@@ -18,7 +18,7 @@ class ParentAuthController extends Controller
 
         $user = User::where('username', $credentials['username'])
             ->where('role', 'ولي أمر')
-             ->whereNull('deleted_at') 
+             ->whereNull('deleted_at')
             ->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
@@ -39,6 +39,7 @@ class ParentAuthController extends Controller
                 'full_name' => $user->full_name,
                 'email' => $user->email,
                 'phone_number' => $user->phone_number,
+                'role'=>$user->role,
             ],
             'token' => $token,
         ]);
