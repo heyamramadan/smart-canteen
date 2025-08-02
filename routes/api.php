@@ -20,6 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    // تغيير كلمة المرور
+    Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
+
+
     // طلاب ولي الأمر
     Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']);
 

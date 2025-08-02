@@ -44,4 +44,27 @@ class ParentAuthController extends Controller
             'token' => $token,
         ]);
     }
+    public function changePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required|string',
+        'new_password' => 'required|string|min:6|confirmed',
+    ]);
+
+    $user = $request->user();
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return response()->json([
+            'message' => 'كلمة المرور الحالية غير صحيحة',
+        ], 400);
+    }
+
+    $user->password = bcrypt($request->new_password);
+    $user->save();
+
+    return response()->json([
+        'message' => 'تم تغيير كلمة المرور بنجاح',
+    ]);
+}
+
 }
