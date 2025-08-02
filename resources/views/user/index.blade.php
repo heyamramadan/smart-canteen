@@ -172,17 +172,17 @@
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">كلمة المرور الحالية</label>
+                        <label class="block text-sm text-gray-600 mb-1">كلمة السر الحالية</label>
                         <input type="password" name="current_password"
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">كلمة المرور الجديدة</label>
+                        <label class="block text-sm text-gray-600 mb-1">كلمة السر الجديدة</label>
                         <input type="password" name="new_password"
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور الجديدة</label>
+                        <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة السر الجديدة</label>
                         <input type="password" name="new_password_confirmation"
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
@@ -252,12 +252,12 @@
                             @error('role') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">كلمة المرور</label>
+                            <label class="block text-sm text-gray-600 mb-1">كلمة السر</label>
                             <input type="password" name="password" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                             @error('password') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة المرور</label>
+                            <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة السر</label>
                             <input type="password" name="password_confirmation" required class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                         </div>
                         <div>
