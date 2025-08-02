@@ -53,6 +53,13 @@
     {{ session('success') }}
 </div>
 @endif
+@if(session('error'))
+<div id="errorAlert"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl shadow-2xl z-50 text-center text-lg font-medium transition-opacity duration-300">
+    {{ session('error') }}
+</div>
+@endif
+
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -205,6 +212,14 @@
             tbody.appendChild(row);
         });
     }
+    setTimeout(() => {
+    const alert = document.getElementById('errorAlert');
+    if (alert) {
+        alert.classList.add('opacity-0');
+        setTimeout(() => alert.remove(), 300);
+    }
+}, 3000);
+
     </script>
 </body>
 </html>
