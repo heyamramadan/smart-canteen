@@ -32,7 +32,8 @@ Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLi
 
 // تحديث سقف الشراء لطالب معين
 Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
-
+//محفظة
+Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
 
 // المنتجات والتصنيفات
 Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);

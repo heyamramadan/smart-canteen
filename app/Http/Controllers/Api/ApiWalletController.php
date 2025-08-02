@@ -50,4 +50,21 @@ public function updateStudentDailyLimit(Request $request)
         ],
     ]);
 }
+// ✅ دالة جديدة: جلب رصيد المحفظة لولي الأمر
+public function getWalletBalance(Request $request)
+{
+    $parent = $request->user();
+
+    $wallet = $parent->wallet; // يتطلب أن يكون لدى User علاقة wallet()
+
+    if (!$wallet) {
+        return response()->json(['message' => 'لم يتم العثور على المحفظة'], 404);
+    }
+
+    return response()->json([
+        'message' => 'تم جلب رصيد المحفظة بنجاح',
+        'balance' => $wallet->balance,
+    ]);
+}
+
 }
