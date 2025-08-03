@@ -35,26 +35,38 @@ class OrderApiController extends Controller
 public function getTopSellingProducts(Request $request)
 {
     $parent = $request->user();
-
-    // جلب جميع طلاب ولي الأمر
     $studentIds = $parent->students->pluck('student_id');
 
-    // جمع عدد المنتجات المشتراة لكل منتج
-    $topProducts = DB::table('order_items')
+    // فلترة حسب الفترة
+    $period = $request->query('period', 'all'); // الافتراضي "all"
+
+    $dateFilter = null;
+    if ($period === 'day') {
+        $dateFilter = now()->subDay();
+    } elseif ($period === 'week') {
+        $dateFilter = now()->subWeek();
+    } elseif ($period === 'month') {
+        $dateFilter = now()->subMonth();
+    }
+
+    // بناء الاستعلام
+    $query = DB::table('order_items')
         ->join('orders', 'order_items.order_id', '=', 'orders.id')
         ->join('products', 'order_items.product_id', '=', 'products.product_id')
-        ->whereIn('orders.student_id', $studentIds)
-        ->select(
-            'products.name as product_name',
-            DB::raw('SUM(order_items.quantity) as total_quantity')
-        )
+        ->whereIn('orders.student_id', $studentIds);
+
+    if ($dateFilter) {
+        $query->where('orders.created_at', '>=', $dateFilter);
+    }
+
+    $topProducts = $query
+        ->select('products.name as product_name', DB::raw('SUM(order_items.quantity) as total_quantity'))
         ->groupBy('products.name')
         ->orderByDesc('total_quantity')
         ->get();
 
     $total = $topProducts->sum('total_quantity');
 
-    // حساب النسبة المئوية
     $data = $topProducts->map(function ($item) use ($total) {
         return [
             'name' => $item->product_name,
@@ -65,7 +77,9 @@ public function getTopSellingProducts(Request $request)
 
     return response()->json([
         'message' => 'تم جلب إحصائيات المنتجات الأكثر شراءً',
+        'period' => $period,
         'top_products' => $data
     ]);
 }
+
 }
