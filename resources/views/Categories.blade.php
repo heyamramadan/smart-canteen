@@ -112,7 +112,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-4 text-gray-500">لا توجد تصنيفات مطابقة.</td>
+                        <td colspan="7" class="p-4 text-gray-500">لا توجد تصنيفات متاحة.</td>
                     </tr>
                 @endforelse
                 </tbody>
