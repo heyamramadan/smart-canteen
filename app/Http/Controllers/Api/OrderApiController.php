@@ -35,12 +35,23 @@ class OrderApiController extends Controller
 public function getTopSellingProducts(Request $request)
 {
     $parent = $request->user();
-    $studentIds = $parent->students->pluck('student_id');
+
+    // تحميل العلاقة students
+    $students = $parent->students;
+
+    // تحقق إن لم يكن هناك طلاب
+    if (!$students || $students->isEmpty()) {
+        return response()->json([
+            'message' => 'لا يوجد طلاب مرتبطين بحساب ولي الأمر.',
+        ], 404);
+    }
+
+    $studentIds = $students->pluck('student_id');
 
     // فلترة حسب الفترة
     $period = $request->query('period', 'all'); // الافتراضي "all"
-
     $dateFilter = null;
+
     if ($period === 'day') {
         $dateFilter = now()->subDay();
     } elseif ($period === 'week') {
