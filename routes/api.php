@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // تغيير كلمة المرور
     Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
+    ///احصائيات
+Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
 
     // طلاب ولي الأمر
