@@ -116,17 +116,14 @@
     </div>
   </div>
 <!-- مودال رسالة الخطأ -->
-<div id="errorModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center">
-   <p id="errorMessage" class="text-orange-600 text-lg mb-4"></p>
-
-    <button id="closeModalBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded">
+<div id="errorModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4 text-center animate-scale-in">
+    <p id="errorMessage" class="text-orange-600 text-lg mb-4"></p>
+    <button id="closeModalBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded">
       إغلاق
     </button>
   </div>
 </div>
-
   <script>
     // بيانات الطلاب تأتي من السيرفر عبر Laravel Blade
     const students = @json($students);
@@ -312,6 +309,7 @@ function showErrorModal(message) {
 
 closeModalBtn.addEventListener('click', () => {
   errorModal.classList.add('hidden');
+    errorModal.classList.add('flex');
 });
 
   </script>
