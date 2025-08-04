@@ -111,9 +111,16 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td colspan="7" class="p-4 text-gray-500">لا توجد تصنيفات متاحة.</td>
-                    </tr>
+                  <tr>
+    <td colspan="7" class="p-4 text-gray-500">
+        @if(request()->has('search') && request('search') != '')
+            لم يتم العثور على أي تصنيفات تطابق نتائج البحث.
+        @else
+            لا توجد تصنيفات متاحة حالياً.
+        @endif
+    </td>
+</tr>
+
                 @endforelse
                 </tbody>
             </table>
