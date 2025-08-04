@@ -107,7 +107,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                     @foreach($products as $index => $product)
+                      @forelse($products as $index => $product)
 
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3 text-sm ">{{ $index + 1 }}</td>
@@ -170,7 +170,11 @@
                                 </form>
                             </td>
                         </tr>
-                        @endforeach
+                          @empty
+      <tr>
+          <td colspan="10" class="p-4 text-center text-gray-500">لا توجد منتجات مطابقة للبحث.</td>
+      </tr>
+                         @endforelse
                     </tbody>
                 </table>
             </div>
