@@ -72,7 +72,7 @@
       <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
         <h1 class="text-lg font-bold text-primary-700 flex items-center">
           <span class="ml-2">💳</span>
-          بطاقات الطلاب
+        إصدار بطاقة الكترونية
         </h1>
       </div>
 
