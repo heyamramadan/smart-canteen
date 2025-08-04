@@ -81,6 +81,10 @@
                                 <td colspan="6" class="p-4 text-center text-gray-500">لا يوجد أولياء أمور لعرضهم.</td>
                             </tr>
                             @endforelse
+                            <tr id="noResultsRow" class="hidden">
+    <td colspan="6" class="p-4 text-center text-gray-500">لا توجد نتائج مطابقة.</td>
+</tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -191,17 +195,32 @@
         });
     }
 
-    function filterParents() {
-        const filter = document.getElementById('parentFilter').value.toLowerCase();
-        document.querySelectorAll('tbody tr').forEach(row => {
-            // البحث في اسم ولي الأمر والبريد الإلكتروني ورقم الهاتف
-            const name = row.children[1].textContent.toLowerCase();
-            const email = row.children[2].textContent.toLowerCase();
-            const phone = row.children[3].textContent.toLowerCase();
-            const isVisible = name.includes(filter) || email.includes(filter) || phone.includes(filter);
-            row.style.display = isVisible ? '' : 'none';
-        });
+ function filterParents() {
+    const filter = document.getElementById('parentFilter').value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        // تجاهل صف "لا توجد نتائج مطابقة"
+        if (row.id === "noResultsRow") return;
+
+        const name = row.children[1].textContent.toLowerCase();
+        const email = row.children[2].textContent.toLowerCase();
+        const phone = row.children[3].textContent.toLowerCase();
+
+        const isVisible = name.includes(filter) || email.includes(filter) || phone.includes(filter);
+        row.style.display = isVisible ? '' : 'none';
+
+        if (isVisible) visibleCount++;
+    });
+
+    // إظهار أو إخفاء صف "لا توجد نتائج مطابقة"
+    const noResultsRow = document.getElementById('noResultsRow');
+    if (noResultsRow) {
+        noResultsRow.classList.toggle('hidden', visibleCount !== 0);
     }
+}
+
 </script>
 </body>
 </html>
