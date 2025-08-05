@@ -24,7 +24,7 @@ class studentmodel extends Model
         'class',       // الصف الدراسي أو المرحلة التعليمية للطالب
          'image_path',
          'pin_code',
-          'daily_limit', 
+          'daily_limit',
     ];
 
     /**
