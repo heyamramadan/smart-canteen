@@ -86,7 +86,7 @@
       <div class="p-4 border-b border-gray-200 flex justify-between items-center">
         <h3 class="text-lg font-semibold text-primary-700">تفاصيل المبيعات</h3>
         <button onclick="exportTableToCSV()" class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm flex items-center">
-          <i class="fas fa-download ml-2"></i> تصدير CSV
+          <i class="fas fa-download ml-2"></i> تصدير 
         </button>
       </div>
       <div class="overflow-x-auto">
