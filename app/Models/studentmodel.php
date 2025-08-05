@@ -19,9 +19,9 @@ class studentmodel extends Model
     // الحقول القابلة للتعبئة من خلال الموديل
     protected $fillable = [
         'user_id', // تم تغيير parent_id إلى user_id
-        'full_name',   // الاسم الكامل للطالب
+        'full_name',   // الاسم الكامل
         'father_name', // اسم الأب (يمكن استخدامه للتمييز أو البيانات التعريفية)
-        'class',       // الصف الدراسي أو المرحلة التعليمية للطالب
+        'class',     
          'image_path',
          'pin_code',
           'daily_limit',
