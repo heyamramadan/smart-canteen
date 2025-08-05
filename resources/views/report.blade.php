@@ -83,11 +83,20 @@
                         <div id="customDateRange" class="{{ request('timePeriod') == 'custom' ? 'md:col-span-2 grid grid-cols-2 gap-4' : 'hidden md:col-span-2 grid grid-cols-2 gap-4' }}">
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">من تاريخ</label>
+
                                 <input type="date" name="fromDate" id="fromDate" value="{{ request('fromDate', $startDate->format('Y-m-d')) }}" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                @if($errors->has('fromDate'))
+        <p class="text-sm text-red-600 mt-1">{{ $errors->first('fromDate') }}</p>
+    @endif
+
                             </div>
+
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">إلى تاريخ</label>
                                 <input type="date" name="toDate" id="toDate" value="{{ request('toDate', $endDate->format('Y-m-d')) }}" class="w-full border border-orange-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+   @if($errors->has('toDate'))
+        <p class="text-sm text-red-600 mt-1">{{ $errors->first('toDate') }}</p>
+    @endif
                             </div>
                         </div>
                         <div id="singleDate" class="{{ request('timePeriod') != 'custom' ? '' : 'hidden' }}">
