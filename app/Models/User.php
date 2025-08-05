@@ -20,10 +20,7 @@ class User extends Authenticatable
     'phone_number',
      'profile_image_url',
 ];
-// public function parent()
-//     {
-//         return $this->hasOne(User::where('role', 'ولي أمر')->class, 'user_id', 'id');
-//     }
+
 
 
 public function students()
