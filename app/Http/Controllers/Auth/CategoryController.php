@@ -73,10 +73,19 @@ class CategoryController extends Controller
     // حذف تصنيف
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        $category->delete();
+         $category = Category::withCount('products')->findOrFail($id);
 
-        return redirect()->route('categories.index')->with('success', 'تم حذف التصنيف بنجاح.');
+    // تحقق إذا كان يحتوي على منتجات
+    if ($category->products_count > 0) {
+        return redirect()->route('categories.index')
+            ->with('success', '❌ لا يمكن حذف هذا التصنيف لأنه مرتبط بمنتجات حالية.');
+    }
+
+    $category->delete();
+
+    return redirect()->route('categories.index')
+        ->with('success', '✅ تم حذف التصنيف بنجاح.');
+
     }
 
 
