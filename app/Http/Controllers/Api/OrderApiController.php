@@ -62,7 +62,7 @@ public function getTopSellingProducts(Request $request)
 
     // بناء الاستعلام
     $query = DB::table('order_items')
-        ->join('orders', 'order_items.order_id', '=', 'orders.id')
+        ->join('orders', 'order_items.order_id', '=', 'orders.order_id')
         ->join('products', 'order_items.product_id', '=', 'products.product_id')
         ->whereIn('orders.student_id', $studentIds);
 
