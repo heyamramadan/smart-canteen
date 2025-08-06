@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class WalletTransaction extends Model
 {
-    protected $table = 'wallet_transactions'; // اسم الجدول
-    protected $primaryKey = 'transaction_id'; // المفتاح الأساسي
+    protected $table = 'wallet_transactions';
+    protected $primaryKey = 'transaction_id';
 
-    public $timestamps = false; // لا يحتوي على updated_at
+    public $timestamps = false; 
 
     protected $fillable = [
         'wallet_id',
