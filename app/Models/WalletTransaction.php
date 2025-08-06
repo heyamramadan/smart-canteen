@@ -9,13 +9,12 @@ class WalletTransaction extends Model
     protected $table = 'wallet_transactions';
     protected $primaryKey = 'transaction_id';
 
-    public $timestamps = false; 
+    public $timestamps = false;
 
     protected $fillable = [
         'wallet_id',
         'amount',
         'type',
-        'reference',
         'created_at',
     ];
 
