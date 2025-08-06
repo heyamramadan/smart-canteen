@@ -14,7 +14,7 @@ class Wallet extends Model
     protected $primaryKey = 'wallet_id';
 
     protected $fillable = [
-        'user_id', // تم تغيير parent_id إلى user_id
+        'user_id', 
         'balance',
 
     ];
