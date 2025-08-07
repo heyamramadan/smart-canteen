@@ -9,19 +9,17 @@ class BannedProduct extends Model
     protected $table = 'banned_products';
     protected $primaryKey = 'ban_id';
 
-    public $timestamps = false; // لأن created_at في الجدول فقط ولا يوجد updated_at
+    public $timestamps = false;
 
     protected $fillable = [
-        'user_id', // تم تغيير parent_id إلى user_id
+        'user_id',
         'student_id',
         'product_id',
         'created_at',
     ];
 
-  
-     /**
-     * العلاقة: الحظر تم بواسطة مستخدم معين (ولي الأمر)
-     */
+
+ 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
