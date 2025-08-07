@@ -12,11 +12,10 @@ class OrderItem extends Model
 
     protected $table = 'order_items';
 
- 
+
     protected $primaryKey = 'order_item_id';
 
-    // الحقول القابلة للتعبئة
-    protected $fillable = [
+      protected $fillable = [
         'order_id',
         'product_id',
         'quantity',
