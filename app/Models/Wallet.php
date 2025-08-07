@@ -14,12 +14,12 @@ class Wallet extends Model
     protected $primaryKey = 'wallet_id';
 
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'balance',
 
     ];
 
-    // العلاقة: المحفظة تنتمي إلى ولي الأمر
+   
     public function user()
     {
           return $this->belongsTo(User::class, 'user_id')->withTrashed();
