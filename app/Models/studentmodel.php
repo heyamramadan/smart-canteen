@@ -24,12 +24,10 @@ class studentmodel extends Model
           'daily_limit',
     ];
 
-    /**
-     * العلاقة: الطالب ينتمي إلى مستخدم واحد (ولي أمره)
-     */
+
     public function user()
     {
-        // نربط عبر user_id في جدول students
+      
         return $this->belongsTo(User::class, 'user_id');
     }
 public function bannedProducts()
