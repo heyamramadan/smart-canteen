@@ -10,17 +10,14 @@ class studentmodel extends Model
     use HasFactory,SoftDeletes;
 
 
-    // المفتاح الأساسي للجدول (رقم تعريف الطالب)
     protected $primaryKey = 'student_id';
 
-    // اسم جدول الطلاب في قاعدة البيانات
-    protected $table = 'students';
+        protected $table = 'students';
 
-    // الحقول القابلة للتعبئة من خلال الموديل
-    protected $fillable = [
-        'user_id', // تم تغيير parent_id إلى user_id
-        'full_name',   // الاسم الكامل
-        'father_name', // اسم الأب (يمكن استخدامه للتمييز أو البيانات التعريفية)
+       protected $fillable = [
+        'user_id',
+        'full_name',
+        'father_name',
         'class',
          'image_path',
          'pin_code',
