@@ -31,6 +31,7 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -123,8 +124,7 @@ Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('in
 ///
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    ///
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // ✅ التقرير اليومي (Daily Report) للموظف
     Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
