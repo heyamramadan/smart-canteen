@@ -43,10 +43,6 @@ public function bannedProducts()
 {
     return $this->hasMany(BannedProduct::class, 'user_id', 'id');
 }
-public function ordersAsEmployee()
-{
-    return $this->hasMany(Order::class, 'employee_id', 'id');
-}
 
     /**
      * The attributes that should be hidden for serialization.
