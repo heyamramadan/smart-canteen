@@ -28,7 +28,7 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('user.login');
 })->name('login');
-
+//تسجيل خروج
 Route::post('/login', [AuthController::class, 'login']);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
