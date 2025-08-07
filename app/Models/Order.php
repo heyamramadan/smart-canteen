@@ -9,13 +9,13 @@ class Order extends Model
 {
     use HasFactory;
 
-    // اسم الجدول (لو لم يكن اسم الجدول 'orders' الافتراضي)
+
     protected $table = 'orders';
 
-    // المفتاح الأساسي للجدول
+
     protected $primaryKey = 'order_id';
 
-    // الحقول القابلة للتعبئة (mass assignable)
+   
     protected $fillable = [
         'student_id',
         'employee_id',

@@ -9,10 +9,10 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    // اسم الجدول في قاعدة البيانات
+
     protected $table = 'order_items';
 
-    // اسم المفتاح الأساسي
+ 
     protected $primaryKey = 'order_item_id';
 
     // الحقول القابلة للتعبئة
