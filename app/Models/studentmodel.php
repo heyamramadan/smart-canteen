@@ -21,7 +21,7 @@ class studentmodel extends Model
         'user_id', // تم تغيير parent_id إلى user_id
         'full_name',   // الاسم الكامل
         'father_name', // اسم الأب (يمكن استخدامه للتمييز أو البيانات التعريفية)
-        'class',     
+        'class',
          'image_path',
          'pin_code',
           'daily_limit',
