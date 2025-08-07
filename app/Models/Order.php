@@ -20,7 +20,7 @@ class Order extends Model
         'student_id',
         'employee_id',
         'total_amount',
- 
+
     ];
 
     // علاقة الطلب ينتمي إلى طالب (Student)
