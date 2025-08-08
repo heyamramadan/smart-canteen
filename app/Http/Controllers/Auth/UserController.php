@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Wallet; 
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -48,7 +48,6 @@ $users = User::oldest()->paginate(10);
             Wallet::create([
                 'user_id' => $user->id,
                 'balance' => 0,       // رصيد ابتدائي
-                'daily_limit' => 20, // حد يومي افتراضي
             ]);
         }
 
