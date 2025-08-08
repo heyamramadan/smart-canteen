@@ -34,7 +34,7 @@ Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
-    
+
     // إدارة المستخدمين
     Route::get('/index', [UserController::class, 'index'])->name('users.index');
     Route::post('/index', [UserController::class, 'store'])->name('users.store');
