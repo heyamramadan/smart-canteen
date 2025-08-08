@@ -38,13 +38,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // إدارة المستخدمين
     Route::get('/index', [UserController::class, 'index'])->name('users.index');
   Route::post('/index', [UserController::class, 'store'])->name('users.store');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-   Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+ Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 
 ///ارشيف
-
-
 Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
 Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
