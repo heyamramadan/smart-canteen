@@ -28,9 +28,9 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('user.login');
 })->name('login');
-//تسجيل خروج
+//تسجيل دخول
 Route::post('/login', [AuthController::class, 'login']);
-
+//تسجيل خروج
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
