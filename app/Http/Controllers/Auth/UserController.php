@@ -123,7 +123,6 @@ if ($request->has('reset_password') && $request->reset_password == '1') {
             Wallet::create([
                 'user_id' => $user->id,
                 'balance' => 0,
-                'daily_limit' => 20,
             ]);
         }
 
