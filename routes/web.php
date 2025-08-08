@@ -34,7 +34,14 @@ Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
-
+    
+    // إدارة المستخدمين
+    Route::get('/index', [UserController::class, 'index'])->name('users.index');
+    Route::post('/index', [UserController::class, 'store'])->name('users.store');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -55,13 +62,7 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
 
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    // إدارة المستخدمين
-    Route::get('/index', [UserController::class, 'index'])->name('users.index');
-    Route::post('/index', [UserController::class, 'store'])->name('users.store');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
+
     // إدارة الطلاب
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
