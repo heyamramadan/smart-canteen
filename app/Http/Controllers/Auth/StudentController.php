@@ -12,22 +12,19 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
-    // دالة عرض صفحة إضافة طالب جديد
     public function create()
     {
           $parents = User::where('role', 'ولي أمر')->get();
     return view('user.student', compact('parents'));
     }
 
-    // دالة تخزين بيانات الطالب الجديدة
     public function store(Request $request)
     {
-        // ✅ تحديث قواعد التحقق
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id', // تم التغيير من parent_id
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // اسم الحقل هو image
+            'user_id' => 'required|exists:users,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' 
         ]);
 
         // ✅ جلب ولي الأمر مباشرة
