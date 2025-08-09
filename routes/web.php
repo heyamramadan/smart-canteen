@@ -55,9 +55,13 @@ Route::post('/students', [StudentController::class, 'store'])->name('students.st
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
-
-
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
+
+///ارشيف طلاب
+
+Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
+Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('archived-students.restore');
+Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
 
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -101,18 +105,6 @@ Route::get('/transactions/search', [TransactionController::class, 'search'])->na
 
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
 
-///ارشيف
-
-
-Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
-Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
-Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
-
-///ارشيف طلاب
-
-Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
-Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('archived-students.restore');
-Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
 
     });
 
