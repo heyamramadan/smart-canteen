@@ -24,10 +24,9 @@ class StudentController extends Controller
             'full_name' => 'required|string|max:255',
             'class' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // ✅ جلب ولي الأمر مباشرة
         $parentUser = User::find($validated['user_id']);
         $fatherName = $parentUser->full_name ?? 'غير معروف';
 
@@ -48,13 +47,11 @@ class StudentController extends Controller
 
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح!');
     }
-  // دالة عرض قائمة الطلاب
+
   public function index()
   {
-      // ✅ تحميل علاقة 'user' المباشرة مع الطالب
 $students = Studentmodel::with('user')->oldest()->paginate(10);
 
-      // ✅ جلب المستخدمين الذين دورهم "ولي أمر" لتعبئة القوائم المنسدلة في المودالات
       $parentUsers = User::where('role', 'ولي أمر')->get();
 
       return view('user.students', compact('students', 'parentUsers'));

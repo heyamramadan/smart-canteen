@@ -36,13 +36,26 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // إدارة المستخدمين
-    Route::get('/index', [UserController::class, 'index'])->name('users.index');
-    Route::post('/index', [UserController::class, 'store'])->name('users.store');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+ Route::get('/index', [UserController::class, 'index'])->name('users.index');
+ Route::post('/index', [UserController::class, 'store'])->name('users.store');
+ Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+//Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
+///ارشيف
 
+Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('archived-users.index');
+Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
+Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
+    // إدارة الطلاب
+    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+   Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+ Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
+Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
+Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -68,7 +81,7 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
-Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update'); // تغيير هنا
+Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
