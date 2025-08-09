@@ -91,7 +91,7 @@ $students = Studentmodel::with('user')->oldest()->paginate(10);
     }));
 }
 
-//نحذفها يمكن
+//نحذفها
 public function edit(Studentmodel $student)
 {
     $parents = User::where('role', 'ولي أمر')->with('user')->get();
@@ -99,14 +99,13 @@ public function edit(Studentmodel $student)
     return view('user.edit_student', compact('student', 'parents'));
 }
 
-// تحديث بيانات الطالب
 public function update(Request $request, Studentmodel $student)
 {
     // ✅ تحديث قواعد التحقق
     $validated = $request->validate([
         'full_name' => 'required|string|max:255',
         'class' => 'required|string|max:255',
-        'user_id' => 'required|exists:users,id', // تم التغيير من parent_id
+        'user_id' => 'required|exists:users,id',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
@@ -182,7 +181,7 @@ public function getAllowedCategories($student_id)
                 'daily_limit' => $student->daily_limit ?? 0,
 'remaining_limit' => $this->calculateRemainingLimit($student),
 
-                'pin_code' => strval($student->pin_code), // تحويل إلى string
+                'pin_code' => strval($student->pin_code), 
             ]
         ]);
 
