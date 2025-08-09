@@ -55,6 +55,8 @@ Route::post('/students', [StudentController::class, 'store'])->name('students.st
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
 
 //منتجات
