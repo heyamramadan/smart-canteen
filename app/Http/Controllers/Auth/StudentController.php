@@ -141,7 +141,7 @@ public function getAllowedCategories($student_id)
             ->pluck('product_id')
             ->toArray();
 
-        $allowedProducts = Product::where('is_active', 1)
+        $allowedProducts = Product::where(column: 'is_active', 1)
             ->whereNotIn('product_id', $bannedProductIds)
             ->with('category')
             ->get();
@@ -181,7 +181,7 @@ public function getAllowedCategories($student_id)
                 'daily_limit' => $student->daily_limit ?? 0,
 'remaining_limit' => $this->calculateRemainingLimit($student),
 
-                'pin_code' => strval($student->pin_code), 
+                'pin_code' => strval($student->pin_code),
             ]
         ]);
 
