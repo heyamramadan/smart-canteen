@@ -98,9 +98,7 @@ $students = Studentmodel::with('user')->oldest()->paginate(10);
     }));
 }
 
-
-// عرض صفحة تعديل بيانات الطالب
-// عرض صفحة تعديل بيانات الطالب
+//نحذفها يمكن
 public function edit(Studentmodel $student)
 {
     $parents = User::where('role', 'ولي أمر')->with('user')->get();
