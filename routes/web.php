@@ -77,12 +77,6 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     // إدارة الطلاب
-    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
-    Route::post('/students', [StudentController::class, 'store'])->name('students.store');
-    Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
-Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
-Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
 Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
