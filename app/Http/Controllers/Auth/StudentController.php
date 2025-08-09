@@ -141,10 +141,10 @@ public function getAllowedCategories($student_id)
             ->pluck('product_id')
             ->toArray();
 
-        $allowedProducts = Product::where(column: 'is_active', 1)
-            ->whereNotIn('product_id', $bannedProductIds)
-            ->with('category')
-            ->get();
+     $allowedProducts = Product::where('is_active', 1)
+    ->whereNotIn('product_id', $bannedProductIds)
+    ->with('category')
+    ->get();
 
         $categories = [];
         $productsData = [];
