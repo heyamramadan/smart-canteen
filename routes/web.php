@@ -31,7 +31,7 @@ Route::get('/login', function () {
 //تسجيل دخول
 Route::post('/login', [AuthController::class, 'login']);
 //تسجيل خروج
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+  Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ✅ مسارات المسؤولين
 Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -53,9 +53,10 @@ Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArch
 Route::post('/students', [StudentController::class, 'store'])->name('students.store');
 // Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
+Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
-Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
+
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
