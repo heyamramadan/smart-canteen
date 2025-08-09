@@ -136,7 +136,7 @@ public function getAllowedCategories($student_id)
 {
     try {
      $student = Studentmodel::findOrFail($student_id);
-     
+
         $bannedProductIds = BannedProduct::where('student_id', $student_id)
             ->pluck('product_id')
             ->toArray();
@@ -211,15 +211,12 @@ private function calculateRemainingLimit($student)
         $student = Studentmodel::findOrFail($id);
         $student->delete();
 
-        // يمكنك هنا إضافة أي عمليات إضافية تحتاجها عند أرشفة الطالب
-        // مثل أرشفة المنتجات المحظورة أو الطلبات المرتبطة به
-
+       
         return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
     }
 
 public function showPinCode(Studentmodel $student)
 {
-    // مباشرة نعيد الرقم السري بدون أي تحقق (لأن الوصول مقصور على المسؤولين أصلاً)
     return response()->json([
         'pin_code' => $student->pin_code,
         'student_name' => $student->full_name
