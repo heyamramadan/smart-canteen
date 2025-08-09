@@ -86,7 +86,7 @@ $students = Studentmodel::with('user')->oldest()->paginate(10);
             'user_id'        => $student->user_id,
             'user_name'      => $student->user->full_name ?? 'غير معروف',
             'father_name'    => $student->user->full_name ?? 'غير معروف',
-            'daily_limit'    => $student->user->wallet->daily_limit ?? 0,
+            'daily_limit'  => $student->daily_limit ?? 0,
         ];
     }));
 }
