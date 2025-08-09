@@ -11,7 +11,14 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
-{
+{  public function index()
+  {
+$students = Studentmodel::with('user')->oldest()->paginate(10);
+
+      $parentUsers = User::where('role', 'ولي أمر')->get();
+
+      return view('user.students', compact('students', 'parentUsers'));
+  }
     //public function create()
    // {
      //     $parents = User::where('role', 'ولي أمر')->get();
@@ -48,14 +55,7 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح!');
     }
 
-  public function index()
-  {
-$students = Studentmodel::with('user')->oldest()->paginate(10);
 
-      $parentUsers = User::where('role', 'ولي أمر')->get();
-
-      return view('user.students', compact('students', 'parentUsers'));
-  }
   public function search(Request $request)
 {
     $searchQuery = $request->input('query');
@@ -135,8 +135,8 @@ public function update(Request $request, Studentmodel $student)
 public function getAllowedCategories($student_id)
 {
     try {
-        $student = Studentmodel::with(['user.wallet'])->findOrFail($student_id);
-
+     $student = Studentmodel::findOrFail($student_id);
+     
         $bannedProductIds = BannedProduct::where('student_id', $student_id)
             ->pluck('product_id')
             ->toArray();

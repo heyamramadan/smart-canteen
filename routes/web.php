@@ -48,10 +48,10 @@ Route::get('/archived-users', [ArchivedUserController::class, 'index'])->name('a
 Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
 Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
     // إدارة الطلاب
-    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
-   Route::post('/students', [StudentController::class, 'store'])->name('students.store');
- Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
+ Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+   // Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+// Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
