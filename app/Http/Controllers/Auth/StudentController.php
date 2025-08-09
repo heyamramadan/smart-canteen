@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
-    public function create()
-    {
-          $parents = User::where('role', 'ولي أمر')->get();
-    return view('user.student', compact('parents'));
-    }
+    //public function create()
+   // {
+     //     $parents = User::where('role', 'ولي أمر')->get();
+    //return view('user.student', compact('parents'));
+    //}
 
     public function store(Request $request)
     {
@@ -92,12 +92,12 @@ $students = Studentmodel::with('user')->oldest()->paginate(10);
 }
 
 //نحذفها
-public function edit(Studentmodel $student)
-{
-    $parents = User::where('role', 'ولي أمر')->with('user')->get();
-     $student->image_url = $student->image ? asset('storage/' . $student->image) : null;
-    return view('user.edit_student', compact('student', 'parents'));
-}
+//public function edit(Studentmodel $student)
+//{
+ //   $parents = User::where('role', 'ولي أمر')->with('user')->get();
+  //   $student->image_url = $student->image ? asset('storage/' . $student->image) : null;
+  //  return view('user.edit_student', compact('student', 'parents'));
+//}
 
 public function update(Request $request, Studentmodel $student)
 {
