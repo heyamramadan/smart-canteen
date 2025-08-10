@@ -12,8 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon; // <-- إضافة Carbon للتعامل مع التواريخ
-
+use Carbon\Carbon;
 class OrderController extends Controller
 {
     public function create()
@@ -61,7 +60,7 @@ class OrderController extends Controller
             ], 401);
         }
 
-        Log::info('تم التحقق من الرقم السري بنجاح');
+        //Log::info('تم التحقق من الرقم السري بنجاح');
 
         try {
             // استخدام DB::transaction لضمان تنفيذ كل العمليات أو التراجع عنها كلها
