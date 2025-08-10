@@ -11,14 +11,12 @@ use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 class OrderController extends Controller
 {
     public function create()
     {
-        // عرض صفحة واجهة البيع (لا تغيير هنا)
-        return view('Point of Sale');
+        return view('Point');
     }
 
   public function store(Request $request)
