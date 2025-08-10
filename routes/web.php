@@ -84,6 +84,7 @@ Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet
 //يطاقة
 Route::get('/cards', [CardController::class, 'index'])->name('students.cards');
 Route::get('/students/data', [CardController::class, 'fetch'])->name('students.data');
+
 //تقارير
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
     Route::get('/report/export', [ReportController::class, 'export'])->name('report.export');
@@ -91,8 +92,6 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
-
-
 
 
     });
