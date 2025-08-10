@@ -26,12 +26,7 @@ class CategoryController extends Controller
         return view('categories', compact('categories', 'search'));
     }
 
-    // إظهار نموذج إنشاء تصنيف جديد
-    public function create()
-    {
-        return view('categories_create');
-    }
-
+    
     // حفظ التصنيف الجديد
     public function store(Request $request)
     {
