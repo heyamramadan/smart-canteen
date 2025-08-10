@@ -61,6 +61,7 @@ Route::delete('/students/{student}', [StudentController::class, 'destroy'])->nam
 Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
 Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('archived-students.restore');
 Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
+
 //تصنيفات
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 //Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
