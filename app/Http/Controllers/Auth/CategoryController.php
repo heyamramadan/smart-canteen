@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // عرض قائمة التصنيفات مع بحث وتعداد المنتجات
+
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -27,7 +27,7 @@ class CategoryController extends Controller
     }
 
 
-    // حفظ التصنيف الجديد
+   
     public function store(Request $request)
     {
         $request->validate([
