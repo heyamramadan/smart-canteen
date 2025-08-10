@@ -10,46 +10,38 @@ use Illuminate\Http\Request;
 
 class WalletController extends Controller
 {
-    /**
-     * عرض جميع أولياء الأمور ومحافظهم.
-     */
+
     public function index()
     {
-        // ✅ تعديل: جلب المستخدمين الذين دورهم "ولي أمر" مباشرة مع محافظهم.
         $parents = User::where('role', 'ولي أمر')
-                       ->with('wallet') // تحميل علاقة المحفظة مباشرة
+                       ->with('wallet')
                        ->get();
 
-        // تم تغيير اسم المتغير في الواجهة من parents إلى users ليكون أكثر وضوحاً
         return view('wallet', ['users' => $parents]);
 
 
     }
 
-    /**
-     * شحن رصيد وتحديث حد الإنفاق اليومي لولي الأمر.
-     */
+
     public function charge(Request $request)
     {
-        // ✅ تعديل: التحقق من user_id بدلاً من parent_id
+
         $request->validate([
-            'user_id' => 'required|exists:users,id', // التأكد من أن المستخدم موجود في جدول users
+            'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:1',
         ]);
 
-        // ✅ تعديل: البحث عن المحفظة باستخدام user_id
+
         $wallet = Wallet::firstOrCreate(
-            ['user_id' => $request->user_id], // الشرط للبحث أو الإنشاء
-               ['balance' => 0]// قيم افتراضية عند الإنشاء
+            ['user_id' => $request->user_id],
+               ['balance' => 0]
         );
 
-        // تحديث الرصيد الحالي
         $wallet->balance += $request->amount;
 
 
-        $wallet->save(); // حفظ التغييرات
-
-        // تسجيل معاملة الإيداع
+        $wallet->save();
+        
         WalletTransaction::create([
             'wallet_id' => $wallet->wallet_id,
             'amount' => $request->amount,
