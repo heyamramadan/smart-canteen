@@ -27,7 +27,7 @@ class CategoryController extends Controller
     }
 
 
-   
+
     public function store(Request $request)
     {
         $request->validate([
@@ -42,14 +42,14 @@ class CategoryController extends Controller
     }
 
     // إظهار نموذج تعديل تصنيف موجود
-    public function edit($id)
-    {
-        $category = Category::findOrFail($id);
+   // public function edit($id)
+    //{
+      //  $category = Category::findOrFail($id);
 
-        return view('categories_edit', compact('category'));
-    }
+      //  return view('categories_edit', compact('category'));
+    //}
 
-    // تحديث بيانات التصنيف
+
     public function update(Request $request, $id)
     {
         $category = Category::findOrFail($id);
@@ -65,7 +65,7 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'تم تعديل التصنيف بنجاح.');
     }
 
-    // حذف تصنيف
+  
     public function destroy($id)
     {
          $category = Category::withCount('products')->findOrFail($id);
