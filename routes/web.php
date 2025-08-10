@@ -101,7 +101,9 @@ Route::get('/transactions/search', [TransactionController::class, 'search'])->na
 // ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
-        Route::get('/dashboard', action: [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboard', action: [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/point', [OrderController::class, 'create'])->name('point');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
