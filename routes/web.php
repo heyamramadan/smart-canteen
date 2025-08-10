@@ -56,7 +56,6 @@ Route::put('/students/{student}', [StudentController::class, 'update'])->name('s
 Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
-
 ///ارشيف طلاب
 
 Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
@@ -78,10 +77,7 @@ Route::put('/products/{id}', [ProductController::class, 'update'])->name('produc
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 
-    // إدارة الطلاب
 
-Route::post('/students/{id}/restore', [StudentController::class, 'restore'])->name('students.restore');
-Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
      //محافظة
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
@@ -98,7 +94,7 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
 
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
 
-Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'restore'])->name('archived-users.restore');
+
 
 
     });
