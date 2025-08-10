@@ -64,6 +64,7 @@ Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class
 Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
 //تصنيفات
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+//Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
  Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
  Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
  Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');

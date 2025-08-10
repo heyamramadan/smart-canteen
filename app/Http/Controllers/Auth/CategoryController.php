@@ -26,7 +26,7 @@ class CategoryController extends Controller
         return view('categories', compact('categories', 'search'));
     }
 
-    
+
     // حفظ التصنيف الجديد
     public function store(Request $request)
     {
