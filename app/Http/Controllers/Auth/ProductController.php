@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    // عرض المنتجات مع بحث بسيط
+   
  public function index(Request $request)
 {
     $search = $request->input('search');
@@ -19,11 +19,11 @@ class ProductController extends Controller
         return $query->where('name', 'like', "%$search%");
     })->get();
 
-    $categories = Category::all(); // جلب الأصناف
+    $categories = Category::all();
 
     return view('products', compact('products', 'search', 'categories'));
 }
-    // حفظ منتج جديد
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,14 +57,9 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'تم إضافة المنتج بنجاح');
     }
 
-    // عرض بيانات المنتج للتعديل (يمكن جعلها جزء من المودال)
-    public function edit($id)
-    {
-        $product = Product::findOrFail($id);
-        return view('products_edit', compact('product'));
-    }
 
-    // تحديث بيانات المنتج
+
+
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -91,7 +86,7 @@ $validated['is_active'] = $validated['quantity'] > 0 ? 1 : 0;
         return redirect()->route('products.index')->with('success', 'تم تعديل المنتج بنجاح');
     }
 
-    // حذف المنتج
+
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
