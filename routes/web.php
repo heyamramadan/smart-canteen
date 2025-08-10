@@ -62,6 +62,13 @@ Route::delete('/students/{student}', [StudentController::class, 'destroy'])->nam
 Route::get('/archived-students', [ArchivedStudentController::class, 'index'])->name('archived-students.index');
 Route::post('/archived-students/{id}/restore', [ArchivedStudentController::class, 'restore'])->name('archived-students.restore');
 Route::get('/archived-students/search', [ArchivedStudentController::class, 'search'])->name('archived-students.search');
+//تصنيفات
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+ Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+ Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+ Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+  Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
 //منتجات
   Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -70,18 +77,6 @@ Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('pro
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-//تصنيفات
-      Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-
-    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-
-    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-
-    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     // إدارة الطلاب
 
