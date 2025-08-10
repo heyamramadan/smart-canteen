@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\StudentModel;  // حرف A في App كبير واسم الكلاس بنفس الطريقة كما في الموديل
+use App\Models\StudentModel;  
 use Illuminate\Http\Request;
 
 class CardController extends Controller
