@@ -118,7 +118,6 @@ Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('in
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-
 // ✅ التقرير اليومي (Daily Report) للموظف
     Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
 
