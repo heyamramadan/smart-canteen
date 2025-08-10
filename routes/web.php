@@ -75,9 +75,7 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-
-
-     //محافظة
+ //محافظة
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
 Route::post('/wallet/charge', [WalletController::class, 'charge'])->name('wallet.charge');
