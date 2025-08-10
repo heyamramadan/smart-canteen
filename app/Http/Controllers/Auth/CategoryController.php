@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
-use app\Models\BannedProduct;
-use app\Models\studentmodel;
+use  App\Models\BannedProduct;
+use  App\Models\studentmodel;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
