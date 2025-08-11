@@ -211,7 +211,7 @@ private function calculateRemainingLimit($student)
         $student = Studentmodel::findOrFail($id);
         $student->delete();
 
-       
+
         return redirect()->route('students.index')->with('success', 'تم أرشفة الطالب بنجاح!');
     }
 
