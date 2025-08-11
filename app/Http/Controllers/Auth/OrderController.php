@@ -74,8 +74,8 @@ class OrderController extends Controller
                                     ->whereDate('created_at', Carbon::today())
                                     ->sum('total_amount');
 
- // قبل إنشاء الطلب، مباشرة بعد حساب $todaySpending
-$limit = $student->daily_limit; // ممكن تكون NULL أو 0 أو قيمة موجبة
+
+$limit = $student->daily_limit;
 $enforceLimit = is_numeric($limit) && $limit > 0;
 
 if ($enforceLimit && ($todaySpending + $validated['total_amount']) > $limit) {
