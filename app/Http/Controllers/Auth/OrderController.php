@@ -74,9 +74,14 @@ class OrderController extends Controller
                                     ->whereDate('created_at', Carbon::today())
                                     ->sum('total_amount');
 
-            if (($todaySpending + $validated['total_amount']) > $student->daily_limit) {
-                throw new \Exception("لا يمكن إتمام الطلب، لقد تجاوز الطالب حد الإنفاق اليومي المحدد له وهو: {$student->daily_limit} د.ل");
-            }
+ // قبل إنشاء الطلب، مباشرة بعد حساب $todaySpending
+$limit = $student->daily_limit; // ممكن تكون NULL أو 0 أو قيمة موجبة
+$enforceLimit = is_numeric($limit) && $limit > 0;
+
+if ($enforceLimit && ($todaySpending + $validated['total_amount']) > $limit) {
+    throw new \Exception("لا يمكن إتمام الطلب، لقد تجاوز الطالب حد الإنفاق اليومي المحدد له وهو: {$limit} د.ل");
+}
+
 
             $order = Order::create([
                 'student_id' => $validated['student_id'],
