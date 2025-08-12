@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    // عرض صفحة الفواتير
     public function index(Request $request)
     {
         $search = $request->input('search');
