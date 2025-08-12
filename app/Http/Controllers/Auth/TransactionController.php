@@ -8,19 +8,13 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    /**
-     * عرض سجل المعاملات مع الفلاتر.
-     */
+
   public function index(Request $request)
 {
     $transactions = $this->filterTransactions($request)->oldest('created_at')->paginate(10);
     return view('Transaction', compact('transactions'));
 }
 
-
-    /**
-     * دالة البحث عبر AJAX.
-     */
  public function search(Request $request)
 {
     $transactions = $this->filterTransactions($request)->oldest('created_at')->take(50)->get();
