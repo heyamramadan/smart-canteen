@@ -110,6 +110,9 @@ Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 ///
+
+
+
     Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
 
 
