@@ -94,7 +94,6 @@ Route::get('/transactions/search', [TransactionController::class, 'search'])->na
 
 
 
-// ✅ مسارات الموظفين
 
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
 
