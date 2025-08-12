@@ -84,8 +84,9 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
     Route::get('/report/export', [ReportController::class, 'export'])->name('report.export');
     Route::post('/reports/generate', [ReportController::class, 'generate'])->name('report.generate');
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
+//معاملات
+ Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
 
 
