@@ -25,21 +25,5 @@ class InvoiceController extends Controller
         return view('invoices', compact('invoices'));
     }
 
-    // عرض تفاصيل فاتورة معينة
-    public function show($id)
-    {
-        $invoice = Order::with(['student', 'employee', 'orderItems.product'])
-                        ->findOrFail($id);
 
-        return view('invoices.show', compact('invoice'));
-    }
-
-    // طباعة الفاتورة
-    public function print($id)
-    {
-        $invoice = Order::with(['student', 'employee', 'orderItems.product'])
-                        ->findOrFail($id);
-
-        return view('invoices.print', compact('invoice'));
-    }
 }

@@ -103,16 +103,15 @@ Route::get('/transactions/search', [TransactionController::class, 'search'])->na
 Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
 
     Route::get('/dashboard', action: [DashboardController::class, 'index'])->name('dashboard');
-
+//
     Route::get('/point', [OrderController::class, 'create'])->name('point');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    //
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
     Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
     //فواتير
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
-Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
-Route::get('/invoices/{id}/print', [InvoiceController::class, 'print'])->name('invoices.print');
-Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+
 
 ///
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
