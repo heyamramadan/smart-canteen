@@ -106,13 +106,10 @@ Route::middleware(['auth', 'adminOrEmployee'])->group(function () {
     Route::get('/students/{student_id}/allowed-categories', [StudentController::class, 'getAllowedCategories'])->name('students.allowed-categories');
     //فواتير
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
-
-
 ///
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
-// ✅ التقرير اليومي (Daily Report) للموظف
+///
     Route::get('/daily-report', [DailyReportController::class, 'index'])->name('daily.report');
 
 
