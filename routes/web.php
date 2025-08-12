@@ -39,7 +39,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
  Route::get('/index', [UserController::class, 'index'])->name('users.index');
  Route::post('/index', [UserController::class, 'store'])->name('users.store');
  Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-//Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 ///ارشيف
@@ -49,9 +48,7 @@ Route::post('/archived-users/{id}/restore', [ArchivedUserController::class, 'res
 Route::get('/archived-users/search', [ArchivedUserController::class, 'searchArchived']);
     // إدارة الطلاب
  Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-   // Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
 Route::post('/students', [StudentController::class, 'store'])->name('students.store');
-// Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
 Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
 Route::get('/students/{student}/pincode', [StudentController::class, 'showPinCode']);
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
@@ -64,9 +61,7 @@ Route::get('/archived-students/search', [ArchivedStudentController::class, 'sear
 
 //تصنيفات
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-//Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
  Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-// Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
  Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
   Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
