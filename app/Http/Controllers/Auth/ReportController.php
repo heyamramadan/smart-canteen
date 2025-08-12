@@ -14,23 +14,22 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
-    // عدد العناصر المعروضة في كل صفحة
+
     const ITEMS_PER_PAGE = 15;
 
     public function index()
     {
-        // الحصول على البيانات الافتراضية (آخر 30 يوم)
+
         $endDate = Carbon::now();
         $startDate = Carbon::now()->subDays(30);
 
-        // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
+
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order') // حذف شرط completed()
+            ->whereHas('order')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
 
-        // حساب الإحصائيات باستخدام استعلامات منفصلة لأداء أفضل
         $stats = $this->calculateStats($startDate, $endDate);
 
         return view('report', array_merge([
@@ -50,17 +49,17 @@ class ReportController extends Controller
             'selectedDate' => 'nullable|required_if:timePeriod,day,week,month|date'
         ]);
 
-        // تحديد الفترة الزمنية بناءً على الاختيار
+
         [$startDate, $endDate] = $this->getDateRange($request);
 
-        // استعلام للحصول على عناصر الطلبات مع التقسيم إلى صفحات
+
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order') // حذف شرط completed()
+            ->whereHas('order')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'asc')
             ->paginate(self::ITEMS_PER_PAGE);
 
-        // حساب الإحصائيات
+
         $stats = $this->calculateStats($startDate, $endDate);
 
         return view('report', array_merge([
@@ -71,9 +70,7 @@ class ReportController extends Controller
         ], $stats));
     }
 
-    /**
-     * حساب الفترة الزمنية بناءً على نوع الفترة المحددة
-     */
+
     protected function getDateRange(Request $request): array
     {
         switch ($request->timePeriod) {
@@ -105,9 +102,7 @@ class ReportController extends Controller
         return [$startDate, $endDate];
     }
 
-    /**
-     * حساب الإحصائيات للفترة المحددة
-     */
+
     protected function calculateStats(Carbon $startDate, Carbon $endDate): array
     {
         return [
@@ -124,13 +119,10 @@ class ReportController extends Controller
         ];
     }
 
-    /**
-     * تصدير بيانات الطلبات إلى Excel
-     */
     public function export(Request $request)
     {
         $orderItems = OrderItem::with(['order.student', 'product'])
-            ->whereHas('order') // حذف شرط completed()
+            ->whereHas('order')
             ->orderBy('created_at', 'asc')
             ->get();
 
