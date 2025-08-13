@@ -31,7 +31,6 @@
 <body class="bg-gray-50">
 
 <div class="flex h-screen">
-  {{-- تأكد من أن لديك ملف sidebar.blade.php في resources/views/layouts --}}
   @include('layouts.sidebar')
 
   <div class="flex-1 p-6 overflow-auto">
