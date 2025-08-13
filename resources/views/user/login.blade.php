@@ -26,6 +26,26 @@
             </div>
         </div>
     @endif
+{{-- ✅ مودال رسالة النجاح --}}
+@if(session('success'))
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-6 text-center">
+        <svg class="w-12 h-12 mx-auto text-green-500 mb-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M16.707 5.293a1 1 0 010 1.414L9 14.414l-3.707-3.707a1 1 0 011.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z"/>
+        </svg>
+        <h2 class="text-lg font-semibold text-green-600 mb-2">نجاح</h2>
+        <p class="text-gray-700 mb-4">{{ session('success') }}</p>
+    </div>
+</div>
+
+<script>
+    // إخفاء الرسالة بعد 4 ثوانٍ
+    setTimeout(() => {
+        const modal = document.getElementById('successModal');
+        if (modal) modal.style.display = 'none';
+    }, 4000);
+</script>
+@endif
 
     <!-- ✅ نموذج تسجيل الدخول -->
     <div class="flex flex-col md:flex-row w-full md:w-[90%] lg:w-[75%] shadow-lg rounded-lg overflow-hidden border border-gray-200 z-10">
