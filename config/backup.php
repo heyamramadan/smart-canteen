@@ -2,7 +2,7 @@
 
 return [
     'backup' => [
-        'name' => 'SmartCanteen',
+       'name' => env('APP_NAME', 'SmartCanteen'),
 
         'source' => [
             'files' => [
