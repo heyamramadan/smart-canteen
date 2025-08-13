@@ -63,6 +63,7 @@
                             <th class="p-3 text-sm text-gray-500">رقم الفاتورة</th>
                             <th class="p-3 text-sm text-gray-500">اسم الطالب</th>
                             <th class="p-3 text-sm text-gray-500">اسم الأب</th>
+                            <th class="p-3 text-sm text-gray-500">الموظف</th>
                              <th class="p-3 text-sm text-gray-500">الفصل</th>
                             <th class="p-3 text-sm text-gray-500">التاريخ</th>
                             <th class="p-3 text-sm text-gray-500">الإجمالي</th>
@@ -75,7 +76,9 @@
                             <td class="p-3 text-sm font-medium">#{{ $invoice->order_id }}</td>
                            <td class="p-3 text-sm">{{ $invoice->student->full_name ?? '—' }}</td>
                         <td class="p-3 text-sm">{{ $invoice->student->father_name ?? '—' }}</td>
+                        <td class="p-3 text-sm">{{ $invoice->employee->full_name ?? '—' }}</td>
                         <td class="p-3 text-sm">{{ $invoice->student->class ?? '—' }}</td>
+
 
                             <td class="p-3 text-sm">{{ $invoice->created_at->format('Y-m-d') }}</td>
                             <td class="p-3 text-sm font-bold text-primary-700">{{ number_format($invoice->total_amount, 2) }} د.ل</td>
@@ -139,6 +142,8 @@
             <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
             <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
             <p><strong>اسم الأب:</strong> ${invoice.student?.father_name || '—'}</p>
+            <p><strong>الموظف:</strong> ${invoice.employee?.full_name || '—'}</p>
+
             <p><strong>الفصل:</strong> ${invoice.student?.class || '—'}</p>
 
             <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
@@ -227,6 +232,8 @@
                     <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
                     <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
                     <p><strong>اسم الأب:</strong> ${invoice.student?.father_name || '—'}</p>
+                    <p><strong>الموظف:</strong> ${invoice.employee?.full_name || '—'}</p>
+
                     <p><strong>الفصل:</strong> ${invoice.student?.class || '—'}</p>
                     <p><strong>التاريخ:</strong> ${new Date(invoice.created_at).toLocaleDateString()}</p>
                 </div>
