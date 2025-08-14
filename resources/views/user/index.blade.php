@@ -1,18 +1,22 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<!DOCTYPE html><!-- تحديد نوع المستند HTML5 -->
+<html lang="ar" dir="rtl"> <!-- بداية مستند HTML، اللغة عربية والاتجاه من اليمين لليسار -->
 
-    <title>إدارة المستخدمين - لوحة تحكم المقصف</title>
+<head>
+    <meta charset="UTF-8" /> <!-- تحديد ترميز الحروف UTF-8 لدعم العربية -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- جعل الصفحة متجاوبة مع الأجهزة -->
+
+    <meta name="csrf-token" content="{{ csrf_token() }}"><!-- إضافة رمز CSRF للحماية في طلبات POST -->
+
+    <title>إدارة المستخدمين - لوحة تحكم المقصف</title><!-- عنوان الصفحة في شريط المتصفح -->
+        <!-- تضمين مكتبة Tailwind CSS عبر CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: {
+                        primary: { /* تعريف ألوان مخصصة للمشروع */
                             100: '#FFEDD5',
                             500: '#F97316',
                             600: '#EA580C',
@@ -24,22 +28,30 @@
         }
     </script>
     <style>
+                /* استيراد خط "Tajawal" من Google Fonts */
+
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+                /* تعيين الخط الافتراضي للجسم */
+
         body { font-family: 'Tajawal', sans-serif; }
+        /* أنيميشن لظهور الرسائل ثم اختفائها */
 
         @keyframes fade-in-out {
             0%, 100% { opacity: 0; transform: translateY(-10px); }
             10%, 90% { opacity: 1; transform: translateY(0); }
         }
+        /* كلاس لتطبيق الأنيميشن */
 
         .animate-fade-in-out {
             animation: fade-in-out 3s ease-in-out forwards;
         }
     </style>
 </head>
+<!-- خلفية رمادية فاتحة للصفحة -->
 <body class="bg-gray-50">
+    <!-- تقسيم الشاشة باستخدام Flexbox -->
     <div class="flex h-screen">
-        @include('layouts.sidebar')
+        @include('layouts.sidebar') <!-- المساحة الرئيسية القابلة للتمرير -->
 
         <!-- محتوى إدارة المستخدمين -->
         <div class="flex-1 p-6 overflow-auto">
@@ -51,6 +63,7 @@
                     إدارة المستخدمين
                 </h2>
                 <div class="flex items-center space-x-4 space-x-reverse">
+                       <!-- فلتر لتصفية الأدوار -->
                     <select id="roleFilter" class="border rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500">
     <option value="">كل الأدوار</option>
     <option value="مسؤول">مسؤول</option>
@@ -75,6 +88,7 @@
             <!-- جدول المستخدمين -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                 <div class="overflow-x-auto">
+                    <!-- جدول يعرض بيانات المستخدمين -->
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
@@ -87,8 +101,10 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
+             <!-- جسم الجدول: عرض المستخدمين من قاعدة البيانات -->
+
                       <tbody id="usersTableBody" class="divide-y divide-gray-200">
-    @foreach ($users as $user)
+    @foreach ($users as $user)<!-- تكرار المستخدمين من الـ Controller -->
         <tr class="hover:bg-gray-100 transition {{ $user->deleted_at ? 'bg-gray-50 text-gray-400' : '' }}">
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->username }}</td>
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->full_name }}</td>
@@ -99,9 +115,12 @@
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
          <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
     class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
+  <!-- زر تعديل -->
+
     <span>✏️</span>
     <span>تعديل</span>
 </button>
+ <!-- نموذج أرشفة -->
 
 <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
     @csrf
@@ -119,8 +138,10 @@
     @endforeach
 </tbody>
 
-                    </table>
-                        <div class="mt-4 px-4">
+       </table>
+           <div class="mt-4 px-4">
+        <!-- روابط التنقل بين الصفحات -->
+
         {{ $users->links() }}
     </div>
                 </div>
@@ -299,22 +320,24 @@
 
 
 
-    @if(session('success'))
+    @if(session('success'))<!-- عند وجود رسالة نجاح من الجلسة -->
     <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
         <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-xl animate-fade-in-out transition-opacity duration-300">
-            {{ session('success') }}
+            {{ session('success') }}<!-- عرض محتوى الرسالة -->
         </div>
     </div>
     @endif
 
     <script>
+    /* فتح مودال إضافة المستخدم */
         function openModal() {
-            document.getElementById('userModal').classList.remove('hidden');
+            document.getElementById('userModal').classList.remove('hidden'); /* إظهار المودال */
             document.body.classList.add('overflow-hidden');
         }
 
+        /* إغلاق مودال إضافة المستخدم */
         function closeModal() {
-            document.getElementById('userModal').classList.add('hidden');
+            document.getElementById('userModal').classList.add('hidden');/* إخفاء المودال */
             document.body.classList.remove('overflow-hidden');
         }
 
@@ -323,7 +346,7 @@
                 closeModal();
             }
         });
-
+ /* فتح مودال تعديل المستخدم مع تعبئة الحقول */
         function openEditModal(id, username, email, full_name, role, phone) {
             document.getElementById('edit_user_id').value = id;
             document.getElementById('edit_username').value = username;
@@ -335,21 +358,23 @@
             // تحديث الفورم بالمسار المناسب
             document.getElementById('editUserForm').action = '/users/' + id;
 
-            document.getElementById('editUserModal').classList.remove('hidden');
+            document.getElementById('editUserModal').classList.remove('hidden');// إظهار المودال
             document.body.classList.add('overflow-hidden');
         }
+        /* إغلاق مودال التعديل */
 
         function closeEditModal() {
             document.getElementById('editUserModal').classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
+        /* تصفير كلمة المرور إلى قيمة افتراضية بإرسال فلاغ hidden */
 function resetPasswordToDefault() {
-    let input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'reset_password';
-    input.value = '1';
-    document.getElementById('editUserForm').appendChild(input);
-    document.getElementById('editUserForm').submit();
+    let input = document.createElement('input');// إنشاء عنصر input
+    input.type = 'hidden';                       // مخفي
+    input.name = 'reset_password';//اسم الحقل
+    input.value = '1'; // قيمة تُستخدم كمؤشر للتصفير
+    document.getElementById('editUserForm').appendChild(input);// إضافة الحقل للنموذج
+    document.getElementById('editUserForm').submit(); // إرسال النموذج
 }
 
         // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
@@ -365,9 +390,9 @@ function resetPasswordToDefault() {
 
         // مودال تأكيد الأرشفة
         document.addEventListener('DOMContentLoaded', function() {
-            const archiveModal = document.getElementById('confirmArchiveModal');
-            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn');
-            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');
+            const archiveModal = document.getElementById('confirmArchiveModal');// مودال التأكيد
+            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn'); // زر إلغاء
+            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');// زر تأكيد
             let currentArchiveForm = null;
 
             // عند الضغط على زر الأرشفة
@@ -389,7 +414,7 @@ function resetPasswordToDefault() {
             // عند الضغط على تأكيد الأرشفة
             confirmArchiveBtn.addEventListener('click', function() {
                 if (currentArchiveForm) {
-                    currentArchiveForm.submit();
+                    currentArchiveForm.submit();// تنفيذ الأرشفة
                 }
             });
 
@@ -403,14 +428,16 @@ function resetPasswordToDefault() {
             });
 
         });
+         /* منطق البحث الآني + الفلترة حسب الدور */
         document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const usersTableBody = document.getElementById('usersTableBody');
-
+    const searchInput = document.getElementById('searchInput');// عنصر الإدخال للبحث
+    const usersTableBody = document.getElementById('usersTableBody');// جسم الجدول لتحديث النتائج
+// الاستماع لتغير نص البحث
     searchInput.addEventListener('input', function() {
-   const query = this.value.trim();
-const role = document.getElementById('roleFilter').value;
+   const query = this.value.trim();// نص البحث
+const role = document.getElementById('roleFilter').value; // الدور المختار
 
+  // استدعاء مسار البحث عبر AJAX (fetch) مع تمرير query و role_filter
 
        fetch(`/users/search?query=${encodeURIComponent(query)}&role_filter=${encodeURIComponent(role)}`, {
 
