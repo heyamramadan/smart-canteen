@@ -170,11 +170,13 @@
 
     @if(auth()->user()->role === 'مسؤول' || auth()->user()->role === 'موظف')
         <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-            {{-- <div class="bg-gray-50 p-5 rounded-xl shadow-lg border-l-4 border-primary-500">
-                <h3 class="text-gray-500 text-sm">الطلبات</h3>
-                <p class="text-2xl font-bold text-primary-600">120</p>
-                <div class="mt-2 text-primary-500 text-xs">↑ 12% عن الشهر الماضي</div>
-            </div> --}}
+        <!-- زر النسخ الاحتياطي -->
+<div class="mb-6">
+    <a href="{{ route('backup.create') }}"
+       class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow">
+        <i class="fa fa-database"></i> إنشاء نسخة احتياطية
+    </a>
+</div>
             <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
                 <h3 class="text-gray-500 text-sm">عدد الطلاب</h3>
                 <p class="text-2xl font-bold text-blue-600">{{ $studentCount ?? 0 }}</p>

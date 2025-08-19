@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ArchivedStudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\BackupController;
 
 // الصفحة الرئيسية
 Route::get('/', function () {
@@ -88,7 +89,8 @@ Route::get('/students/data', [CardController::class, 'fetch'])->name('students.d
 //معاملات
  Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
-
+//نسخ احتياطي
+Route::get('/backup/create', [BackupController::class, 'create'])->name('backup.create');
 
     });
 
