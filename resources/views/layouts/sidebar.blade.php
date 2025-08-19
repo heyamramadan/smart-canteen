@@ -111,6 +111,14 @@
                     </a>
                 </li>
             @endif
+            @if(auth()->user()->role === 'مسؤول')
+    <li class="p-3 {{ request()->routeIs('backup.create') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+        <a href="{{ route('backup.create') }}" class="flex items-center">
+            <span class="ml-2">💾</span>
+            إنشاء نسخة احتياطية
+        </a>
+    </li>
+@endif
    <li class="p-3 hover:bg-primary-500 rounded-lg transition cursor-pointer">
     <form method="POST" action="{{ route('logout') }}">
         @csrf
@@ -125,7 +133,7 @@
     </ul>
 </div>
 
-<!-- أضف هامشًا للمحتوى الرئيسي لتعويض الشريط الجانبي الثابت -->
+
 <div class="ml-64">
-    <!-- محتوى الصفحة الرئيسي هنا -->
+
 </div>
