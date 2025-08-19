@@ -130,6 +130,14 @@
                 </a>
             </li>
 
+    @if(auth()->user()->role === 'مسؤول')
+        {{-- زر النسخ الاحتياطي يظهر للمسؤول فقط --}}
+        <li class="p-3 {{ request()->routeIs('backup.create') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
+            <a href="{{ route('backup.create') }}" class="flex items-center">
+                <span class="ml-2">💾</span> إنشاء نسخة احتياطية
+            </a>
+        </li>
+    @endif
             {{-- تسجيل خروج --}}
             <li class="p-3 hover:bg-primary-500 rounded-lg transition cursor-pointer">
                 <form method="POST" action="{{ route('logout') }}">
@@ -170,14 +178,7 @@
 
     @if(auth()->user()->role === 'مسؤول' || auth()->user()->role === 'موظف')
         <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-        <!-- زر النسخ الاحتياطي -->
-<div class="mb-6">
-    <a href="{{ route('backup.create') }}"
-       class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow">
-        <i class="fa fa-database"></i> إنشاء نسخة احتياطية
-    </a>
-</div>
-            <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
+     <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-blue-500">
                 <h3 class="text-gray-500 text-sm">عدد الطلاب</h3>
                 <p class="text-2xl font-bold text-blue-600">{{ $studentCount ?? 0 }}</p>
             </div>
