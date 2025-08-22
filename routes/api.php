@@ -9,42 +9,33 @@ use App\Http\Controllers\Api\ApiBannedProductController;
 use App\Http\Controllers\Api\ProductApiController;
 use App\Http\Controllers\Api\OrderApiController;
 
-// تسجيل دخول
 Route::post('/login-parent', [ParentAuthController::class, 'login']);
 
-// المسارات المحمية ب auth:sanctum
 Route::middleware('auth:sanctum')->group(function () {
 
-    // جلب بيانات المستخدم
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', function (Request $request) { return $request->user(); });
 
-    // تغيير كلمة المرور
     Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
-    ///احصائيات
-Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
+    Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
-    // طلاب ولي الأمر
     Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']);
 
-// جلب سقف الشراء اليومي لكل طالب
-Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLimits']);
+    Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLimits']);
+    Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
 
-// تحديث سقف الشراء لطالب معين
-Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
-//محفظة
-Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
+    Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
 
-// المنتجات والتصنيفات
-Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
-Route::get('/products', [ProductApiController::class, 'getAllProducts']);
-Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
+    Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
+    Route::get('/products', [ProductApiController::class, 'getAllProducts']);
+    Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
+
     // المنتجات الممنوعة
     Route::get('/banned-products', [ApiBannedProductController::class, 'index']);
     Route::post('/banned-products', [ApiBannedProductController::class, 'store']);
     Route::delete('/banned-products/{ban_id}', [ApiBannedProductController::class, 'destroy']);
-    ///طلب
-Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
+    // حذف حسب (student_id + product_id) لو ما عندك ban_id في الواجهة
+    Route::delete('/banned-products/by-product', [ApiBannedProductController::class, 'destroyByProduct']);
+
+    Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
 });
