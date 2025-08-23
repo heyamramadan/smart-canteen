@@ -13,32 +13,28 @@ Route::post('/login-parent', [ParentAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-
+//
 Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
-
+///
 Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']);
-
-
+///
+ Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLimits']);
+ Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
+ Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
+////
 Route::get('/user', function (Request $request) { return $request->user(); });
+Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
 
-    Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
-
-    Route::get('/students/daily-limits', [ApiWalletController::class, 'getStudentsLimits']);
-    Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
-
-    Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
-
-    Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
-    Route::get('/products', [ProductApiController::class, 'getAllProducts']);
-    Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
+Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
+Route::get('/products', [ProductApiController::class, 'getAllProducts']);
+ Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
 
     // المنتجات الممنوعة
     Route::get('/banned-products', [ApiBannedProductController::class, 'index']);
     Route::post('/banned-products', [ApiBannedProductController::class, 'store']);
     Route::delete('/banned-products/{ban_id}', [ApiBannedProductController::class, 'destroy']);
-    // حذف حسب (student_id + product_id) لو ما عندك ban_id في الواجهة
     Route::delete('/banned-products/by-product', [ApiBannedProductController::class, 'destroyByProduct']);
 
     Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);

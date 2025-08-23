@@ -8,7 +8,7 @@ use App\Models\Wallet;
 
 class ApiWalletController extends Controller
 {
- // عرض بيانات المحفظة (الرصيد + السقف)
+ //تعرض سقف شراء اليومي لطالب
 public function getStudentsLimits(Request $request)
 {
     $parent = $request->user();
