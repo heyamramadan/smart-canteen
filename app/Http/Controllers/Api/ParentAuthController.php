@@ -9,6 +9,7 @@ use App\Models\User;
 
 class ParentAuthController extends Controller
 {
+    //  تسجيل دخول ولي الامر
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -44,6 +45,7 @@ class ParentAuthController extends Controller
             'token' => $token,
         ]);
     }
+    //دالة لتغيير كلمة مرور ولي الأمر
     public function changePassword(Request $request)
 {
     $request->validate([
