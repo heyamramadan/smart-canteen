@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\ParentModel;
 
 use App\Http\Controllers\Controller;
 
