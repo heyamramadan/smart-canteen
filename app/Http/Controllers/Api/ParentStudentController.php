@@ -8,16 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 class ParentStudentController extends Controller
-{
+{//مسؤولة عن جلب الطلاب المرتبطين بولي الأمر
       public function getMyStudents(Request $request)
     {
-        // المستخدم الحالي (ولي الأمر) من التوكن
         $user = $request->user();
 
-        // إيجاد بيانات ولي الأمر المرتبط بالمستخدم الحالي
    $parent = User::where('role', 'ولي أمر')->where('id', $user->id)
 
-            ->with('students') // تحميل الطلاب المرتبطين
+            ->with('students') 
             ->first();
 
         if (!$parent) {
