@@ -13,9 +13,11 @@ Route::post('/login-parent', [ParentAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    
+    Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
+
     Route::get('/user', function (Request $request) { return $request->user(); });
 
-    Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
 
     Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
