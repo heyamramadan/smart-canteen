@@ -8,7 +8,7 @@ use App\Models\BannedProduct;
 
 class ApiBannedProductController extends Controller
 {
-    // جلب جميع المنتجات الممنوعة لولي الأمر (مع خيار تصفية حسب طالب)
+    // جلب جميع المنتجات الممنوعة لولي الأمر
     public function index(Request $request)
     {
         $parent = $request->user();
@@ -27,7 +27,7 @@ class ApiBannedProductController extends Controller
         ]);
     }
 
-    // إضافة منتج ممنوع لطفل معيّن
+    // إضافة منتج ممنوع
     public function store(Request $request)
     {
         $request->validate([
@@ -62,7 +62,7 @@ class ApiBannedProductController extends Controller
         ], 201);
     }
 
-    // حذف منتج ممنوع بـ ban_id
+    // حذف منتج ممنوع ـ
     public function destroy(Request $request, $ban_id)
     {
         $parent = $request->user();
@@ -80,7 +80,7 @@ class ApiBannedProductController extends Controller
         return response()->json(['message' => 'تم حذف المنتج الممنوع بنجاح']);
     }
 
-    // حذف منتج ممنوع بالثنائي (student_id + product_id)
+    // حذف منتج ممنوع 
     public function destroyByProduct(Request $request)
     {
         $request->validate([
