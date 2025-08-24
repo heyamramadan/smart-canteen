@@ -22,7 +22,7 @@ class OrderApiController extends Controller
         }
 
         $orders = Order::with(['orderItems.product', 'student'])
-            ->whereIn('student_id', $parent->students->pluck('student_id'))// فقط الطلبات المكتملة
+            ->whereIn('student_id', $parent->students->pluck('student_id'))
             ->latest()
             ->get();
 
@@ -31,15 +31,14 @@ class OrderApiController extends Controller
             'orders' => $orders
         ]);
     }
+    //  دالة: جلب المنتجات الأكثر شراءً للطلاب المرتبطين بولي الأمر
 
 public function getTopSellingProducts(Request $request)
 {
     $parent = $request->user();
 
-    // تحميل العلاقة students
     $students = $parent->students;
 
-    // تحقق إن لم يكن هناك طلاب
     if (!$students || $students->isEmpty()) {
         return response()->json([
             'message' => 'لا يوجد طلاب مرتبطين بحساب ولي الأمر.',
@@ -48,8 +47,7 @@ public function getTopSellingProducts(Request $request)
 
     $studentIds = $students->pluck('student_id');
 
-    // فلترة حسب الفترة
-    $period = $request->query('period', 'all'); // الافتراضي "all"
+    $period = $request->query('period', 'all');
     $dateFilter = null;
 
     if ($period === 'day') {
@@ -60,7 +58,6 @@ public function getTopSellingProducts(Request $request)
         $dateFilter = now()->subMonth();
     }
 
-    // بناء الاستعلام
     $query = DB::table('order_items')
         ->join('orders', 'order_items.order_id', '=', 'orders.order_id')
         ->join('products', 'order_items.product_id', '=', 'products.product_id')

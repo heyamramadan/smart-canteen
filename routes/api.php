@@ -28,6 +28,7 @@ Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']
     Route::delete('/banned-products/{ban_id}', [ApiBannedProductController::class, 'destroy']);
     Route::delete('/banned-products/by-product', [ApiBannedProductController::class, 'destroyByProduct']);
 /////////
+ Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
 
 
 Route::get('/user', function (Request $request) { return $request->user(); });
@@ -37,5 +38,4 @@ Route::get('/categories-products', [ProductApiController::class, 'getCategoriesW
 Route::get('/products', [ProductApiController::class, 'getAllProducts']);
  Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
 
-    Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
 });
