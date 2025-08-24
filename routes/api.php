@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\OrderApiController;
 Route::post('/login-parent', [ParentAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+Route::get('/user', function (Request $request) { return $request->user(); });
 
 //
 Route::post('/parent/change-password', [ParentAuthController::class, 'changePassword']);
@@ -29,13 +30,12 @@ Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']
     Route::delete('/banned-products/by-product', [ApiBannedProductController::class, 'destroyByProduct']);
 /////////
  Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
-
-
-Route::get('/user', function (Request $request) { return $request->user(); });
 Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
+//////////////
 Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
 Route::get('/products', [ProductApiController::class, 'getAllProducts']);
+
  Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
 
 });

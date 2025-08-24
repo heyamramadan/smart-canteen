@@ -35,7 +35,7 @@ class ProductApiController extends Controller
         ]);
     }
 
-    // جلب تفاصيل منتج واحد
+    //  جلب تفاصيل منتج واحد
     public function getProduct($product_id)
     {
         $product = Product::where('product_id', $product_id)
