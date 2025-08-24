@@ -22,20 +22,20 @@ Route::get('/parent/students', [ParentStudentController::class, 'getMyStudents']
  Route::post('/students/daily-limits/update', [ApiWalletController::class, 'updateStudentDailyLimit']);
  Route::get('/wallet/balance', [ApiWalletController::class, 'getWalletBalance']);
 ////
-Route::get('/user', function (Request $request) { return $request->user(); });
-Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
 
-
-
-Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
-Route::get('/products', [ProductApiController::class, 'getAllProducts']);
- Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
-
-    // المنتجات الممنوعة
     Route::get('/banned-products', [ApiBannedProductController::class, 'index']);
     Route::post('/banned-products', [ApiBannedProductController::class, 'store']);
     Route::delete('/banned-products/{ban_id}', [ApiBannedProductController::class, 'destroy']);
     Route::delete('/banned-products/by-product', [ApiBannedProductController::class, 'destroyByProduct']);
+/////////
+
+
+Route::get('/user', function (Request $request) { return $request->user(); });
+Route::get('/parent/top-products', [OrderApiController::class, 'getTopSellingProducts']);
+
+Route::get('/categories-products', [ProductApiController::class, 'getCategoriesWithProducts']);
+Route::get('/products', [ProductApiController::class, 'getAllProducts']);
+ Route::get('/products/{product_id}', [ProductApiController::class, 'getProduct']);
 
     Route::get('/parent/orders', [OrderApiController::class, 'getStudentOrders']);
 });
