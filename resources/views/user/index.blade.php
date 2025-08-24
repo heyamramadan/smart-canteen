@@ -1,14 +1,13 @@
-<!DOCTYPE html><!-- تحديد نوع المستند HTML5 -->
-<html lang="ar" dir="rtl"> <!-- بداية مستند HTML، اللغة عربية والاتجاه من اليمين لليسار -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8" /> <!-- تحديد ترميز الحروف UTF-8 لدعم العربية -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- جعل الصفحة متجاوبة مع الأجهزة -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <meta name="csrf-token" content="{{ csrf_token() }}"><!-- إضافة رمز CSRF للحماية في طلبات POST -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>إدارة المستخدمين - لوحة تحكم المقصف</title><!-- عنوان الصفحة في شريط المتصفح -->
-        <!-- تضمين مكتبة Tailwind CSS عبر CDN -->
+    <title>إدارة المستخدمين - لوحة تحكم المقصف</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -16,7 +15,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: { /* تعريف ألوان مخصصة للمشروع */
+                        primary: {
                             100: '#FFEDD5',
                             500: '#F97316',
                             600: '#EA580C',
@@ -28,30 +27,24 @@
         }
     </script>
     <style>
-                /* استيراد خط "Tajawal" من Google Fonts */
 
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-                /* تعيين الخط الافتراضي للجسم */
 
         body { font-family: 'Tajawal', sans-serif; }
-        /* أنيميشن لظهور الرسائل ثم اختفائها */
 
         @keyframes fade-in-out {
             0%, 100% { opacity: 0; transform: translateY(-10px); }
             10%, 90% { opacity: 1; transform: translateY(0); }
         }
-        /* كلاس لتطبيق الأنيميشن */
 
         .animate-fade-in-out {
             animation: fade-in-out 3s ease-in-out forwards;
         }
     </style>
 </head>
-<!-- خلفية رمادية فاتحة للصفحة -->
 <body class="bg-gray-50">
-    <!-- تقسيم الشاشة باستخدام Flexbox -->
     <div class="flex h-screen">
-        @include('layouts.sidebar') <!-- المساحة الرئيسية القابلة للتمرير -->
+        @include('layouts.sidebar') 
 
         <!-- محتوى إدارة المستخدمين -->
         <div class="flex-1 p-6 overflow-auto">
