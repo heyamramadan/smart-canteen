@@ -83,7 +83,6 @@
                             <td class="p-3 text-sm">{{ $user->role }}</td>
                             <td class="p-3 text-sm">{{ $user->created_at->format('Y-m-d') }}</td>
                             <td class="p-3">
-                                <!-- زر استعادة يفتح المودال -->
                                 <button
                                     onclick="openRestoreModal({{ $user->id }}, '{{ $user->username }}')"
                                     class="text-green-600 border border-green-600 px-3 py-1 rounded-lg hover:bg-green-600 hover:text-white transition"
@@ -151,18 +150,16 @@
         modal.classList.add('hidden');
     }
 
-    // اغلاق المودال لو ضغط المستخدم خارج محتوى النافذة
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeRestoreModal();
         }
     });
-        // إخفاء رسالة النجاح بعد 4 ثواني
     const successMessage = document.getElementById('successMessage');
     if (successMessage) {
         setTimeout(() => {
             successMessage.classList.add('opacity-0', 'transition', 'duration-500');
-            setTimeout(() => successMessage.remove(), 500); // إزالة العنصر بعد التلاشي
+            setTimeout(() => successMessage.remove(), 500); 
         }, 4000);
     }
         document.getElementById('searchInput').addEventListener('input', function(e) {

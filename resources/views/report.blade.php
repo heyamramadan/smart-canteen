@@ -47,9 +47,7 @@
     <div class="flex h-screen">
       @include('layouts.sidebar')
 
-        <!-- المحتوى الرئيسي -->
         <div class="flex-1 overflow-y-auto">
-            <!-- شريط العنوان المحدث -->
             <header class="bg-white shadow-sm">
                 <div class="flex justify-between items-center p-4">
                     <h1 class="text-xl font-bold text-primary-700 flex items-center">
@@ -64,9 +62,7 @@
                 </div>
             </header>
 
-            <!-- محتوى التقرير المحدث -->
             <main class="p-6">
-                <!-- فلترة التقرير المحدثة -->
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <h2 class="text-lg font-semibold text-primary-700 mb-4">فلترة التقرير</h2>
                     <form method="POST" action="{{ route('report.generate') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -111,7 +107,6 @@
                     </form>
                 </div>
 
-                <!-- ملخص التقرير المحدث -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-start">
@@ -157,7 +152,6 @@
                     </div>
                 </div>
 
-                <!-- جدول التقرير المحدث -->
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                     <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-primary-700">تفاصيل المبيعات</h3>
@@ -227,7 +221,6 @@
                     </div>
                 </div>
 
-                <!-- المخزون المتبقي المحدث -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-primary-700 mb-4">المخزون المتبقي</h3>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -256,7 +249,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // تعيين التاريخ الافتراضي
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(input => {
                 if (!input.value) {
@@ -264,7 +256,6 @@
                 }
             });
 
-            // تفعيل عناصر القائمة الجانبية
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 item.addEventListener('click', function() {
                     document.querySelectorAll('.sidebar-item').forEach(i => {
@@ -274,7 +265,6 @@
                 });
             });
 
-            // التحكم في عرض حقول التاريخ حسب نوع الفترة
             const timePeriodSelect = document.getElementById('timePeriod');
             const customDateRange = document.getElementById('customDateRange');
             const singleDate = document.getElementById('singleDate');
@@ -289,7 +279,6 @@
                     customDateRange.classList.add('hidden');
                     singleDate.classList.remove('hidden');
 
-                    // تعيين التاريخ المناسب حسب الفترة المحددة
                     const dateInput = document.getElementById('selectedDate');
                     const today = new Date();
 
@@ -305,21 +294,17 @@
                 }
             }
 
-            // تحديث الحقول عند تغيير الخيار
             timePeriodSelect.addEventListener('change', updateDateFields);
 
-            // تهيئة الحقول عند التحميل
             updateDateFields();
         });
 
         function exportCurrentTableData() {
-    // جمع البيانات من الجدول مباشرة
     let rows = [];
     document.querySelectorAll('table tbody tr').forEach(row => {
         let rowData = [];
         row.querySelectorAll('td').forEach((cell, index) => {
-            // تجاهل الصف الفارغ (إذا وجد)
-            if (index < 7) { // عدد الأعمدة 7
+            if (index < 7) {
                 rowData.push(cell.innerText.trim());
             }
         });
@@ -328,15 +313,13 @@
         }
     });
 
-    // إنشاء محتوى CSV
     const headers = ['رقم الطلب', 'الطالب', 'المنتج', 'الكمية', 'السعر', 'المجموع', 'التاريخ'];
-    let csvContent = "\uFEFF" + headers.join(',') + '\n'; // \uFEFF لحل مشكلة الترميز في الإكسل
+    let csvContent = "\uFEFF" + headers.join(',') + '\n';
 
     rows.forEach(row => {
         csvContent += row.join(',') + '\n';
     });
 
-    // تنزيل الملف
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const fileName = 'الطلبات_' + new Date().toLocaleDateString('ar-SA') + '.csv';

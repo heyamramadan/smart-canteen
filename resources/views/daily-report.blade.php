@@ -35,7 +35,6 @@
   @include('layouts.sidebar')
 
   <div class="flex-1 overflow-y-auto p-6">
-    <!-- رأس الصفحة -->
     <div class="bg-white rounded-xl shadow-lg p-4 mb-6 flex justify-between items-center">
       <h2 class="text-lg font-bold text-primary-700 flex items-center">
         <i class="fas fa-calendar-day ml-2"></i> التقرير اليومي للمبيعات
@@ -56,7 +55,6 @@
       </form>
     </div>
 
-    <!-- بطاقات الملخص -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4 rtl:space-x-reverse">
         <div class="text-blue-600 text-3xl"><i class="fas fa-money-bill-wave"></i></div>
@@ -86,7 +84,7 @@
       <div class="p-4 border-b border-gray-200 flex justify-between items-center">
         <h3 class="text-lg font-semibold text-primary-700">تفاصيل المبيعات</h3>
         <button onclick="exportTableToCSV()" class="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm flex items-center">
-          <i class="fas fa-download ml-2"></i> تصدير 
+          <i class="fas fa-download ml-2"></i> تصدير
         </button>
       </div>
       <div class="overflow-x-auto">
@@ -123,7 +121,6 @@
       </div>
     </div>
 
-    <!-- المخزون المتبقي -->
     <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
      <!-- المخزون المتبقي -->
 <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
@@ -131,7 +128,7 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     @foreach($remainingStock as $product)
       @php
-        $maxStock = 50; // قيمة المخزون المثالي لتحديد النسبة (يمكنك تعديلها)
+        $maxStock = 50; 
         $percentage = $product->quantity > 0 ? min(100, ($product->quantity / $maxStock) * 100) : 0;
 
         if ($percentage > 50) {

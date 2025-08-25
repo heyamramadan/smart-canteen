@@ -16,7 +16,6 @@
 
   <div class="w-full max-w-[1280px]">
 
-    <!-- الجزء العلوي المزخرف -->
     <div class="relative">
       <div class="h-[320px] rounded-b-[100px] relative z-0 bg-gradient-to-r from-[#FA9533] to-[#e17e20]"></div>
 
@@ -30,7 +29,6 @@
       </div>
     </div>
 
-    <!-- زر تسجيل الدخول فقط -->
     <div class="mt-40 flex flex-col items-center gap-6 w-full max-w-sm mx-auto px-4">
       <a href="/login" class="block w-full text-center bg-[#FA9533] text-white py-3 rounded-full shadow-lg hover:bg-[#e17e20] transition transform hover:scale-105 text-lg">
         تسجيل الدخول

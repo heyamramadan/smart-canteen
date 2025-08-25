@@ -53,7 +53,6 @@
     </script>
 @endif
 
-        <!-- العنوان وزر الإضافة -->
         <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
                 <span class="ml-2">📂</span> إدارة التصنيفات
@@ -63,7 +62,6 @@
             </button>
         </div>
 
-        <!-- ✅ نموذج البحث -->
         <form method="GET" action="{{ route('categories.index') }}" class="mb-4">
             <div class="flex gap-2 items-center bg-white p-4 rounded shadow">
                 <input type="text" name="search" placeholder="ابحث باسم التصنيف..." value="{{ request('search') }}"
@@ -72,7 +70,6 @@
             </div>
         </form>
 
-        <!-- جدول التصنيفات -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <table class="w-full text-sm text-center">
                 <thead class="bg-gray-100">
@@ -125,7 +122,6 @@
                 </tbody>
             </table>
 
-            <!-- ✅ روابط الصفحات مع تمرير البحث -->
             <div class="p-4">
                 {{ $categories->appends(['search' => request('search')])->links() }}
             </div>

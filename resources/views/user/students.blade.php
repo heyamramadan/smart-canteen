@@ -228,7 +228,6 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
-                       <!-- ✅ تعديل: تغيير اسم الحقل إلى user_id والمرور على parentUsers -->
                        <select name="user_id" required class="w-full border rounded-lg px-4 py-2">
                         <option value="">اختر ولي الأمر</option>
                         @foreach($parentUsers as $parent)
@@ -237,7 +236,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <!-- ✅ تعديل: التحقق من الخطأ في حقل user_id -->
+
                     @error('user_id')
                     <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -304,7 +303,6 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm text-gray-600 mb-1">ولي الأمر</label>
-                          <!-- ✅ تعديل: تغيير اسم الحقل إلى user_id والمرور على parentUsers -->
                           <select name="user_id" id="edit_user_id" required class="w-full border rounded-lg px-4 py-2">
                             <option value="">اختر ولي الأمر</option>
                             @foreach($parentUsers as $parent)
@@ -392,7 +390,6 @@
                 editImagePreview.innerHTML = '<p class="text-sm text-gray-500">لا توجد صورة حالية</p>';
             }
 
-            // تحديث مسار الفورم
             document.getElementById('editStudentForm').action = '/students/' + id;
 
             document.getElementById('editStudentModal').classList.remove('hidden');
@@ -404,7 +401,6 @@
             document.body.classList.remove('overflow-hidden');
         }
 
-        // معاينة الصورة قبل الرفع - للإضافة
         document.getElementById('add_image').addEventListener('change', function(e) {
             const preview = document.getElementById('addImagePreview');
             preview.innerHTML = '';
@@ -424,7 +420,6 @@
             }
         });
 
-        // معاينة الصورة قبل الرفع - للتعديل
         document.getElementById('edit_image').addEventListener('change', function(e) {
             const preview = document.getElementById('editImagePreview');
 
@@ -443,7 +438,6 @@
             }
         });
 
-        // إغلاق المودال عند النقر خارج المحتوى
         document.getElementById('addStudentModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeAddModal();
@@ -456,18 +450,15 @@
             }
         });
 
-        // إخفاء رسالة النجاح بعد 3 ثوانٍ
         setTimeout(() => {
             const msg = document.getElementById('flashMessage');
             if (msg) msg.remove();
         }, 3000);
 
-        // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
         @if ($errors->any())
             openAddModal();
         @endif
 
-        // البحث عن الطلاب أثناء الكتابة
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const query = e.target.value.trim();
 
@@ -479,7 +470,6 @@
                     })
                     .catch(error => console.error('Error:', error));
             } else {
-                // إذا كان حقل البحث فارغاً، أعد عرض كل الطلاب
                 fetch(`/students/search`)
                     .then(response => response.json())
                     .then(data => {
@@ -592,12 +582,11 @@ function confirmRestore(button) {
 }
 
 
-    // إخفاء الرسالة بعد 4 ثواني
     setTimeout(() => {
         const alert = document.getElementById('successAlert');
         if (alert) {
             alert.classList.add('opacity-0');
-            setTimeout(() => alert.remove(), 300); // إزالة العنصر من الصفحة بعد اختفاءه
+            setTimeout(() => alert.remove(), 300); 
         }
     }, 4000);
  function showPinCode(studentId) {

@@ -40,7 +40,6 @@
         <span class="ml-2">💸</span> سجل المعاملات
       </h2>
 
-      {{-- نموذج البحث والفلاتر مدمج --}}
       <form method="GET" action="{{ route('transactions.index') }}" class="flex items-center gap-4 flex-wrap md:flex-nowrap">
         <div class="relative">
           <input
@@ -88,7 +87,6 @@
           <tbody id="results" class="divide-y divide-gray-200">
             @forelse ($transactions as $transaction)
             @php
-                // ✅ تعديل: الوصول إلى المستخدم (ولي الأمر) مباشرة من المحفظة
                 $user = $transaction->wallet->user;
             @endphp
               <tr class="hover:bg-gray-50 transition">
@@ -101,7 +99,6 @@
                   </span>
                 </td>
                 <td class="p-3 font-semibold {{ $transaction->type === 'إيداع' ? 'text-green-600' : 'text-red-600' }}">
-                  {{-- استخدام القيمة المطلقة للمبلغ لعرضه دائماً كرقم موجب --}}
                   {{ number_format(abs($transaction->amount), 2) }} د.ل
                 </td>
                 <td class="p-3 text-sm font-bold text-gray-800">{{ number_format($transaction->wallet->balance, 2) }} د.ل</td>
@@ -127,20 +124,18 @@
 <script>
   const searchInput = document.getElementById('search');
   const resultsTableBody = document.getElementById('results');
-  const form = document.querySelector('form'); // الحصول على أول فورم في الصفحة
+  const form = document.querySelector('form');
 
   searchInput.addEventListener('input', function () {
       const query = this.value.trim();
       const urlParams = new URLSearchParams(window.location.search);
 
       if (query === '') {
-          // إذا كان البحث فارغًا، قم بإعادة تحميل الصفحة مع الفلاتر الحالية
           urlParams.delete('search');
           window.location.search = urlParams.toString();
           return;
       }
 
-      // جمع كل الفلاتر من الفورم
       urlParams.set('search', query);
       const formData = new FormData(form);
       for (const [key, value] of formData.entries()) {

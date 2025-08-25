@@ -50,12 +50,10 @@
     }
   </script>
   <style>
-    /* تحسينات عامة */
     body {
       font-family: 'Tajawal', sans-serif;
     }
 
-    /* تحسين الجداول */
     table {
       border-collapse: separate;
       border-spacing: 0;
@@ -76,7 +74,6 @@
       background-color: #F8FAFC;
     }
 
-    /* تحسين الأزرار */
     button {
       transition: all 0.2s ease;
     }
@@ -86,7 +83,6 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    /* تحسين كروت العناصر */
     .card {
       background: white;
       border-radius: 12px;
@@ -98,7 +94,6 @@
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
-    /* تحسين حقول الإدخال */
     input {
       transition: all 0.2s ease;
       border: 1px solid #CBD5E1;
@@ -109,7 +104,6 @@
       box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
     }
 
-    /* تحسين شريط التمرير */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -130,17 +124,12 @@
   </style>
 </head>
 <body class="bg-gray-50">
-<!-- الهيكل العام -->
 <div class="flex h-screen">
-  <!-- الشريط الجانبي -->
   @include('layouts.sidebar')
 
-   <!-- المحتوى الرئيسي مع إمكانية التمرير -->
   <div class="flex-1 flex flex-col overflow-hidden">
 
-   <!-- قسم علوي ثابت (الطلاب والمنتجات) -->
     <div class="flex flex-col lg:flex-row h-[55vh] min-h-[400px] p-4 gap-4">
-      <!-- بيانات الطالب -->
 
       <div class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-sm flex flex-col overflow-hidden">
         <h2 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">بيانات الطالب</h2>
@@ -179,7 +168,6 @@
   </thead>
 
                 <tbody class="divide-y divide-gray-200">
-                  <!-- النتائج ستُملأ بواسطة JavaScript -->
                 </tbody>
               </table>
             </div>
@@ -187,21 +175,17 @@
         </div>
       </div>
 
-      <!-- المنتجات -->
       <div class="w-full lg:w-1/2 bg-white p-6 rounded-xl shadow-sm flex flex-col overflow-hidden">
 
         <h2 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">المنتجات</h2>
 
-        <!-- التصنيفات -->
         <div class="mb-6">
           <h3 class="font-semibold text-gray-700 mb-3">التصنيفات</h3>
           <div id="categoriesContainer" class="flex flex-wrap gap-2">
-            <!-- التصنيفات ديناميكية تظهر هنا -->
             <span class="text-gray-400">يرجى اختيار طالب أولاً</span>
           </div>
         </div>
 
-        <!-- المنتجات المتاحة -->
         <div class="flex-1 overflow-hidden flex flex-col">
           <h3 class="font-semibold text-gray-700 mb-3">المنتجات المتاحة</h3>
           <div class="border border-gray-200 rounded-lg overflow-hidden flex-1">
@@ -216,7 +200,6 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200" id="productTable">
-                  <!-- المنتجات ديناميكية تظهر هنا -->
                 </tbody>
               </table>
             </div>
@@ -225,13 +208,10 @@
       </div>
     </div>
 
- <!-- فاتورة البيع مع إمكانية التمرير -->
     <div class="flex-1 overflow-y-auto bg-gray-50 p-4 border-t border-gray-200">
       <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-sm">
-        <!-- عنوان الفاتورة -->
         <h1 class="text-2xl font-bold text-primary-700 mb-6 pb-3 border-b border-gray-100">فاتورة البيع</h1>
 
-        <!-- جدول الفاتورة مع ارتفاع ثابت وتمرير -->
         <div class="mb-6 overflow-hidden border border-gray-200 rounded-lg max-h-[300px] overflow-y-auto">
           <table class="w-full text-right" id="invoiceTable">
             <thead class="bg-gray-50 text-gray-600">
@@ -244,12 +224,10 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <!-- الصفوف تتم إضافتها هنا ديناميكياً -->
             </tbody>
           </table>
         </div>
 
-        <!-- الإجمالي -->
         <div class="bg-primary-50 text-primary-900 p-4 rounded-lg mb-6 border border-primary-100">
           <div class="flex justify-between items-center">
             <div>
@@ -262,7 +240,6 @@
           </div>
         </div>
 
-        <!-- زر التأكيد -->
         <div class="text-center">
           <button class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-md hover:shadow-lg transition-all" id="confirmSaleBtn" >
             تأكيد عملية البيع
@@ -272,7 +249,6 @@
     </div>
   </div>
 </div>
-<!-- مودال الرسائل -->
 <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-30 z-50 hidden items-center justify-center">
   <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full text-center">
     <h2 id="modalTitle" class="text-xl font-bold mb-4 text-primary-700">رسالة</h2>
@@ -309,7 +285,6 @@ const pinError = document.getElementById('pinError');
 const cancelPinBtn = document.getElementById('cancelPinBtn');
 const confirmPinBtn = document.getElementById('confirmPinBtn');
 
-// تخزين الرقم السري الصحيح مؤقتاً عند تحميل بيانات الطالب
 
   let invoiceItems = [];
   let allProducts = [];
@@ -337,7 +312,6 @@ function loadCategoriesAndProducts(studentId) {
             updateLimitInfo();
           }
 
-          // تخزين الرقم السري من بيانات الطالب
           currentStudentPin = String(data.student.pin_code || '');
           console.log('Loaded Student PIN:', currentStudentPin);
 
@@ -352,7 +326,6 @@ function loadCategoriesAndProducts(studentId) {
 
   // استقبال البيانات من قارئ QR Code الخارجي
   studentSearchInput.addEventListener('keydown', function(e) {
-    // إذا كان الإدخال يحتوي على رمز QR (عادةً ما ينتهي بمفتاح Enter)
     if (e.key === 'Enter') {
       const qrCode = this.value.trim();
       if (qrCode) {
@@ -381,11 +354,9 @@ function loadCategoriesAndProducts(studentId) {
       .then(res => res.json())
       .then(data => {
         studentsTableBody.innerHTML = '';
-       // الكود المعدل
 data.forEach(student => {
     const tr = document.createElement('tr');
 
-    // بناء محتوى الصف
     tr.innerHTML = `
         <td class="p-2 border whitespace-nowrap text-sm font-medium text-gray-800">${student.full_name}</td>
         <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.father_name ?? '—'}</td>
@@ -393,22 +364,17 @@ data.forEach(student => {
         <td class="p-2 border whitespace-nowrap text-sm text-gray-700">${student.daily_limit ? parseFloat(student.daily_limit).toFixed(2) + ' د.ل' : '—'}</td>
     `;
 
-    // التحقق إذا كان الطالب مؤرشفاً
     if (student.deleted_at) {
-        // --- حالة الطالب المؤرشف ---
-        // تغيير شكل الصف ليدل على أنه غير فعال
+
         tr.classList.add('opacity-50', 'bg-red-50', 'cursor-not-allowed');
 
-        // إضافة علامة (مؤرشف) بجانب اسم الطالب
         tr.querySelector('td:first-child').innerHTML += ` <span class="text-red-600 font-bold">(مؤرشف)</span>`;
 
-        // عند النقر، نعرض رسالة خطأ بدلاً من تحميل البيانات
         tr.addEventListener('click', () => {
             showModal('هذا الطالب مؤرشف ولا يمكن إجراء عمليات عليه.', 'عملية غير ممكنة');
         });
 
     } else {
-        // --- حالة الطالب النشط (المنطق الأصلي) ---
         tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
         tr.addEventListener('click', () => {
             currentStudentId = student.student_id;
@@ -437,7 +403,6 @@ data.forEach(student => {
           return;
         }
 
-        // افترض أن QR Code يعيد طالباً واحداً فقط
         const student = data[0];
         const tr = document.createElement('tr');
         tr.classList.add('cursor-pointer', 'hover:bg-primary-50');
@@ -456,7 +421,6 @@ data.forEach(student => {
         });
         studentsTableBody.appendChild(tr);
 
-        // تحديد الطالب تلقائياً
         currentStudentId = student.student_id;
         loadCategoriesAndProducts(currentStudentId);
         highlightSelectedStudent(tr);
@@ -688,14 +652,14 @@ data.forEach(student => {
       return;
     }
 
-    pinInput.value = ''; // مسح الحقل عند الفتح
+    pinInput.value = '';
     pinError.classList.add('hidden');
     pinModal.classList.remove('hidden');
     pinModal.classList.add('flex');
     pinInput.focus();
 }
    cancelPinBtn.addEventListener('click', () => {
-    pinInput.value = ''; // مسح الحقل
+    pinInput.value = '';
     pinModal.classList.add('hidden');
     pinModal.classList.remove('flex');
   });
@@ -710,21 +674,21 @@ data.forEach(student => {
       return;
     }
 
-    // تحويل كلا القيمتين إلى سترينج للمقارنة
+
     const enteredPinStr = String(enteredPin);
     const storedPinStr = String(currentStudentPin);
 
     console.log('Comparison:', enteredPinStr === storedPinStr);
 
     if (enteredPinStr === storedPinStr) {
-  const confirmedPin = enteredPinStr; // ← خزّن القيمة مؤقتاً
+  const confirmedPin = enteredPinStr;
 
   pinModal.classList.add('hidden');
   pinModal.classList.remove('flex');
   pinError.classList.add('hidden');
-  pinInput.value = ''; // ← الآن يمكن مسحه
+  pinInput.value = '';
 
-  sendSaleToServer(confirmedPin); // ← مرر الرقم السري
+  sendSaleToServer(confirmedPin);
 }
  else {
       pinError.textContent = 'الرقم السري غير صحيح، حاول مرة أخرى.';
@@ -742,7 +706,7 @@ async function sendSaleToServer(confirmedPin) {
   try {
     const saleData = {
       student_id: currentStudentId,
-      pin_code: confirmedPin, // ← استخدم الرقم السري الممرر
+      pin_code: confirmedPin,
       items: invoiceItems.map(i => ({
         product_id: i.id,
         quantity: i.quantity,
@@ -780,7 +744,6 @@ async function sendSaleToServer(confirmedPin) {
   }
 }
 
-  // زر تأكيد البيع يربط مع confirmSale
   document.getElementById('confirmSaleBtn').addEventListener('click', confirmSale);
 
   function getCookie(name) {

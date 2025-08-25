@@ -34,20 +34,19 @@
             border: 4px solid #FFEDD5;
         }
 
-        /* رسالة التحديث في المنتصف */
         #successMessage {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #DCFCE7; /* أخضر فاتح */
-            color: #166534; /* أخضر غامق */
+            background-color: #DCFCE7;
+            color: #166534;
             padding: 1rem 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             font-weight: 600;
             font-size: 1.125rem;
-            display: none; /* مخفي افتراضياً */
+            display: none;
             z-index: 1000;
             text-align: center;
             max-width: 90%;
@@ -59,9 +58,7 @@
 
 <div class="flex h-screen">
     @include('layouts.sidebar')
-    <!-- محتوى الملف الشخصي -->
     <div class="flex-1 p-6 overflow-auto">
-        <!-- عنوان الصفحة -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
                 <span class="ml-2">👨‍💼</span>
@@ -73,7 +70,6 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div class="p-6">
                 <div class="flex flex-col md:flex-row items-center gap-6 mb-8">
-                    <!-- صورة المستخدم -->
                     <div class="relative">
                         <img
                         src="{{ $user->profile_image_url ? asset('storage/' . $user->profile_image_url) : 'https://via.placeholder.com/150' }}"
@@ -117,7 +113,6 @@
                     @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- اسم المستخدم -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">اسم المستخدم</label>
                             <input type="text" name="username" value="{{ old('username', $user->username) }}" required
@@ -127,7 +122,6 @@
                             @enderror
                         </div>
 
-                        <!-- الاسم الكامل -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الاسم الكامل</label>
                             <input type="text" name="full_name" value="{{ old('full_name', $user->full_name) }}" required
@@ -137,7 +131,6 @@
                             @enderror
                         </div>
 
-                        <!-- البريد الإلكتروني -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">البريد الإلكتروني</label>
                             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
@@ -147,7 +140,6 @@
                             @enderror
                         </div>
 
-                        <!-- رقم الهاتف -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">رقم الهاتف</label>
                             <input type="tel" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" required
@@ -157,7 +149,6 @@
                             @enderror
                         </div>
 
-                        <!-- الدور/الصلاحية (عرض فقط) -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">الدور</label>
                             <p class="w-full border border-orange-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-700 select-none cursor-not-allowed">
@@ -173,7 +164,6 @@
                             <input type="hidden" name="role" value="{{ $user->role }}">
                         </div>
 
-                        <!-- كلمة المرور الحالية -->
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">كلمة السر الحالية</label>
                             <div class="relative">
@@ -189,7 +179,6 @@
                             @enderror
                         </div>
 
-          <!-- كلمة المرور الجديدة -->
 <div>
     <label class="block text-sm text-gray-600 mb-1">كلمة السر الجديدة</label>
     <div class="relative">
@@ -206,7 +195,6 @@
     @enderror
 </div>
 
-<!-- تأكيد كلمة المرور الجديدة -->
 <div>
     <label class="block text-sm text-gray-600 mb-1">تأكيد كلمة السر الجديدة</label>
     <div class="relative">
@@ -238,7 +226,6 @@
     </div>
 </div>
 
-<!-- رسالة التحديث تظهر في المنتصف -->
 @if(session('success'))
     <div id="successMessage">
         {{ session('success') }}
@@ -254,11 +241,9 @@ document.getElementById('profileImageInput').addEventListener('change', function
         reader.onload = function(e) {
             document.querySelector('.profile-image').src = e.target.result;
 
-            // إنشاء FormData من النموذج كاملاً
             const form = document.getElementById('profileForm');
             const formData = new FormData(form);
 
-            // استبدال ملف الصورة في الـ FormData
             formData.set('profile_image', file);
 
             fetch('{{ route("profile.update") }}', {
@@ -283,7 +268,6 @@ document.getElementById('profileImageInput').addEventListener('change', function
         reader.readAsDataURL(file);
     }
 });
-    // عرض/إخفاء كلمة المرور
     function togglePassword(button) {
         const input = button.previousElementSibling;
         if (input.type === 'password') {
@@ -295,7 +279,6 @@ document.getElementById('profileImageInput').addEventListener('change', function
         }
     }
 
-    // عرض رسالة النجاح ثم إخفائها بعد 4 دقائق
     document.addEventListener('DOMContentLoaded', () => {
         const successMessage = document.getElementById('successMessage');
         if (successMessage) {

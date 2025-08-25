@@ -35,7 +35,6 @@
     @include('layouts.sidebar')
 
     <div class="flex-1 p-6 overflow-auto">
-        <!-- رأس الصفحة -->
         <div class="bg-white rounded-xl shadow-lg mb-6 p-4 flex justify-between items-center">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
                 <span class="ml-2">🧾</span>
@@ -54,7 +53,6 @@
             </form>
         </div>
 
-        <!-- جدول الفواتير -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full text-right">
@@ -109,7 +107,6 @@
                 </table>
             </div>
 
-            <!-- روابط الصفحات -->
             <div class="p-4">
                 {{ $invoices->links() }}
             </div>
@@ -127,7 +124,6 @@
             <button onclick="closeInvoiceModal()" class="text-gray-500 hover:text-gray-700">✖</button>
         </div>
         <div class="p-6 space-y-4" id="invoiceDetails">
-            <!-- يتم تعبئة التفاصيل هنا تلقائياً -->
         </div>
     </div>
 </div>
@@ -137,7 +133,6 @@
         const modal = document.getElementById('invoiceModal');
         const details = document.getElementById('invoiceDetails');
 
-        // بناء محتوى تفاصيل الفاتورة
         let html = `
             <p><strong>رقم الفاتورة:</strong> #${invoice.order_id}</p>
             <p><strong>الطالب:</strong> ${invoice.student?.full_name || '—'}</p>
@@ -150,7 +145,6 @@
             <p><strong>الإجمالي:</strong> ${parseFloat(invoice.total_amount).toFixed(2)} د.ل</p>
         `;
 
-        // عرض الأصناف مع الكمية والسعر لكل صنف
         if (invoice.order_items && invoice.order_items.length > 0) {
             html += `<hr><h4 class="text-md font-bold mb-2">الأصناف:</h4><ul class="list-disc pl-5 space-y-1">`;
             invoice.order_items.forEach(item => {

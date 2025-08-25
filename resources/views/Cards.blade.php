@@ -64,10 +64,8 @@
 </head>
 <body class="bg-gray-50">
   <div class="flex h-screen">
-    {{-- الشريط الجانبي --}}
     @include('layouts.sidebar')
 
-    <!-- المحتوى الرئيسي -->
     <div class="flex-1 p-6 overflow-auto">
       <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4">
         <h1 class="text-lg font-bold text-primary-700 flex items-center">
@@ -111,7 +109,6 @@
 
       </div>
 
-      <!-- حاوية البطاقات للطباعة (مخفية) -->
       <div id="cardContainer" style="display:none;"></div>
     </div>
   </div>
@@ -125,10 +122,8 @@
   </div>
 </div>
   <script>
-    // بيانات الطلاب تأتي من السيرفر عبر Laravel Blade
     const students = @json($students);
 
-    // عناصر DOM
     const filterClass = document.getElementById('filterClass');
     const studentsTableBody = document.getElementById('studentsTableBody');
     const selectAllCheckbox = document.getElementById('selectAll');
@@ -136,7 +131,6 @@
     const printBtn = document.getElementById('printBtn');
     const cardContainer = document.getElementById('cardContainer');
 
-    // استخراج الفصول الدراسية الفريدة من الطلاب
     const classes = [...new Set(students.map(s => s.class).filter(c => c && c.trim() !== ''))];
     classes.forEach(cls => {
       const option = document.createElement('option');
@@ -145,7 +139,6 @@
       filterClass.appendChild(option);
     });
 
-    // عرض الطلاب في الجدول مع الفلترة
     function displayStudents(filter = '') {
       studentsTableBody.innerHTML = '';
       const filtered = filter ? students.filter(s => s.class === filter) : students;
@@ -171,7 +164,6 @@
       updateSelectAllState();
     }
 
-    // تحديث حالة تحديد الكل
     function updateSelectAllState() {
       const checkboxes = document.querySelectorAll('.rowCheckbox');
       const checkedBoxes = document.querySelectorAll('.rowCheckbox:checked');
@@ -179,7 +171,6 @@
       selectAllCheckbox.checked = headerCheckbox.checked;
     }
 
-    // أحداث التحكم بالاختيار
     filterClass.addEventListener('change', () => displayStudents(filterClass.value));
     selectAllCheckbox.addEventListener('change', () => {
       const checkboxes = document.querySelectorAll('.rowCheckbox');
@@ -230,7 +221,6 @@
         cardContainer.appendChild(card);
       });
 
-      // افتح نافذة الطباعة
       const printWindow = window.open('', '_blank');
       printWindow.document.write(`
         <html lang="ar" dir="rtl">
@@ -293,7 +283,6 @@
       printWindow.document.close();
     }
 
-    // عرض الطلاب عند تحميل الصفحة
     displayStudents();
 
     // حدث زر الطباعة

@@ -39,7 +39,6 @@
 </div>
 
 <script>
-    // إخفاء الرسالة بعد 4 ثوانٍ
     setTimeout(() => {
         const modal = document.getElementById('successModal');
         if (modal) modal.style.display = 'none';
@@ -50,7 +49,6 @@
     <!-- ✅ نموذج تسجيل الدخول -->
     <div class="flex flex-col md:flex-row w-full md:w-[90%] lg:w-[75%] shadow-lg rounded-lg overflow-hidden border border-gray-200 z-10">
 
-        <!-- Content Side -->
         <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
             <div class="text-center mb-8">
                 <div class="flex justify-center items-center gap-2">
@@ -61,7 +59,6 @@
             <form action="{{ url('/login') }}" method="POST" class="space-y-4">
                 @csrf
 
-                {{-- حقل اسم المستخدم --}}
                 <div>
                     <label class="block mb-1 text-sm font-medium text-gray-700">اسم المستخدم</label>
                     <input
@@ -76,7 +73,6 @@
                     @enderror
                 </div>
 
-                {{-- حقل كلمة المرور --}}
                 <div>
                     <label class="block mb-1 text-sm font-medium text-gray-700">كلمة المرور</label>
                     <input
@@ -101,13 +97,11 @@
             </form>
         </div>
 
-        <!-- Image Side -->
         <div class="hidden md:flex md:w-1/2 bg-white items-end justify-center p-4">
             <img src="{{ asset('images/smart.jpg') }}" alt="Kids eating" class="max-h-[350px]" />
         </div>
     </div>
 
-    <!-- ✅ سكريبت إغلاق المودال -->
     <script>
         function closeModal() {
             document.getElementById("errorModal").style.display = "none";

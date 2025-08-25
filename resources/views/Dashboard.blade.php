@@ -34,13 +34,11 @@
 </head>
 <body class="bg-white">
 
-<!-- الشريط الجانبي -->
 <div class="fixed top-0 right-0 h-screen w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4 overflow-y-auto">
     <h2 class="text-xl font-bold mb-8 text-center pt-4">إدارة المقصف</h2>
 
     <ul class="space-y-3">
         @auth
-            {{-- يظهر للجميع --}}
             <li class="p-3 hover:bg-primary-500 rounded-lg transition">
                 <a href="{{ url('/profile') }}" class="flex items-center">
                     <span class="ml-2">👨‍💼 </span> الملف الشخصي
@@ -53,7 +51,6 @@
 </li>
 
             @if(auth()->user()->role === 'مسؤول')
-                {{-- صلاحيات المسؤول --}}
                 <li class="p-3 {{ request()->is('index*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/index') }}" class="flex items-center">
                         <span class="ml-2">👥</span> إدارة المستخدمين
@@ -110,7 +107,6 @@
             @endif
 
             @if(auth()->user()->role === 'موظف')
-                <!-- رابط التقرير اليومية يظهر فقط للموظف -->
                 <li class="p-3 {{ request()->is('daily-report*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                     <a href="{{ url('/daily-report') }}" class="flex items-center">
                         <span class="ml-2">📅</span>
@@ -118,7 +114,6 @@
                     </a>
                 </li>
             @endif
-            {{-- للموظف والمسؤول --}}
             <li class="p-3 {{ request()->is('point*') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
                 <a href="{{ url('/point') }}" class="flex items-center">
                     <span class="ml-2">🧾</span> المبيعات
@@ -131,14 +126,12 @@
             </li>
 
     @if(auth()->user()->role === 'مسؤول')
-        {{-- زر النسخ الاحتياطي يظهر للمسؤول فقط --}}
         <li class="p-3 {{ request()->routeIs('backup.create') ? 'bg-primary-500' : 'hover:bg-primary-500' }} rounded-lg transition">
             <a href="{{ route('backup.create') }}" class="flex items-center">
                 <span class="ml-2">💾</span> إنشاء نسخة احتياطية
             </a>
         </li>
     @endif
-            {{-- تسجيل خروج --}}
             <li class="p-3 hover:bg-primary-500 rounded-lg transition cursor-pointer">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -151,7 +144,6 @@
     </ul>
 </div>
 
-<!-- المحتوى الرئيسي -->
 <div class="mr-64 p-6 overflow-auto min-h-screen bg-white">
 @if(session('success'))
     <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
@@ -205,7 +197,6 @@
     @endif
 </div>
 
-<!-- الرسوم البيانية -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const topProductsData = @json($topProducts ?? []);

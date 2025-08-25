@@ -55,9 +55,7 @@
 
 @endif
 
-    <!-- محتوى إدارة المنتجات -->
     <div class="flex-1 p-6 overflow-auto">
-        <!-- شريط البحث وإضافة منتج -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
             <h2 class="text-lg font-bold text-primary-700 flex items-center">
                 <span class="ml-2">🛒</span>
@@ -65,7 +63,6 @@
             </h2>
 
             <div class="flex items-center space-x-4 space-x-reverse">
-                <!-- حقل البحث -->
                 <form method="GET" action="{{ route('products.index') }}" class="relative">
                   <input
     type="text"
@@ -77,7 +74,6 @@
 
                 </form>
 
-                <!-- زر إضافة منتج -->
                 <button onclick="openProductModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
                     <span class="ml-1">+</span>
                     إضافة منتج جديد
@@ -85,7 +81,6 @@
             </div>
         </div>
 
-        <!-- جدول المنتجات -->
         <div id="productTableContainer">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
             <div class="overflow-x-auto">
@@ -343,14 +338,13 @@
     let debounceTimer;
 
     document.getElementById('liveSearch').addEventListener('input', function () {
-        clearTimeout(debounceTimer); // إلغاء أي مؤقت سابق
+        clearTimeout(debounceTimer);
         const query = this.value;
 
-        // تأخير التنفيذ قليلاً لتحسين الأداء
         debounceTimer = setTimeout(() => {
             fetch(`{{ route('products.index') }}?search=${encodeURIComponent(query)}`, {
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest' // لتحديد أنه طلب AJAX
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
             .then(response => response.text())
@@ -362,7 +356,7 @@
                   bindEditButtons();
     bindDeleteButtons();
             });
-        }, 300); // 300 ميلي ثانية تأخير
+        }, 300);
     });
 
 document.querySelectorAll('.edit-btn').forEach(button => {
@@ -373,7 +367,7 @@ document.querySelectorAll('.edit-btn').forEach(button => {
 });
 function showDeleteModal(productId) {
     const form = document.getElementById('deleteForm');
-    form.action = `/products/${productId}`; // تأكد أن المسار صحيح حسب الـ Route الخاص بك
+    form.action = `/products/${productId}`;
     document.getElementById('deleteConfirmModal').classList.remove('hidden');
     document.body.classList.add('overflow-hidden');
 }
@@ -408,8 +402,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (flash) {
         setTimeout(() => {
             flash.classList.add('fade-out');
-            setTimeout(() => flash.remove(), 1000); // إزالة العنصر بعد اختفائه
-        }, 4000); // بعد 4 ثوانٍ
+            setTimeout(() => flash.remove(), 1000);
+        }, 4000); 
     }
 });
     document.getElementById('productQuantity').addEventListener('input', function () {

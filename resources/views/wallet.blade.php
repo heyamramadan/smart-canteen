@@ -59,18 +59,14 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y">
-                            {{-- ✅ تعديل: استخدام متغير users$ الذي تم إرساله من المتحكم --}}
                             @forelse ($users as $index => $user)
                             <tr class="hover:bg-gray-50">
                                 <td class="p-3">{{ $index + 1 }}</td>
-                                {{-- ✅ تعديل: الوصول للبيانات مباشرة من متغير user$ --}}
                                 <td class="p-3">{{ $user->full_name }}</td>
                                 <td class="p-3">{{ $user->email }}</td>
                                 <td class="p-3">{{ $user->phone_number ?? 'غير متوفر' }}</td>
-                                {{-- ✅ تعديل: الوصول للرصيد من علاقة المحفظة المباشرة --}}
                                 <td class="p-3 font-medium">{{ number_format($user->wallet->balance ?? 0, 2) }} د.ل</td>
                                 <td class="p-3">
-                                    {{-- ✅ تعديل: تمرير user->id مباشرة، والوصول للرصيد من علاقة المحفظة --}}
                                     <button onclick="showChargeModal({{ $user->id }}, '{{ $user->full_name }}', {{ $user->wallet->balance ?? 0 }}, {{ $user->wallet->daily_limit ?? 20 }})" class="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded">
                                         شحن
                                     </button>
@@ -134,7 +130,6 @@
     </div>
 
   <script>
-    // الحصول على التوكن من الميتا تاغ
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     function showChargeModal(userId, name, balance, dailyLimit) {
@@ -142,7 +137,7 @@
         document.getElementById('modalParentName').textContent = name;
         document.getElementById('modalCurrentBalance').textContent = `${parseFloat(balance).toFixed(2)} د.ل`;
 
-        document.getElementById('chargeForm').reset(); // لإفراغ حقل المبلغ
+        document.getElementById('chargeForm').reset();
         document.getElementById('chargeModal').classList.remove('hidden');
     }
 
@@ -152,7 +147,7 @@
 
     function closeSuccessModalAndReload() {
         document.getElementById('successModal').classList.add('hidden');
-        window.location.reload(); // إعادة تحميل الصفحة لعرض البيانات المحدثة
+        window.location.reload();
     }
 
     function submitCharge() {
@@ -165,7 +160,7 @@
         }
 
         const bodyData = {
-            user_id: userId, // ✅ تعديل: إرسال user_id بدلاً من parent_id
+            user_id: userId,
             amount: parseFloat(amount)
         };
 
@@ -201,7 +196,6 @@
     let visibleCount = 0;
 
     rows.forEach(row => {
-        // تجاهل صف "لا توجد نتائج مطابقة"
         if (row.id === "noResultsRow") return;
 
         const name = row.children[1].textContent.toLowerCase();
@@ -214,7 +208,6 @@
         if (isVisible) visibleCount++;
     });
 
-    // إظهار أو إخفاء صف "لا توجد نتائج مطابقة"
     const noResultsRow = document.getElementById('noResultsRow');
     if (noResultsRow) {
         noResultsRow.classList.toggle('hidden', visibleCount !== 0);

@@ -9,6 +9,7 @@
 
     <title>إدارة المستخدمين - لوحة تحكم المقصف</title>
 
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -44,19 +45,15 @@
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen">
-        @include('layouts.sidebar') 
-
-        <!-- محتوى إدارة المستخدمين -->
+        @include('layouts.sidebar')
         <div class="flex-1 p-6 overflow-auto">
 
-            <!-- شريط البحث وإضافة مستخدم -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 p-4 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-primary-700 flex items-center">
                     <span class="ml-2">👥</span>
                     إدارة المستخدمين
                 </h2>
                 <div class="flex items-center space-x-4 space-x-reverse">
-                       <!-- فلتر لتصفية الأدوار -->
                     <select id="roleFilter" class="border rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500">
     <option value="">كل الأدوار</option>
     <option value="مسؤول">مسؤول</option>
@@ -64,24 +61,20 @@
     <option value="ولي أمر">ولي أمر</option>
 </select>
 
-                    <!-- حقل البحث -->
                                  <div class="relative">
                         <input id="searchInput" type="text" placeholder="ابحث عن مستخدم..."
                                class="pr-10 pl-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
                         <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
                     </div>
 
-                    <!-- زر إضافة مستخدم -->
                     <button onclick="openModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
                         <span class="ml-1">+</span> إضافة مستخدم جديد
                     </button>
                 </div>
             </div>
 
-            <!-- جدول المستخدمين -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                 <div class="overflow-x-auto">
-                    <!-- جدول يعرض بيانات المستخدمين -->
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
@@ -94,10 +87,9 @@
                                 <th class="p-3 text-right text-sm text-gray-500">الإجراءات</th>
                             </tr>
                         </thead>
-             <!-- جسم الجدول: عرض المستخدمين من قاعدة البيانات -->
 
                       <tbody id="usersTableBody" class="divide-y divide-gray-200">
-    @foreach ($users as $user)<!-- تكرار المستخدمين من الـ Controller -->
+    @foreach ($users as $user)
         <tr class="hover:bg-gray-100 transition {{ $user->deleted_at ? 'bg-gray-50 text-gray-400' : '' }}">
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->username }}</td>
             <td class="p-3 text-sm whitespace-nowrap">{{ $user->full_name }}</td>
@@ -108,12 +100,10 @@
             <td class="p-3 flex items-center space-x-2 space-x-reverse whitespace-nowrap">
          <button onclick="openEditModal({{ $user->id }}, '{{ $user->username }}', '{{ $user->email }}', '{{ $user->full_name }}', '{{ $user->role }}', '{{ $user->phone_number }}')"
     class="bg-white text-orange-500 border border-orange-500 px-3 py-1 rounded-lg hover:bg-orange-500 hover:text-white transition flex items-center space-x-1 space-x-reverse">
-  <!-- زر تعديل -->
 
     <span>✏️</span>
     <span>تعديل</span>
 </button>
- <!-- نموذج أرشفة -->
 
 <form method="POST" action="{{ route('users.destroy', $user->id) }}" class="archive-form">
     @csrf
@@ -133,7 +123,6 @@
 
        </table>
            <div class="mt-4 px-4">
-        <!-- روابط التنقل بين الصفحات -->
 
         {{ $users->links() }}
     </div>
@@ -142,7 +131,6 @@
         </div>
     </div>
 
-  <!-- مودال تعديل المستخدم -->
 <div id="editUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     <div class="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -201,7 +189,6 @@
                             class="w-full border border-orange-300 rounded-lg px-4 py-2" />
                     </div>
                 </div>
-<!-- زر تصفير كلمة المرور -->
 <div class="pt-2">
     <button type="button" onclick="resetPasswordToDefault()"
         class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
@@ -225,7 +212,6 @@
 </div>
 
 
-    <!-- مودال إضافة مستخدم جديد -->
     <div id="userModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -294,7 +280,6 @@
         </div>
     </div>
 
-<!-- مودال تأكيد الأرشفة -->
 <div id="confirmArchiveModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
         <h3 class="text-lg font-bold text-primary-700 mb-4">تأكيد الأرشفة</h3>
@@ -313,24 +298,22 @@
 
 
 
-    @if(session('success'))<!-- عند وجود رسالة نجاح من الجلسة -->
+    @if(session('success'))
     <div id="flashMessage" class="fixed inset-0 flex items-center justify-center z-50">
         <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-xl animate-fade-in-out transition-opacity duration-300">
-            {{ session('success') }}<!-- عرض محتوى الرسالة -->
+            {{ session('success') }}
         </div>
     </div>
     @endif
 
     <script>
-    /* فتح مودال إضافة المستخدم */
         function openModal() {
-            document.getElementById('userModal').classList.remove('hidden'); /* إظهار المودال */
+            document.getElementById('userModal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
         }
 
-        /* إغلاق مودال إضافة المستخدم */
         function closeModal() {
-            document.getElementById('userModal').classList.add('hidden');/* إخفاء المودال */
+            document.getElementById('userModal').classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
 
@@ -339,7 +322,6 @@
                 closeModal();
             }
         });
- /* فتح مودال تعديل المستخدم مع تعبئة الحقول */
         function openEditModal(id, username, email, full_name, role, phone) {
             document.getElementById('edit_user_id').value = id;
             document.getElementById('edit_username').value = username;
@@ -348,47 +330,40 @@
             document.getElementById('edit_role').value = role;
             document.getElementById('edit_phone_number').value = phone;
 
-            // تحديث الفورم بالمسار المناسب
             document.getElementById('editUserForm').action = '/users/' + id;
 
-            document.getElementById('editUserModal').classList.remove('hidden');// إظهار المودال
+            document.getElementById('editUserModal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
         }
-        /* إغلاق مودال التعديل */
 
         function closeEditModal() {
             document.getElementById('editUserModal').classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
         }
-        /* تصفير كلمة المرور إلى قيمة افتراضية بإرسال فلاغ hidden */
 function resetPasswordToDefault() {
-    let input = document.createElement('input');// إنشاء عنصر input
-    input.type = 'hidden';                       // مخفي
-    input.name = 'reset_password';//اسم الحقل
-    input.value = '1'; // قيمة تُستخدم كمؤشر للتصفير
-    document.getElementById('editUserForm').appendChild(input);// إضافة الحقل للنموذج
-    document.getElementById('editUserForm').submit(); // إرسال النموذج
+    let input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'reset_password';
+    input.value = '1';
+    document.getElementById('editUserForm').appendChild(input);
+    document.getElementById('editUserForm').submit();
 }
 
-        // فتح المودال تلقائيًا إذا كان هناك أخطاء في التحقق
         @if ($errors->any())
             openModal();
         @endif
 
-        // إخفاء رسالة النجاح بعد 3 ثوانٍ
         setTimeout(() => {
             const msg = document.getElementById('flashMessage');
             if (msg) msg.remove();
         }, 3000);
 
-        // مودال تأكيد الأرشفة
         document.addEventListener('DOMContentLoaded', function() {
-            const archiveModal = document.getElementById('confirmArchiveModal');// مودال التأكيد
-            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn'); // زر إلغاء
-            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');// زر تأكيد
+            const archiveModal = document.getElementById('confirmArchiveModal');
+            const cancelArchiveBtn = document.getElementById('cancelArchiveBtn');
+            const confirmArchiveBtn = document.getElementById('confirmArchiveBtn');
             let currentArchiveForm = null;
 
-            // عند الضغط على زر الأرشفة
             document.querySelectorAll('.archive-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     currentArchiveForm = this.closest('form');
@@ -397,21 +372,18 @@ function resetPasswordToDefault() {
                 });
             });
 
-            // عند الضغط على إلغاء الأرشفة
             cancelArchiveBtn.addEventListener('click', function() {
                 archiveModal.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
                 currentArchiveForm = null;
             });
 
-            // عند الضغط على تأكيد الأرشفة
             confirmArchiveBtn.addEventListener('click', function() {
                 if (currentArchiveForm) {
-                    currentArchiveForm.submit();// تنفيذ الأرشفة
+                    currentArchiveForm.submit();
                 }
             });
 
-            // إغلاق المودال عند الضغط خارج المحتوى
             archiveModal.addEventListener('click', function(e) {
                 if (e.target === archiveModal) {
                     archiveModal.classList.add('hidden');
@@ -421,16 +393,12 @@ function resetPasswordToDefault() {
             });
 
         });
-         /* منطق البحث الآني + الفلترة حسب الدور */
         document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');// عنصر الإدخال للبحث
-    const usersTableBody = document.getElementById('usersTableBody');// جسم الجدول لتحديث النتائج
-// الاستماع لتغير نص البحث
+    const searchInput = document.getElementById('searchInput');
+    const usersTableBody = document.getElementById('usersTableBody');
     searchInput.addEventListener('input', function() {
-   const query = this.value.trim();// نص البحث
-const role = document.getElementById('roleFilter').value; // الدور المختار
-
-  // استدعاء مسار البحث عبر AJAX (fetch) مع تمرير query و role_filter
+   const query = this.value.trim();
+const role = document.getElementById('roleFilter').value;
 
        fetch(`/users/search?query=${encodeURIComponent(query)}&role_filter=${encodeURIComponent(role)}`, {
 
@@ -440,8 +408,7 @@ const role = document.getElementById('roleFilter').value; // الدور المخ
         })
         .then(response => response.json())
         .then(users => {
-            usersTableBody.innerHTML = ''; // مسح المحتوى القديم
-
+            usersTableBody.innerHTML = '';
             if (users.length === 0) {
                 usersTableBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500">لا توجد نتائج</td></tr>`;
                 return;
@@ -450,7 +417,6 @@ const role = document.getElementById('roleFilter').value; // الدور المخ
             users.forEach(user => {
                 const isTrashed = user.deleted_at !== null;
 
-                // بناء صف المستخدم كـ HTML (ممكن تضيف أزرار التعديل/الأرشفة حسب حاجتك)
                 const row = document.createElement('tr');
                 row.className = `hover:bg-gray-50 transition ${isTrashed ? 'bg-gray-100 text-gray-400' : ''}`;
 
