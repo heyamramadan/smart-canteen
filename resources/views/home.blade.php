@@ -21,10 +21,10 @@
 
       <div class="absolute top-[260px] left-1/2 transform -translate-x-1/2 z-10 text-center w-full px-4">
         <div class="bg-white shadow-xl p-5 rounded-full w-28 h-28 mx-auto flex items-center justify-center mb-4">
-          <img src="{{ asset('images/logo.png') }}" alt="شعار" class="w-24 h-24 object-contain" />
+          <img src="{{ asset('images/logor.jpg') }}" alt="شعار" class="w-24 h-24 object-contain" />
         </div>
         <h1 class="text-3xl font-bold text-gray-700 leading-tight">
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FA9533] to-[#e17e20]">المقصف</span> الذكي
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FA9533] to-[#e17e20]">وجبتي</span> الذكية
         </h1>
       </div>
     </div>
