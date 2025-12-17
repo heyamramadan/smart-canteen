@@ -35,7 +35,10 @@
 <body class="bg-white">
 
 <div class="fixed top-0 right-0 h-screen w-64 bg-gradient-to-b from-primary-700 to-primary-600 text-white p-4 overflow-y-auto">
-    <h2 class="text-xl font-bold mb-8 text-center pt-4">إدارة المقصف</h2>
+  <h2 class="text-xl font-bold mb-8 text-center pt-4">
+  إدارة وجبتي الذكية
+</h2>
+
 
     <ul class="space-y-3">
         @auth
