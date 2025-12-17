@@ -52,7 +52,7 @@
         <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
             <div class="text-center mb-8">
                 <div class="flex justify-center items-center gap-2">
-                    <img src="{{ asset('images/logo.png') }}" class="w-24 h-24" alt="logo" />
+                    <img src="{{ asset('images/logor.jpg') }}" class="w-24 h-24" alt="logo" />
                 </div>
             </div>
 
